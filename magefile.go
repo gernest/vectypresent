@@ -11,9 +11,10 @@ func Graph() error {
 		src, output string
 	}{
 		{"workflow.mmd", "workflow.png"},
+		{"services.mmd", "services.png"},
 	}
 	for _, file := range files {
-		if err := sh.RunV("mmdc", "-i", file.src, "-o", file.output); err != nil {
+		if err := sh.RunV("mmdc", "-t", "forest", "-i", file.src, "-o", file.output); err != nil {
 			return err
 		}
 	}

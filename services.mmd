@@ -1,0 +1,19 @@
+graph TB
+    catci[Cat Academy]-->docs[lessons.cat.co.tz]
+    catci-->web[cat.co.tz]
+    catci-->bot
+    web-->nsqd
+    nsqd-->web
+    nsqd-->reportes
+    reportes-->nsqd
+    runners-->go[go exercise runner]
+    runners-->js[javascript exercise runner]
+    runners-->python[python exercise runner]
+    nsqd-->runners
+    runners-->nsqd
+    subgraph 
+    github-->bot
+    bot-->github
+    bot-->nsqd
+    nsqd-->bot
+    end
