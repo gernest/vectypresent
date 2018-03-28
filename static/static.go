@@ -580,6 +580,7 @@ func Command() cli.Command {
 				EnvVar: "CATAC_THEME_NAME",
 			},
 		},
+		Action: run,
 	}
 }
 
