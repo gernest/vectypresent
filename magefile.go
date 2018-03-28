@@ -20,3 +20,7 @@ func Graph() error {
 	}
 	return nil
 }
+
+func Build() error {
+	return sh.RunV("go", "build", "-o", "catac")
+}
