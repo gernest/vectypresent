@@ -431,7 +431,11 @@ func NewFileDir(base string) (*FileDir, error) {
 		if info.IsDir() {
 			return nil
 		}
-		f.files = append(f.files, path)
+		r, err := filepath.Rel(base, path)
+		if err != nil {
+			return err
+		}
+		f.files = append(f.files, r)
 		return nil
 	})
 	if ferr != nil {
@@ -448,7 +452,7 @@ func (f *FileDir) List() []string {
 
 // Open returns a File matching the name.
 func (f *FileDir) Open(name string) (File, error) {
-	b, err := ioutil.ReadFile(name)
+	b, err := ioutil.ReadFile(filepath.Join(f.base, name))
 	if err != nil {
 		return nil, err
 	}
@@ -476,16 +480,20 @@ type BaseTemplate struct {
 
 // NewBaseTemplate loads the templates from dir for the given theme.
 func NewBaseTemplate(dir Dir, themeName string) (*BaseTemplate, error) {
-	base := filepath.Join("themes", themeName)
+	// base := filepath.Join("themes", themeName)
 	ts := filterList(dir.List(), func(s string) bool {
-		return strings.HasPrefix(s, base) && filepath.Ext(s) == ".tpl"
+		return strings.HasPrefix(s, themeName) && filepath.Ext(s) == ".html"
 	})
 	if ts == nil {
 		return nil, fmt.Errorf("theme %s not found", themeName)
 	}
 	t := template.New(themeName)
 	for _, v := range ts {
-		tpl := t.New(strings.TrimPrefix(base, v))
+		r, err := filepath.Rel(themeName, v)
+		if err != nil {
+			return nil, err
+		}
+		tpl := t.New(r)
 		d, err := dir.Open(v)
 		if err != nil {
 			return nil, err
