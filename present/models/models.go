@@ -23,6 +23,8 @@ var NotesEnabled = false
 // displayed in the present user interface.
 var PlayEnabled = false
 
+const TimeFormat = "2 January 2006"
+
 type Caption struct {
 	Text string
 }
