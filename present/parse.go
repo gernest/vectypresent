@@ -20,7 +20,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/gernest/present/models"
+	"github.com/gernest/CatAcademy/present/models"
 )
 
 var (

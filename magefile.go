@@ -24,3 +24,16 @@ func Graph() error {
 func Build() error {
 	return sh.RunV("go", "build", "-o", "catac")
 }
+
+const pkg = "github.com/gernest/CatAcademy"
+
+func Ui() error {
+	return sh.RunV("gopherjs", "build", "-o", "static/goslide.js", pkg+"/ui/slide")
+}
+
+func Serve() error {
+	if err := Build(); err != nil {
+		return err
+	}
+	return sh.RunV("./catac", "serve")
+}

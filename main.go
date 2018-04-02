@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gernest/CatAcademy/static"
+	"github.com/gernest/CatAcademy/generator"
+	"github.com/gernest/CatAcademy/server"
 	"github.com/urfave/cli"
 )
 
@@ -14,6 +15,7 @@ func main() {
 	a.Usage = "simple programming lessons companion"
 	a.Commands = []cli.Command{
 		static.Command(),
+		server.Command(),
 	}
 	if err := a.Run(os.Args); err != nil {
 		fmt.Printf("catac: %v\n", err)

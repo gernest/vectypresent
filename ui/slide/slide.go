@@ -1,18 +1,16 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
 	"fmt"
-	"net/url"
-	"strings"
 
-	"github.com/gernest/locstor"
+	"github.com/gopherjs/vecty/event"
 
 	"github.com/gopherjs/vecty/prop"
 
 	"github.com/gernest/CatAcademy/present/models"
 	"github.com/gernest/socrates"
-	"github.com/gopherjs/gopherjs/js"
+	"github.com/gernest/xhr"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"
 )
@@ -21,42 +19,76 @@ func main() {
 	vecty.RenderBody(&Slide{})
 }
 
+type Position int
+
+const (
+	FarPast Position = iota << 1
+	Past
+	Current
+	Next
+	FarNext
+	Silent
+)
+
+func (p Position) Class() string {
+	switch p {
+	case FarPast:
+		return "far-past"
+	case Past:
+		return "past"
+	case Current:
+		return "current"
+	case Next:
+		return "next"
+	case FarNext:
+		return "far-next"
+	case Silent:
+		return ""
+	default:
+		return ""
+	}
+}
+
 type Slide struct {
 	vecty.Core
 
-	Doc    *models.Doc
-	socket *socrates.Socket
+	Doc         *models.Doc
+	socket      *socrates.Socket
+	activeSlide int
 }
 
 // Mount implements vecty.Mount interface.
 //
 // This opens a websocket connection which allows to remotely control the slides.
 func (s *Slide) Mount() {
-	location := js.Global.Get("location").Get("href").String()
-	u, err := url.Parse(location)
-	if err != nil {
-		panic(err)
-	}
-	u.Scheme = "ws"
-	u.Path = "/ws/" + u.Path
-	sock, err := socrates.NewSocket(u.String(), &socrates.Options{
-		OnMessage: s.OnMessage,
-	})
-	if err != nil {
-		panic(err)
-	}
-	s.socket = sock
-	data, err := locstor.GetItem("slideData")
-	if err != nil {
-		panic(err)
-	}
-	doc := &models.Doc{}
-	err = json.Unmarshal([]byte(data), doc)
-	if err != nil {
-		panic(err)
-	}
-	s.Doc = doc
-	vecty.Rerender(s)
+	// location := js.Global.Get("location").Get("href").String()
+	// u, err := url.Parse(location)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// u.Scheme = "ws"
+	// u.Path = "/ws/" + u.Path
+	// sock, err := socrates.NewSocket(u.String(), &socrates.Options{
+	// 	OnMessage: s.OnMessage,
+	// })
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// s.socket = sock
+	go func() {
+		data, err := xhr.Send("GET", "/data/", nil)
+		if err != nil {
+			panic(err)
+		}
+		doc := &models.Doc{}
+		err = models.Decode(bytes.NewReader(data), &doc)
+		if err != nil {
+			panic(err)
+		}
+		s.Doc = doc
+		vecty.Rerender(s)
+	}()
+
 }
 
 func (s *Slide) UnMount() {
@@ -71,9 +103,29 @@ func (s *Slide) Render() vecty.ComponentOrHTML {
 	if s.Doc == nil {
 		return elem.Body()
 	}
+	var sections vecty.List
+	for i, section := range s.Doc.Sections {
+		pos := Silent
+		switch i {
+		case s.activeSlide - 2:
+			pos = FarPast
+		case s.activeSlide - 1:
+			pos = Past
+		case s.activeSlide:
+			pos = Current
+		case s.activeSlide + 1:
+			pos = Next
+		case s.activeSlide + 2:
+			pos = FarNext
+		}
+		sections = append(sections, &Section{s: section, Pos: pos})
+	}
 	return elem.Body(
 		vecty.Markup(
 			vecty.Style("display", "none"),
+			event.KeyDown(func(e *vecty.Event) {
+				s.UpdatePosition(e.Get("code").String())
+			}),
 		),
 		elem.Section(
 			vecty.Markup(
@@ -90,15 +142,47 @@ func (s *Slide) Render() vecty.ComponentOrHTML {
 					vecty.Text(s.Doc.Time.Format(models.TimeFormat)),
 				)),
 			),
-			s.renderSections(),
+			sections,
 		),
 	)
 }
 
+func (s *Slide) UpdatePosition(key string) {
+	up := false
+	switch key {
+	case "ArrowRight", "ArrowUp":
+		if s.activeSlide < len(s.Doc.Sections) {
+			s.activeSlide++
+			up = true
+		}
+	case "ArrowLeft", "ArrowDown":
+		if s.activeSlide != 0 {
+			s.activeSlide--
+			up = true
+		}
+	}
+	if up {
+		vecty.Rerender(s)
+	}
+}
+
 func (s *Slide) renderSections() vecty.List {
 	var sections vecty.List
-	for _, section := range s.Doc.Sections {
-		sections = append(sections, &Section{s: section})
+	for i, section := range s.Doc.Sections {
+		pos := Silent
+		switch i {
+		case s.activeSlide - 2:
+			pos = FarPast
+		case s.activeSlide - 1:
+			pos = Past
+		case s.activeSlide:
+			pos = Current
+		case s.activeSlide + 1:
+			pos = Next
+		case s.activeSlide + 2:
+			pos = FarNext
+		}
+		sections = append(sections, &Section{s: section, Pos: pos})
 	}
 	return sections
 }
@@ -147,12 +231,14 @@ func join(v []string, by string) string {
 type Section struct {
 	vecty.Core
 
-	s models.Section
+	Pos Position `vecty:"prop"`
+	s   models.Section
 }
 
 func (s *Section) Render() vecty.ComponentOrHTML {
 	return elem.Article(
 		vecty.Markup(
+			vecty.MarkupIf(s.Pos.Class() != "", vecty.Class(s.Pos.Class())),
 			vecty.MarkupIf(s.s.Classes != nil,
 				vecty.Class(s.s.Classes...)),
 			vecty.MarkupIf(s.s.Styles != nil,
@@ -222,33 +308,31 @@ type Text struct {
 
 func (t *Text) Render() vecty.ComponentOrHTML {
 	if t.txt.Pre {
-		var s strings.Builder
+		var s string
 		for k, v := range t.txt.Lines {
 			if k == 0 {
-				s.WriteString(v)
+				s += v
 			} else {
-				s.WriteRune('\n')
-				s.WriteString(v)
+				s += "\n" + v
 			}
 		}
 		return elem.Div(
 			vecty.Markup(vecty.Class("code")),
 			elem.Preformatted(
-				vecty.Text(s.String()),
+				vecty.Text(s),
 			),
 		)
 	}
-	var s strings.Builder
+	var s string
 	for k, v := range t.txt.Lines {
 		if k == 0 {
-			s.WriteString(v)
+			s += v
 		} else {
-			s.WriteString("<br>")
-			s.WriteString(v)
+			s += "<br>" + v
 		}
 	}
 	return elem.Paragraph(
-		vecty.Markup(vecty.UnsafeHTML(s.String())),
+		vecty.Markup(vecty.UnsafeHTML(s)),
 	)
 }
 

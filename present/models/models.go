@@ -2,6 +2,7 @@ package models
 
 import (
 	"bytes"
+	"encoding/gob"
 	"fmt"
 	"html/template"
 	"io"
@@ -9,6 +10,20 @@ import (
 	"strings"
 	"time"
 )
+
+func init() {
+	gob.Register(Text{})
+	gob.Register(Code{})
+	gob.Register(List{})
+}
+
+func Encode(o io.Writer, v interface{}) error {
+	return gob.NewEncoder(o).Encode(v)
+}
+
+func Decode(o io.Reader, v interface{}) error {
+	return gob.NewDecoder(o).Decode(v)
+}
 
 // TODO(adg): replace the PlayEnabled flag with something less spaghetti-like.
 // Instead this will probably be determined by a template execution Context

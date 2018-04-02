@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/gernest/present/models"
+	"github.com/gernest/CatAcademy/present/models"
 )
 
 func init() {
