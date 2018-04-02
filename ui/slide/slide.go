@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/gernest/locstor"
+
 	"github.com/gopherjs/vecty/prop"
 
 	"github.com/gernest/CatAcademy/present/models"
@@ -44,8 +46,10 @@ func (s *Slide) Mount() {
 		panic(err)
 	}
 	s.socket = sock
-
-	data := js.Global.Get("slideData").String()
+	data, err := locstor.GetItem("slideData")
+	if err != nil {
+		panic(err)
+	}
 	doc := &models.Doc{}
 	err = json.Unmarshal([]byte(data), doc)
 	if err != nil {
