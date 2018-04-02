@@ -166,27 +166,6 @@ func (s *Slide) UpdatePosition(key string) {
 	}
 }
 
-func (s *Slide) renderSections() vecty.List {
-	var sections vecty.List
-	for i, section := range s.Doc.Sections {
-		pos := Silent
-		switch i {
-		case s.activeSlide - 2:
-			pos = FarPast
-		case s.activeSlide - 1:
-			pos = Past
-		case s.activeSlide:
-			pos = Current
-		case s.activeSlide + 1:
-			pos = Next
-		case s.activeSlide + 2:
-			pos = FarNext
-		}
-		sections = append(sections, &Section{s: section, Pos: pos})
-	}
-	return sections
-}
-
 func renderElems(e []models.Elem) vecty.List {
 	var o vecty.List
 	for _, v := range e {
