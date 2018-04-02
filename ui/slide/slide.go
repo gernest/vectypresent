@@ -16,43 +16,43 @@ import (
 )
 
 func main() {
-	vecty.RenderBody(&Slide{})
+	vecty.RenderBody(&slide{})
 }
 
-type Position int
+type position int
 
 const (
-	FarPast Position = iota << 1
-	Past
-	Current
-	Next
-	FarNext
-	Silent
+	farPast position = iota << 1
+	past
+	current
+	next
+	farNext
+	silent
 )
 
-func (p Position) Class() string {
+func (p position) Class() string {
 	switch p {
-	case FarPast:
+	case farPast:
 		return "far-past"
-	case Past:
+	case past:
 		return "past"
-	case Current:
+	case current:
 		return "current"
-	case Next:
+	case next:
 		return "next"
-	case FarNext:
+	case farNext:
 		return "far-next"
-	case Silent:
+	case silent:
 		return ""
 	default:
 		return ""
 	}
 }
 
-type Slide struct {
+type slide struct {
 	vecty.Core
 
-	Doc         *models.Doc
+	doc         *models.Doc
 	socket      *socrates.Socket
 	activeSlide int
 }
@@ -60,7 +60,7 @@ type Slide struct {
 // Mount implements vecty.Mount interface.
 //
 // This opens a websocket connection which allows to remotely control the slides.
-func (s *Slide) Mount() {
+func (s *slide) Mount() {
 	// location := js.Global.Get("location").Get("href").String()
 	// u, err := url.Parse(location)
 	// if err != nil {
@@ -85,38 +85,38 @@ func (s *Slide) Mount() {
 		if err != nil {
 			panic(err)
 		}
-		s.Doc = doc
+		s.doc = doc
 		vecty.Rerender(s)
 	}()
 
 }
 
-func (s *Slide) UnMount() {
+func (s *slide) UnMount() {
 	s.socket.Close()
 }
 
-func (s *Slide) OnMessage(data []byte) {
+func (s *slide) OnMessage(data []byte) {
 
 }
 
-func (s *Slide) Render() vecty.ComponentOrHTML {
-	if s.Doc == nil {
+func (s *slide) Render() vecty.ComponentOrHTML {
+	if s.doc == nil {
 		return elem.Body()
 	}
 	var sections vecty.List
-	for i, section := range s.Doc.Sections {
-		pos := Silent
+	for i, section := range s.doc.Sections {
+		pos := silent
 		switch i {
 		case s.activeSlide - 2:
-			pos = FarPast
+			pos = farPast
 		case s.activeSlide - 1:
-			pos = Past
+			pos = past
 		case s.activeSlide:
-			pos = Current
+			pos = current
 		case s.activeSlide + 1:
-			pos = Next
+			pos = next
 		case s.activeSlide + 2:
-			pos = FarNext
+			pos = farNext
 		}
 		sections = append(sections, &Section{s: section, Pos: pos})
 	}
@@ -133,13 +133,13 @@ func (s *Slide) Render() vecty.ComponentOrHTML {
 			),
 			elem.Article(
 				elem.Heading1(
-					vecty.Text(s.Doc.Title),
+					vecty.Text(s.doc.Title),
 				),
-				vecty.If(s.Doc.Subtitle != "", elem.Heading3(
-					vecty.Text(s.Doc.Subtitle),
+				vecty.If(s.doc.Subtitle != "", elem.Heading3(
+					vecty.Text(s.doc.Subtitle),
 				)),
-				vecty.If(!s.Doc.Time.IsZero(), elem.Heading3(
-					vecty.Text(s.Doc.Time.Format(models.TimeFormat)),
+				vecty.If(!s.doc.Time.IsZero(), elem.Heading3(
+					vecty.Text(s.doc.Time.Format(models.TimeFormat)),
 				)),
 			),
 			sections,
@@ -147,11 +147,11 @@ func (s *Slide) Render() vecty.ComponentOrHTML {
 	)
 }
 
-func (s *Slide) UpdatePosition(key string) {
+func (s *slide) UpdatePosition(key string) {
 	up := false
 	switch key {
 	case "ArrowRight", "ArrowUp":
-		if s.activeSlide < len(s.Doc.Sections) {
+		if s.activeSlide < len(s.doc.Sections) {
 			s.activeSlide++
 			up = true
 		}
@@ -207,10 +207,11 @@ func join(v []string, by string) string {
 	return o
 }
 
+// Section is a single slide show unit/page.
 type Section struct {
 	vecty.Core
 
-	Pos Position `vecty:"prop"`
+	Pos position `vecty:"prop"`
 	s   models.Section
 }
 
