@@ -20129,7 +20129,7 @@ $packages["reflect"] = (function() {
 	return $pkg;
 })();
 $packages["fmt"] = (function() {
-	var $pkg = {}, $init, errors, io, math, os, reflect, strconv, sync, utf8, fmtFlags, fmt, State, Formatter, Stringer, GoStringer, buffer, pp, ScanState, Scanner, stringReader, scanError, ss, ssave, readRune, sliceType, ptrType, ptrType$1, arrayType, arrayType$1, sliceType$1, sliceType$2, arrayType$2, ptrType$2, ptrType$3, ptrType$4, ptrType$5, arrayType$3, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$11, ptrType$12, ptrType$13, ptrType$14, ptrType$15, ptrType$16, ptrType$17, ptrType$18, ptrType$19, ptrType$20, ptrType$21, ptrType$22, ptrType$23, ptrType$24, ptrType$25, funcType, ptrType$26, ppFree, space, ssFree, complexError, boolError, newPrinter, Fprintf, Sprintf, Errorf, Fprint, Sprint, Sprintln, getField, tooLarge, parsenum, intFromArg, parseArgNumber, Sscan, Fscan, isSpace, notSpace, newScanState, indexRune, hexDigit, errorHandler;
+	var $pkg = {}, $init, errors, io, math, os, reflect, strconv, sync, utf8, fmtFlags, fmt, State, Formatter, Stringer, GoStringer, buffer, pp, ScanState, Scanner, stringReader, scanError, ss, ssave, readRune, sliceType, ptrType, ptrType$1, arrayType, arrayType$1, sliceType$1, sliceType$2, arrayType$2, ptrType$2, ptrType$3, ptrType$4, ptrType$5, arrayType$3, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$11, ptrType$12, ptrType$13, ptrType$14, ptrType$15, ptrType$16, ptrType$17, ptrType$18, ptrType$19, ptrType$20, ptrType$21, ptrType$22, ptrType$23, ptrType$24, ptrType$25, funcType, ptrType$26, ppFree, space, ssFree, complexError, boolError, newPrinter, Fprintf, Printf, Sprintf, Errorf, Fprint, Sprint, Sprintln, getField, tooLarge, parsenum, intFromArg, parseArgNumber, Sscan, Fscan, isSpace, notSpace, newScanState, indexRune, hexDigit, errorHandler;
 	errors = $packages["errors"];
 	io = $packages["io"];
 	math = $packages["math"];
@@ -20887,6 +20887,19 @@ $packages["fmt"] = (function() {
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Fprintf }; } $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.a = a; $f.err = err; $f.format = format; $f.n = n; $f.p = p; $f.w = w; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.Fprintf = Fprintf;
+	Printf = function(format, a) {
+		var _r, _tuple, a, err, format, n, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _tuple = $f._tuple; a = $f.a; err = $f.err; format = $f.format; n = $f.n; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		n = 0;
+		err = $ifaceNil;
+		_r = Fprintf(os.Stdout, format, a); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_tuple = _r;
+		n = _tuple[0];
+		err = _tuple[1];
+		$s = -1; return [n, err];
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Printf }; } $f._r = _r; $f._tuple = _tuple; $f.a = a; $f.err = err; $f.format = format; $f.n = n; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.Printf = Printf;
 	Sprintf = function(format, a) {
 		var _r, a, format, p, s, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; a = $f.a; format = $f.format; p = $f.p; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -46211,7 +46224,7 @@ $packages["github.com/gernest/CatAcademy/present/models"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/gopherjs/websocket/websocketjs"] = (function() {
-	var $pkg = {}, $init, js, ReadyState, WebSocket, ptrType, ptrType$1, ptrType$2, funcType;
+	var $pkg = {}, $init, js, ReadyState, WebSocket, ptrType, ptrType$1, ptrType$2, funcType, New;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	ReadyState = $pkg.ReadyState = $newType(2, $kindUint16, "websocketjs.ReadyState", true, "github.com/gopherjs/websocket/websocketjs", true, null);
 	WebSocket = $pkg.WebSocket = $newType(0, $kindStruct, "websocketjs.WebSocket", true, "github.com/gopherjs/websocket/websocketjs", true, function(Object_, URL_, ReadyState_, BufferedAmount_, Extensions_, Protocol_, BinaryType_) {
@@ -46255,6 +46268,33 @@ $packages["github.com/gopherjs/websocket/websocketjs"] = (function() {
 		}
 	};
 	$ptrType(ReadyState).prototype.String = function() { return new ReadyState(this.$get()).String(); };
+	New = function(url) {
+		var err, object, url, ws, $deferred;
+		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		ws = ptrType.nil;
+		err = $ifaceNil;
+		$deferred.push([(function() {
+			var _tuple, e, jsErr, ok;
+			e = $recover();
+			if ($interfaceIsEqual(e, $ifaceNil)) {
+				return;
+			}
+			_tuple = $assertType(e, ptrType$1, true);
+			jsErr = _tuple[0];
+			ok = _tuple[1];
+			if (ok && !(jsErr === ptrType$1.nil)) {
+				ws = ptrType.nil;
+				err = jsErr;
+			} else {
+				$panic(e);
+			}
+		}), []]);
+		object = new ($global.WebSocket)($externalize(url, $String));
+		ws = new WebSocket.ptr(object, "", 0, 0, "", "", "");
+		return [ws, err];
+		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [ws, err]; } }
+	};
+	$pkg.New = New;
 	WebSocket.ptr.prototype.AddEventListener = function(typ, useCapture, listener) {
 		var listener, typ, useCapture, ws;
 		ws = this;
@@ -46330,9 +46370,19 @@ $packages["github.com/gopherjs/websocket/websocketjs"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/gernest/socrates"] = (function() {
-	var $pkg = {}, $init, js, websocketjs, Handler, Options, Socket, ptrType, ptrType$1, ptrType$2, structType, sliceType, ptrType$3, funcType, chanType, chanType$1;
+	var $pkg = {}, $init, js, websocketjs, message, Handler, Options, Socket, ptrType, ptrType$1, ptrType$2, structType, sliceType, ptrType$3, funcType, chanType, chanType$1, NewSocket, getFrameData;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	websocketjs = $packages["github.com/gopherjs/websocket/websocketjs"];
+	message = $pkg.message = $newType(0, $kindStruct, "socrates.message", true, "github.com/gernest/socrates", false, function(Object_, Data_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.Object = null;
+			this.Data = null;
+			return;
+		}
+		this.Object = Object_;
+		this.Data = Data_;
+	});
 	Handler = $pkg.Handler = $newType(4, $kindFunc, "socrates.Handler", true, "github.com/gernest/socrates", true, null);
 	Options = $pkg.Options = $newType(0, $kindStruct, "socrates.Options", true, "github.com/gernest/socrates", true, function(OnMessage_, OnClose_) {
 		this.$val = this;
@@ -46369,6 +46419,98 @@ $packages["github.com/gernest/socrates"] = (function() {
 	funcType = $funcType([sliceType], [], false);
 	chanType = $chanType(structType, false, false);
 	chanType$1 = $chanType($String, false, false);
+	NewSocket = function(conn, opts) {
+		var _tuple, conn, err, opts, s, ws;
+		_tuple = websocketjs.New(conn);
+		ws = _tuple[0];
+		err = _tuple[1];
+		if (!($interfaceIsEqual(err, $ifaceNil))) {
+			return [ptrType.nil, err];
+		}
+		s = new Socket.ptr(ws, $throwNilPointerError, $chanNil, $chanNil, opts);
+		s.ready = new $Chan(structType, 0);
+		s.sentMessage = new $Chan($String, 0);
+		s.init();
+		return [s, $ifaceNil];
+	};
+	$pkg.NewSocket = NewSocket;
+	Socket.ptr.prototype.init = function() {
+		var s;
+		s = this;
+		s.ws.Object.binaryType = $externalize("arraybuffer", $String);
+		s.ws.AddEventListener("message", false, $methodVal(s, "onMessage"));
+		s.ws.AddEventListener("open", false, $methodVal(s, "onOpen"));
+		s.ws.AddEventListener("close", false, $methodVal(s, "onClose"));
+		$go((function $b() {
+			var _r, _r$1, _selection, err, msg, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _selection = $f._selection; err = $f.err; msg = $f.msg; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			_r = $recv(s.ready); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r[0];
+			/* while (true) { */ case 2:
+				_r$1 = $select([[s.sentMessage]]); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				_selection = _r$1;
+				if (_selection[0] === 0) {
+					msg = _selection[1][0];
+					err = s.ws.Send(new $String(msg));
+					if (!($interfaceIsEqual(err, $ifaceNil))) {
+						$panic(err);
+					}
+				}
+			/* } */ $s = 2; continue; case 3:
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f.err = err; $f.msg = msg; $f.$s = $s; $f.$r = $r; return $f;
+		}), []);
+	};
+	Socket.prototype.init = function() { return this.$val.init(); };
+	getFrameData = function(obj) {
+		var constructor, obj, uint8Array;
+		constructor = obj.constructor;
+		if (constructor === $global.ArrayBuffer) {
+			uint8Array = new ($global.Uint8Array)(obj);
+			return $assertType($internalize(uint8Array, $emptyInterface), sliceType);
+		}
+		return (new sliceType($stringToBytes($internalize(obj, $String))));
+	};
+	Socket.ptr.prototype.onMessage = function(ev) {
+		var ev, msg, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ev = $f.ev; msg = $f.msg; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		s = this;
+		msg = new message.ptr(ev, null);
+		/* */ if (!(s.opts.OnMessage === $throwNilPointerError)) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (!(s.opts.OnMessage === $throwNilPointerError)) { */ case 1:
+			$r = s.opts.OnMessage(getFrameData(msg.Object.data)); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 2:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Socket.ptr.prototype.onMessage }; } $f.ev = ev; $f.msg = msg; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Socket.prototype.onMessage = function(ev) { return this.$val.onMessage(ev); };
+	Socket.ptr.prototype.onClose = function(ev) {
+		var ev, msg, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ev = $f.ev; msg = $f.msg; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		s = this;
+		msg = new message.ptr(ev, null);
+		/* */ if (!(s.opts.OnClose === $throwNilPointerError)) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (!(s.opts.OnClose === $throwNilPointerError)) { */ case 1:
+			$r = s.opts.OnClose(getFrameData(msg.Object.data)); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 2:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Socket.ptr.prototype.onClose }; } $f.ev = ev; $f.msg = msg; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Socket.prototype.onClose = function(ev) { return this.$val.onClose(ev); };
+	Socket.ptr.prototype.onOpen = function(ev) {
+		var ev, s;
+		s = this;
+		$go((function $b() {
+			var $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = $send(s.ready, $clone(new structType.ptr(), structType)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$s = $s; $f.$r = $r; return $f;
+		}), []);
+	};
+	Socket.prototype.onOpen = function(ev) { return this.$val.onOpen(ev); };
 	Socket.ptr.prototype.Send = function(txt) {
 		var s, txt;
 		s = this;
@@ -46388,6 +46530,7 @@ $packages["github.com/gernest/socrates"] = (function() {
 	};
 	Socket.prototype.Close = function() { return this.$val.Close(); };
 	ptrType.methods = [{prop: "init", name: "init", pkg: "github.com/gernest/socrates", typ: $funcType([], [], false)}, {prop: "onMessage", name: "onMessage", pkg: "github.com/gernest/socrates", typ: $funcType([ptrType$3], [], false)}, {prop: "onClose", name: "onClose", pkg: "github.com/gernest/socrates", typ: $funcType([ptrType$3], [], false)}, {prop: "onOpen", name: "onOpen", pkg: "github.com/gernest/socrates", typ: $funcType([ptrType$3], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([$String], [], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [$error], false)}];
+	message.init("", [{prop: "Object", name: "Object", anonymous: true, exported: true, typ: ptrType$3, tag: ""}, {prop: "Data", name: "Data", anonymous: false, exported: true, typ: ptrType$3, tag: "js:\"data\""}]);
 	Handler.init([sliceType], [], false);
 	Options.init("", [{prop: "OnMessage", name: "OnMessage", anonymous: false, exported: true, typ: Handler, tag: ""}, {prop: "OnClose", name: "OnClose", anonymous: false, exported: true, typ: Handler, tag: ""}]);
 	Socket.init("github.com/gernest/socrates", [{prop: "ws", name: "ws", anonymous: false, exported: false, typ: ptrType$1, tag: ""}, {prop: "msgReceived", name: "msgReceived", anonymous: false, exported: false, typ: funcType, tag: ""}, {prop: "ready", name: "ready", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "sentMessage", name: "sentMessage", anonymous: false, exported: false, typ: chanType$1, tag: ""}, {prop: "opts", name: "opts", anonymous: false, exported: false, typ: ptrType$2, tag: ""}]);
@@ -48889,16 +49032,18 @@ $packages["github.com/gopherjs/vecty/prop"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
-	var $pkg = {}, $init, bytes, fmt, models, socrates, xhr, vecty, elem, event, prop, time, position, slide, Section, List, Code, Text, Image, Link, Caption, RemoteControl, TickEvent, ptrType, ptrType$1, ptrType$2, ptrType$3, sliceType, sliceType$1, sliceType$2, sliceType$3, ptrType$4, sliceType$4, sliceType$5, sliceType$6, sliceType$7, sliceType$8, ptrType$5, sliceType$9, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$11, ptrType$14, ptrType$15, mapType, main, renderElems, renderElem, join;
+	var $pkg = {}, $init, bytes, fmt, models, socrates, xhr, js, vecty, elem, event, prop, url, time, position, slide, Section, List, Code, Text, Image, Link, Caption, RemoteControl, TickEvent, ptrType, ptrType$1, ptrType$2, ptrType$3, sliceType, sliceType$1, sliceType$2, sliceType$3, sliceType$4, ptrType$4, sliceType$5, sliceType$6, sliceType$7, sliceType$8, sliceType$9, ptrType$5, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$11, ptrType$14, ptrType$15, mapType, main, renderElems, renderElem, join;
 	bytes = $packages["bytes"];
 	fmt = $packages["fmt"];
 	models = $packages["github.com/gernest/CatAcademy/present/models"];
 	socrates = $packages["github.com/gernest/socrates"];
 	xhr = $packages["github.com/gernest/xhr"];
+	js = $packages["github.com/gopherjs/gopherjs/js"];
 	vecty = $packages["github.com/gopherjs/vecty"];
 	elem = $packages["github.com/gopherjs/vecty/elem"];
 	event = $packages["github.com/gopherjs/vecty/event"];
 	prop = $packages["github.com/gopherjs/vecty/prop"];
+	url = $packages["net/url"];
 	time = $packages["time"];
 	position = $pkg.position = $newType(4, $kindInt, "main.position", true, "github.com/gernest/CatAcademy/ui/slide", false, null);
 	slide = $pkg.slide = $newType(0, $kindStruct, "main.slide", true, "github.com/gernest/CatAcademy/ui/slide", false, function(Core_, doc_, socket_, activeSlide_, remote_, recording_, auto_, startTime_) {
@@ -48928,7 +49073,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		if (arguments.length === 0) {
 			this.Core = new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false);
 			this.Pos = 0;
-			this.s = new models.Section.ptr(sliceType$5.nil, "", sliceType$6.nil, sliceType$2.nil, sliceType$2.nil, sliceType$2.nil);
+			this.s = new models.Section.ptr(sliceType$6.nil, "", sliceType$7.nil, sliceType$3.nil, sliceType$3.nil, sliceType$3.nil);
 			return;
 		}
 		this.Core = Core_;
@@ -48939,7 +49084,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.Core = new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false);
-			this.list = new models.List.ptr(sliceType$2.nil);
+			this.list = new models.List.ptr(sliceType$3.nil);
 			return;
 		}
 		this.Core = Core_;
@@ -48949,7 +49094,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.Core = new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false);
-			this.code = new models.Code.ptr("", false, false, "", "", sliceType.nil);
+			this.code = new models.Code.ptr("", false, false, "", "", sliceType$1.nil);
 			return;
 		}
 		this.Core = Core_;
@@ -48959,7 +49104,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.Core = new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false);
-			this.txt = new models.Text.ptr(sliceType$2.nil, false);
+			this.txt = new models.Text.ptr(sliceType$3.nil, false);
 			return;
 		}
 		this.Core = Core_;
@@ -49019,18 +49164,18 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 	ptrType$1 = $ptrType(socrates.Socket);
 	ptrType$2 = $ptrType(RemoteControl);
 	ptrType$3 = $ptrType(time.Location);
-	sliceType = $sliceType($Uint8);
-	sliceType$1 = $sliceType(models.Author);
-	sliceType$2 = $sliceType($String);
-	sliceType$3 = $sliceType(models.Section);
+	sliceType = $sliceType($emptyInterface);
+	sliceType$1 = $sliceType($Uint8);
+	sliceType$2 = $sliceType(models.Author);
+	sliceType$3 = $sliceType($String);
+	sliceType$4 = $sliceType(models.Section);
 	ptrType$4 = $ptrType(ptrType);
-	sliceType$4 = $sliceType(vecty.MarkupOrChild);
-	sliceType$5 = $sliceType($Int);
-	sliceType$6 = $sliceType(models.Elem);
-	sliceType$7 = $sliceType(vecty.Applyer);
-	sliceType$8 = $sliceType(vecty.ComponentOrHTML);
-	ptrType$5 = $ptrType($packages["net/url"].URL);
-	sliceType$9 = $sliceType($emptyInterface);
+	sliceType$5 = $sliceType(vecty.MarkupOrChild);
+	sliceType$6 = $sliceType($Int);
+	sliceType$7 = $sliceType(models.Elem);
+	sliceType$8 = $sliceType(vecty.Applyer);
+	sliceType$9 = $sliceType(vecty.ComponentOrHTML);
+	ptrType$5 = $ptrType(url.URL);
 	ptrType$6 = $ptrType(slide);
 	ptrType$7 = $ptrType(Section);
 	ptrType$8 = $ptrType(List);
@@ -49069,31 +49214,57 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 	};
 	$ptrType(position).prototype.Class = function() { return new position(this.$get()).Class(); };
 	slide.ptr.prototype.Mount = function() {
-		var s;
-		s = this;
-		s.remote = new RemoteControl.ptr(new time.Duration(0, 0), {});
-		$go((function $b() {
-			var _r, _r$1, _tuple, data, doc, err, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; data = $f.data; doc = $f.doc; err = $f.err; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, _r$1, _tuple, _tuple$1, err, err$1, location, s, sock, u, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; err = $f.err; err$1 = $f.err$1; location = $f.location; s = $f.s; sock = $f.sock; u = $f.u; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		s = [s];
+		s[0] = this;
+		location = $internalize($global.location.href, $String);
+		_r = url.Parse(location); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_tuple = _r;
+		u = _tuple[0];
+		err = _tuple[1];
+		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 2; continue; }
+		/* */ $s = 3; continue;
+		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 2:
+			_r$1 = fmt.Printf("can't open websocket %v\n", new sliceType([err])); /* */ $s = 5; case 5: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_r$1;
+			$s = 4; continue;
+		/* } else { */ case 3:
+			u.Scheme = "ws";
+			u.Path = "/ws/" + u.Path;
+			_tuple$1 = socrates.NewSocket(u.String(), new socrates.Options.ptr($methodVal(s[0], "OnMessage"), $throwNilPointerError));
+			sock = _tuple$1[0];
+			err$1 = _tuple$1[1];
+			if (!($interfaceIsEqual(err$1, $ifaceNil))) {
+				$panic(err$1);
+			}
+			s[0].socket = sock;
+		/* } */ case 4:
+		s[0].remote = new RemoteControl.ptr(new time.Duration(0, 0), {});
+		$go((function(s) { return function $b() {
+			var _r$2, _r$3, _tuple$2, data, doc, err$2, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r$2 = $f._r$2; _r$3 = $f._r$3; _tuple$2 = $f._tuple$2; data = $f.data; doc = $f.doc; err$2 = $f.err$2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			doc = [doc];
-			_r = xhr.Send("GET", "/data/", sliceType.nil); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_tuple = _r;
-			data = _tuple[0];
-			err = _tuple[1];
-			if (!($interfaceIsEqual(err, $ifaceNil))) {
-				$panic(err);
+			_r$2 = xhr.Send("GET", "/data/", sliceType$1.nil); /* */ $s = 1; case 1: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			_tuple$2 = _r$2;
+			data = _tuple$2[0];
+			err$2 = _tuple$2[1];
+			if (!($interfaceIsEqual(err$2, $ifaceNil))) {
+				$panic(err$2);
 			}
-			doc[0] = new models.Doc.ptr("", "", new time.Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$3.nil), sliceType$1.nil, sliceType$2.nil, sliceType$3.nil, sliceType$2.nil);
-			_r$1 = models.Decode(bytes.NewReader(data), (doc.$ptr || (doc.$ptr = new ptrType$4(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, doc)))); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			err = _r$1;
-			if (!($interfaceIsEqual(err, $ifaceNil))) {
-				$panic(err);
+			doc[0] = new models.Doc.ptr("", "", new time.Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$3.nil), sliceType$2.nil, sliceType$3.nil, sliceType$4.nil, sliceType$3.nil);
+			_r$3 = models.Decode(bytes.NewReader(data), (doc.$ptr || (doc.$ptr = new ptrType$4(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, doc)))); /* */ $s = 2; case 2: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+			err$2 = _r$3;
+			if (!($interfaceIsEqual(err$2, $ifaceNil))) {
+				$panic(err$2);
 			}
-			s.doc = doc[0];
-			$r = vecty.Rerender(s); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			s[0].doc = doc[0];
+			$r = vecty.Rerender(s[0]); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.data = data; $f.doc = doc; $f.err = err; $f.$s = $s; $f.$r = $r; return $f;
-		}), []);
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r$2 = _r$2; $f._r$3 = _r$3; $f._tuple$2 = _tuple$2; $f.data = data; $f.doc = doc; $f.err$2 = err$2; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(s), []);
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: slide.ptr.prototype.Mount }; } $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.err = err; $f.err$1 = err$1; $f.location = location; $f.s = s; $f.sock = sock; $f.u = u; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	slide.prototype.Mount = function() { return this.$val.Mount(); };
 	slide.ptr.prototype.UnMount = function() {
@@ -49115,7 +49286,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		/* */ if (s[0].doc === ptrType.nil) { $s = 1; continue; }
 		/* */ $s = 2; continue;
 		/* if (s[0].doc === ptrType.nil) { */ case 1:
-			_r = elem.Body(new sliceType$4([])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r = elem.Body(new sliceType$5([])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			$s = -1; return _r;
 		/* } */ case 2:
 		sections = vecty.List.nil;
@@ -49141,37 +49312,37 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 			sections = $append(sections, new Section.ptr(new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false), pos, $clone(section, models.Section)));
 			_i++;
 		}
-		_r$1 = vecty.Markup(new sliceType$7([vecty.Style("display", "none"), event.KeyDown((function(s) { return function $b(e) {
+		_r$1 = vecty.Markup(new sliceType$8([vecty.Style("display", "none"), event.KeyDown((function(s) { return function $b(e) {
 			var e, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; e = $f.e; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			$r = s[0].KeyPress($internalize(e.Object.code, $String)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.e = e; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(s)), vecty.MarkupIf(s[0].recording, new sliceType$7([vecty.Style("background", "red")]))])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		}; })(s)), vecty.MarkupIf(s[0].recording, new sliceType$8([vecty.Style("background", "red")]))])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 		_arg = (x = _r$1, new x.constructor.elem(x));
-		_arg$1 = (x$1 = vecty.Markup(new sliceType$7([vecty.Class(new sliceType$2(["slides", "layout-widescreen"]))])), new x$1.constructor.elem(x$1));
-		_r$2 = vecty.Text(s[0].doc.Title, new sliceType$4([])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-		_r$3 = elem.Heading1(new sliceType$4([_r$2])); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+		_arg$1 = (x$1 = vecty.Markup(new sliceType$8([vecty.Class(new sliceType$3(["slides", "layout-widescreen"]))])), new x$1.constructor.elem(x$1));
+		_r$2 = vecty.Text(s[0].doc.Title, new sliceType$5([])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		_r$3 = elem.Heading1(new sliceType$5([_r$2])); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
 		_arg$2 = _r$3;
 		_arg$3 = !(s[0].doc.Subtitle === "");
-		_r$4 = vecty.Text(s[0].doc.Subtitle, new sliceType$4([])); /* */ $s = 7; case 7: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-		_r$5 = elem.Heading3(new sliceType$4([_r$4])); /* */ $s = 8; case 8: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+		_r$4 = vecty.Text(s[0].doc.Subtitle, new sliceType$5([])); /* */ $s = 7; case 7: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+		_r$5 = elem.Heading3(new sliceType$5([_r$4])); /* */ $s = 8; case 8: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
 		_arg$4 = _r$5;
-		_r$6 = vecty.If(_arg$3, new sliceType$8([_arg$4])); /* */ $s = 9; case 9: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+		_r$6 = vecty.If(_arg$3, new sliceType$9([_arg$4])); /* */ $s = 9; case 9: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
 		_arg$5 = _r$6;
 		_arg$6 = !$clone(s[0].doc.Time, time.Time).IsZero();
 		_r$7 = $clone(s[0].doc.Time, time.Time).Format("2 January 2006"); /* */ $s = 10; case 10: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
-		_r$8 = vecty.Text(_r$7, new sliceType$4([])); /* */ $s = 11; case 11: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
-		_r$9 = elem.Heading3(new sliceType$4([_r$8])); /* */ $s = 12; case 12: if($c) { $c = false; _r$9 = _r$9.$blk(); } if (_r$9 && _r$9.$blk !== undefined) { break s; }
+		_r$8 = vecty.Text(_r$7, new sliceType$5([])); /* */ $s = 11; case 11: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
+		_r$9 = elem.Heading3(new sliceType$5([_r$8])); /* */ $s = 12; case 12: if($c) { $c = false; _r$9 = _r$9.$blk(); } if (_r$9 && _r$9.$blk !== undefined) { break s; }
 		_arg$7 = _r$9;
-		_r$10 = vecty.If(_arg$6, new sliceType$8([_arg$7])); /* */ $s = 13; case 13: if($c) { $c = false; _r$10 = _r$10.$blk(); } if (_r$10 && _r$10.$blk !== undefined) { break s; }
+		_r$10 = vecty.If(_arg$6, new sliceType$9([_arg$7])); /* */ $s = 13; case 13: if($c) { $c = false; _r$10 = _r$10.$blk(); } if (_r$10 && _r$10.$blk !== undefined) { break s; }
 		_arg$8 = _r$10;
-		_r$11 = elem.Article(new sliceType$4([_arg$2, _arg$5, _arg$8])); /* */ $s = 14; case 14: if($c) { $c = false; _r$11 = _r$11.$blk(); } if (_r$11 && _r$11.$blk !== undefined) { break s; }
+		_r$11 = elem.Article(new sliceType$5([_arg$2, _arg$5, _arg$8])); /* */ $s = 14; case 14: if($c) { $c = false; _r$11 = _r$11.$blk(); } if (_r$11 && _r$11.$blk !== undefined) { break s; }
 		_arg$9 = _r$11;
 		_arg$10 = sections;
-		_r$12 = elem.Section(new sliceType$4([_arg$1, _arg$9, _arg$10])); /* */ $s = 15; case 15: if($c) { $c = false; _r$12 = _r$12.$blk(); } if (_r$12 && _r$12.$blk !== undefined) { break s; }
+		_r$12 = elem.Section(new sliceType$5([_arg$1, _arg$9, _arg$10])); /* */ $s = 15; case 15: if($c) { $c = false; _r$12 = _r$12.$blk(); } if (_r$12 && _r$12.$blk !== undefined) { break s; }
 		_arg$11 = _r$12;
-		_r$13 = elem.Body(new sliceType$4([_arg, _arg$11])); /* */ $s = 16; case 16: if($c) { $c = false; _r$13 = _r$13.$blk(); } if (_r$13 && _r$13.$blk !== undefined) { break s; }
+		_r$13 = elem.Body(new sliceType$5([_arg, _arg$11])); /* */ $s = 16; case 16: if($c) { $c = false; _r$13 = _r$13.$blk(); } if (_r$13 && _r$13.$blk !== undefined) { break s; }
 		$s = -1; return _r$13;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: slide.ptr.prototype.Render }; } $f._1 = _1; $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$11 = _arg$11; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._r$10 = _r$10; $f._r$11 = _r$11; $f._r$12 = _r$12; $f._r$13 = _r$13; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._r$9 = _r$9; $f._ref = _ref; $f.i = i; $f.pos = pos; $f.s = s; $f.section = section; $f.sections = sections; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -49338,20 +49509,20 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		var _arg, _arg$1, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, s, x, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; s = $f.s; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		s = this;
-		_arg = (x = vecty.Markup(new sliceType$7([vecty.MarkupIf(!(new position(s.Pos).Class() === ""), new sliceType$7([vecty.Class(new sliceType$2([new position(s.Pos).Class()]))])), vecty.MarkupIf(!(s.s.Classes === sliceType$2.nil), new sliceType$7([vecty.Class(s.s.Classes)])), vecty.MarkupIf(!(s.s.Styles === sliceType$2.nil), new sliceType$7([vecty.Attribute("style", new $String(join(s.s.Styles, " ")))]))])), new x.constructor.elem(x));
-		_arg$1 = !(s.s.Elem === sliceType$6.nil);
-		_r = vecty.Text(s.s.Title, new sliceType$4([])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r$1 = elem.Heading3(new sliceType$4([_r])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_arg = (x = vecty.Markup(new sliceType$8([vecty.MarkupIf(!(new position(s.Pos).Class() === ""), new sliceType$8([vecty.Class(new sliceType$3([new position(s.Pos).Class()]))])), vecty.MarkupIf(!(s.s.Classes === sliceType$3.nil), new sliceType$8([vecty.Class(s.s.Classes)])), vecty.MarkupIf(!(s.s.Styles === sliceType$3.nil), new sliceType$8([vecty.Attribute("style", new $String(join(s.s.Styles, " ")))]))])), new x.constructor.elem(x));
+		_arg$1 = !(s.s.Elem === sliceType$7.nil);
+		_r = vecty.Text(s.s.Title, new sliceType$5([])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r$1 = elem.Heading3(new sliceType$5([_r])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 		_arg$2 = new vecty.List([_r$1, renderElems(s.s.Elem)]);
-		_r$2 = vecty.If(_arg$1, new sliceType$8([_arg$2])); /* */ $s = 3; case 3: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		_r$2 = vecty.If(_arg$1, new sliceType$9([_arg$2])); /* */ $s = 3; case 3: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 		_arg$3 = _r$2;
-		_arg$4 = s.s.Elem === sliceType$6.nil;
-		_r$3 = vecty.Text(s.s.Title, new sliceType$4([])); /* */ $s = 4; case 4: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-		_r$4 = elem.Heading2(new sliceType$4([_r$3])); /* */ $s = 5; case 5: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+		_arg$4 = s.s.Elem === sliceType$7.nil;
+		_r$3 = vecty.Text(s.s.Title, new sliceType$5([])); /* */ $s = 4; case 4: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+		_r$4 = elem.Heading2(new sliceType$5([_r$3])); /* */ $s = 5; case 5: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
 		_arg$5 = new vecty.List([_r$4]);
-		_r$5 = vecty.If(_arg$4, new sliceType$8([_arg$5])); /* */ $s = 6; case 6: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+		_r$5 = vecty.If(_arg$4, new sliceType$9([_arg$5])); /* */ $s = 6; case 6: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
 		_arg$6 = _r$5;
-		_r$6 = elem.Article(new sliceType$4([_arg, _arg$3, _arg$6])); /* */ $s = 7; case 7: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+		_r$6 = elem.Article(new sliceType$5([_arg, _arg$3, _arg$6])); /* */ $s = 7; case 7: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
 		$s = -1; return _r$6;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Section.ptr.prototype.Render }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f.s = s; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -49366,27 +49537,24 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		/* while (true) { */ case 1:
 			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
 			bullet = ((_i < 0 || _i >= _ref.$length) ? ($throwRuntimeError("index out of range"), undefined) : _ref.$array[_ref.$offset + _i]);
-			_r = vecty.Text(bullet, new sliceType$4([])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r$1 = elem.ListItem(new sliceType$4([_r])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_r = vecty.Text(bullet, new sliceType$5([])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r$1 = elem.ListItem(new sliceType$5([_r])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			items = $append(items, _r$1);
 			_i++;
 		/* } */ $s = 1; continue; case 2:
-		_r$2 = elem.UnorderedList(new sliceType$4([items])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		_r$2 = elem.UnorderedList(new sliceType$5([items])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 		$s = -1; return _r$2;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: List.ptr.prototype.Render }; } $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._ref = _ref; $f.bullet = bullet; $f.items = items; $f.l = l; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	List.prototype.Render = function() { return this.$val.Render(); };
 	Code.ptr.prototype.Render = function() {
-		var _arg, _arg$1, _r, _r$1, c, class$1, x, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _r = $f._r; _r$1 = $f._r$1; c = $f.c; class$1 = $f.class$1; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, c, class$1, x, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; c = $f.c; class$1 = $f.class$1; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		c = this;
 		class$1 = $makeMap($String.keyFor, [{ k: "code", v: true }, { k: "playground", v: c.code.Play }]);
-		_arg = (x = vecty.Markup(new sliceType$7([new vecty.ClassMap(class$1), vecty.MarkupIf(c.code.Edit, new sliceType$7([vecty.Attribute("contenteditable", new $String("true")), vecty.Attribute("spellcheck", new $String("false"))]))])), new x.constructor.elem(x));
-		_r = vecty.Text((c.code.Text), new sliceType$4([])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_arg$1 = _r;
-		_r$1 = elem.Div(new sliceType$4([_arg, _arg$1])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		$s = -1; return _r$1;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Code.ptr.prototype.Render }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._r = _r; $f._r$1 = _r$1; $f.c = c; $f.class$1 = class$1; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+		_r = elem.Div(new sliceType$5([(x = vecty.Markup(new sliceType$8([new vecty.ClassMap(class$1), vecty.MarkupIf(c.code.Edit, new sliceType$8([vecty.Attribute("contenteditable", new $String("true")), vecty.Attribute("spellcheck", new $String("false"))])), vecty.UnsafeHTML((c.code.Text))])), new x.constructor.elem(x))])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		$s = -1; return _r;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Code.ptr.prototype.Render }; } $f._r = _r; $f.c = c; $f.class$1 = class$1; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Code.prototype.Render = function() { return this.$val.Render(); };
 	Text.ptr.prototype.Render = function() {
@@ -49410,11 +49578,11 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 				}
 				_i++;
 			}
-			_arg = (x = vecty.Markup(new sliceType$7([vecty.Class(new sliceType$2(["code"]))])), new x.constructor.elem(x));
-			_r = vecty.Text(s, new sliceType$4([])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r$1 = elem.Preformatted(new sliceType$4([_r])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_arg = (x = vecty.Markup(new sliceType$8([vecty.Class(new sliceType$3(["code"]))])), new x.constructor.elem(x));
+			_r = vecty.Text(s, new sliceType$5([])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r$1 = elem.Preformatted(new sliceType$5([_r])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			_arg$1 = _r$1;
-			_r$2 = elem.Div(new sliceType$4([_arg, _arg$1])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			_r$2 = elem.Div(new sliceType$5([_arg, _arg$1])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 			$s = -1; return _r$2;
 		/* } */ case 2:
 		s$1 = "";
@@ -49431,7 +49599,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 			}
 			_i$1++;
 		}
-		_r$3 = elem.Paragraph(new sliceType$4([(x$1 = vecty.Markup(new sliceType$7([vecty.UnsafeHTML(s$1)])), new x$1.constructor.elem(x$1))])); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+		_r$3 = elem.Paragraph(new sliceType$5([(x$1 = vecty.Markup(new sliceType$8([vecty.UnsafeHTML(s$1)])), new x$1.constructor.elem(x$1))])); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
 		$s = -1; return _r$3;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Text.ptr.prototype.Render }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._i = _i; $f._i$1 = _i$1; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._ref = _ref; $f._ref$1 = _ref$1; $f.k = k; $f.k$1 = k$1; $f.s = s; $f.s$1 = s$1; $f.t = t; $f.v = v; $f.v$1 = v$1; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -49440,26 +49608,26 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		var _arg, _arg$1, _arg$10, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _arg$7, _arg$8, _arg$9, _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, i, x, x$1, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$10 = $f._arg$10; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _arg$7 = $f._arg$7; _arg$8 = $f._arg$8; _arg$9 = $f._arg$9; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; i = $f.i; x = $f.x; x$1 = $f.x$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		i = this;
-		_arg = (x = vecty.Markup(new sliceType$7([vecty.Class(new sliceType$2(["image"]))])), new x.constructor.elem(x));
+		_arg = (x = vecty.Markup(new sliceType$8([vecty.Class(new sliceType$3(["image"]))])), new x.constructor.elem(x));
 		_arg$1 = prop.Src(i.img.URL);
 		_arg$2 = !((i.img.Height === 0));
-		_r = fmt.Sprint(new sliceType$9([new $Int(i.img.Height)])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r = fmt.Sprint(new sliceType([new $Int(i.img.Height)])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_arg$3 = new $String(_r);
 		_r$1 = vecty.Attribute("height", _arg$3); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 		_arg$4 = _r$1;
-		_r$2 = vecty.MarkupIf(_arg$2, new sliceType$7([_arg$4])); /* */ $s = 3; case 3: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		_r$2 = vecty.MarkupIf(_arg$2, new sliceType$8([_arg$4])); /* */ $s = 3; case 3: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 		_arg$5 = _r$2;
 		_arg$6 = !((i.img.Width === 0));
-		_r$3 = fmt.Sprint(new sliceType$9([new $Int(i.img.Width)])); /* */ $s = 4; case 4: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+		_r$3 = fmt.Sprint(new sliceType([new $Int(i.img.Width)])); /* */ $s = 4; case 4: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
 		_arg$7 = new $String(_r$3);
 		_r$4 = vecty.Attribute("height", _arg$7); /* */ $s = 5; case 5: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
 		_arg$8 = _r$4;
-		_r$5 = vecty.MarkupIf(_arg$6, new sliceType$7([_arg$8])); /* */ $s = 6; case 6: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+		_r$5 = vecty.MarkupIf(_arg$6, new sliceType$8([_arg$8])); /* */ $s = 6; case 6: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
 		_arg$9 = _r$5;
-		_r$6 = vecty.Markup(new sliceType$7([_arg$1, _arg$5, _arg$9])); /* */ $s = 7; case 7: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
-		_r$7 = elem.Image(new sliceType$4([(x$1 = _r$6, new x$1.constructor.elem(x$1))])); /* */ $s = 8; case 8: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
+		_r$6 = vecty.Markup(new sliceType$8([_arg$1, _arg$5, _arg$9])); /* */ $s = 7; case 7: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+		_r$7 = elem.Image(new sliceType$5([(x$1 = _r$6, new x$1.constructor.elem(x$1))])); /* */ $s = 8; case 8: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
 		_arg$10 = _r$7;
-		_r$8 = elem.Div(new sliceType$4([_arg, _arg$10])); /* */ $s = 9; case 9: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
+		_r$8 = elem.Div(new sliceType$5([_arg, _arg$10])); /* */ $s = 9; case 9: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
 		$s = -1; return _r$8;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Image.ptr.prototype.Render }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f.i = i; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -49468,13 +49636,13 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		var _arg, _arg$1, _arg$2, _arg$3, _r, _r$1, _r$2, l, x, x$1, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; l = $f.l; x = $f.x; x$1 = $f.x$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		l = this;
-		_arg = (x = vecty.Markup(new sliceType$7([vecty.Class(new sliceType$2(["link"]))])), new x.constructor.elem(x));
-		_arg$1 = (x$1 = vecty.Markup(new sliceType$7([prop.Href(l.link.URL.String()), vecty.Attribute("target", new $String("_blank"))])), new x$1.constructor.elem(x$1));
-		_r = vecty.Text(l.link.Label, new sliceType$4([])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_arg = (x = vecty.Markup(new sliceType$8([vecty.Class(new sliceType$3(["link"]))])), new x.constructor.elem(x));
+		_arg$1 = (x$1 = vecty.Markup(new sliceType$8([prop.Href(l.link.URL.String()), vecty.Attribute("target", new $String("_blank"))])), new x$1.constructor.elem(x$1));
+		_r = vecty.Text(l.link.Label, new sliceType$5([])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_arg$2 = _r;
-		_r$1 = elem.Anchor(new sliceType$4([_arg$1, _arg$2])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1 = elem.Anchor(new sliceType$5([_arg$1, _arg$2])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 		_arg$3 = _r$1;
-		_r$2 = elem.Paragraph(new sliceType$4([_arg, _arg$3])); /* */ $s = 3; case 3: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		_r$2 = elem.Paragraph(new sliceType$5([_arg, _arg$3])); /* */ $s = 3; case 3: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 		$s = -1; return _r$2;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Link.ptr.prototype.Render }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f.l = l; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -49483,8 +49651,8 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		var _r, _r$1, c, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; c = $f.c; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		c = this;
-		_r = vecty.Text(c.c.Text, new sliceType$4([])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r$1 = elem.FigureCaption(new sliceType$4([_r])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r = vecty.Text(c.c.Text, new sliceType$5([])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r$1 = elem.FigureCaption(new sliceType$5([_r])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 		$s = -1; return _r$1;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Caption.ptr.prototype.Render }; } $f._r = _r; $f._r$1 = _r$1; $f.c = c; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -49500,13 +49668,13 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		var _r, t, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; t = $f.t; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		t = this;
-		_r = fmt.Sprintf("%d|%v", new sliceType$9([new $Int(t.Slide), new $Int(((t.Time.Seconds() >> 0)))])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r = fmt.Sprintf("%d|%v", new sliceType([new $Int(t.Slide), new $Int(((t.Time.Seconds() >> 0)))])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		$s = -1; return _r;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: TickEvent.ptr.prototype.String }; } $f._r = _r; $f.t = t; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	TickEvent.prototype.String = function() { return this.$val.String(); };
 	position.methods = [{prop: "Class", name: "Class", pkg: "", typ: $funcType([], [$String], false)}];
-	ptrType$6.methods = [{prop: "Mount", name: "Mount", pkg: "", typ: $funcType([], [], false)}, {prop: "UnMount", name: "UnMount", pkg: "", typ: $funcType([], [], false)}, {prop: "OnMessage", name: "OnMessage", pkg: "", typ: $funcType([sliceType], [], false)}, {prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}, {prop: "showSlide", name: "showSlide", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([$Int], [], false)}, {prop: "KeyPress", name: "KeyPress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "play", name: "play", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([], [], false)}];
+	ptrType$6.methods = [{prop: "Mount", name: "Mount", pkg: "", typ: $funcType([], [], false)}, {prop: "UnMount", name: "UnMount", pkg: "", typ: $funcType([], [], false)}, {prop: "OnMessage", name: "OnMessage", pkg: "", typ: $funcType([sliceType$1], [], false)}, {prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}, {prop: "showSlide", name: "showSlide", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([$Int], [], false)}, {prop: "KeyPress", name: "KeyPress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "play", name: "play", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([], [], false)}];
 	ptrType$7.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
 	ptrType$8.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
 	ptrType$9.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
@@ -49534,17 +49702,19 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		$r = models.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = socrates.$init(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = xhr.$init(); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = vecty.$init(); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = elem.$init(); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = event.$init(); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = prop.$init(); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = time.$init(); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* */ if ($pkg === $mainPkg) { $s = 11; continue; }
-		/* */ $s = 12; continue;
-		/* if ($pkg === $mainPkg) { */ case 11:
-			$r = main(); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = js.$init(); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = vecty.$init(); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = elem.$init(); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = event.$init(); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = prop.$init(); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = url.$init(); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = time.$init(); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ if ($pkg === $mainPkg) { $s = 13; continue; }
+		/* */ $s = 14; continue;
+		/* if ($pkg === $mainPkg) { */ case 13:
+			$r = main(); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$mainFinished = true;
-		/* } */ case 12:
+		/* } */ case 14:
 		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.$init = $init;

@@ -338,8 +338,8 @@ func (c *Code) Render() vecty.ComponentOrHTML {
 				vecty.Attribute("contenteditable", "true"),
 				vecty.Attribute("spellcheck", "false"),
 			),
+			vecty.UnsafeHTML(string(c.code.Text)),
 		),
-		vecty.Text(string(c.code.Text)),
 	)
 }
 
