@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"net/url"
 	"time"
 
+	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/vecty/event"
 
 	"github.com/gopherjs/vecty/prop"
@@ -66,20 +68,21 @@ type slide struct {
 //
 // This opens a websocket connection which allows to remotely control the slides.
 func (s *slide) Mount() {
-	// location := js.Global.Get("location").Get("href").String()
-	// u, err := url.Parse(location)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// u.Scheme = "ws"
-	// u.Path = "/ws/" + u.Path
-	// sock, err := socrates.NewSocket(u.String(), &socrates.Options{
-	// 	OnMessage: s.OnMessage,
-	// })
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// s.socket = sock
+	location := js.Global.Get("location").Get("href").String()
+	u, err := url.Parse(location)
+	if err != nil {
+		fmt.Printf("can't open websocket %v\n", err)
+	} else {
+		u.Scheme = "ws"
+		u.Path = "/ws/" + u.Path
+		sock, err := socrates.NewSocket(u.String(), &socrates.Options{
+			OnMessage: s.OnMessage,
+		})
+		if err != nil {
+			panic(err)
+		}
+		s.socket = sock
+	}
 	s.remote = &RemoteControl{
 		events: make(map[int]TickEvent),
 	}
@@ -399,7 +402,6 @@ func (i *Image) Render() vecty.ComponentOrHTML {
 
 type IFrame struct {
 	vecty.Core
-
 	frame models.Iframe
 }
 
