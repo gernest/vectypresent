@@ -311,7 +311,9 @@ func (l *List) Render() vecty.ComponentOrHTML {
 	var items vecty.List
 	for _, bullet := range l.list.Bullet {
 		items = append(items, elem.ListItem(
-			vecty.Text(bullet),
+			vecty.Markup(
+				vecty.UnsafeHTML(string(models.Style(bullet))),
+			),
 		))
 	}
 	return elem.UnorderedList(items)

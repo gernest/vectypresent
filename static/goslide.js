@@ -2255,7 +2255,7 @@ $packages["runtime/internal/sys"] = (function() {
 	return $pkg;
 })();
 $packages["runtime"] = (function() {
-	var $pkg = {}, $init, js, sys, Error, TypeAssertionError, errorString, ptrType$4, init, GOROOT, Goexit, SetFinalizer, KeepAlive, throw$1;
+	var $pkg = {}, $init, js, sys, Error, TypeAssertionError, errorString, ptrType$4, init, GOROOT, Caller, Goexit, SetFinalizer, KeepAlive, throw$1;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	sys = $packages["runtime/internal/sys"];
 	Error = $pkg.Error = $newType(8, $kindInterface, "runtime.Error", true, "runtime", true, null);
@@ -2298,6 +2298,36 @@ $packages["runtime"] = (function() {
 		return "/usr/local/go";
 	};
 	$pkg.GOROOT = GOROOT;
+	Caller = function(skip) {
+		var _tmp, _tmp$1, _tmp$2, _tmp$3, _tmp$4, _tmp$5, _tmp$6, _tmp$7, file, info, line, ok, parts, pc, skip;
+		pc = 0;
+		file = "";
+		line = 0;
+		ok = false;
+		info = new ($global.Error)().stack.split($externalize("\n", $String))[(skip + 2 >> 0)];
+		if (info === undefined) {
+			_tmp = 0;
+			_tmp$1 = "";
+			_tmp$2 = 0;
+			_tmp$3 = false;
+			pc = _tmp;
+			file = _tmp$1;
+			line = _tmp$2;
+			ok = _tmp$3;
+			return [pc, file, line, ok];
+		}
+		parts = info.substring(($parseInt(info.indexOf($externalize("(", $String))) >> 0) + 1 >> 0, $parseInt(info.indexOf($externalize(")", $String))) >> 0).split($externalize(":", $String));
+		_tmp$4 = 0;
+		_tmp$5 = $internalize(parts[0], $String);
+		_tmp$6 = $parseInt(parts[1]) >> 0;
+		_tmp$7 = true;
+		pc = _tmp$4;
+		file = _tmp$5;
+		line = _tmp$6;
+		ok = _tmp$7;
+		return [pc, file, line, ok];
+	};
+	$pkg.Caller = Caller;
 	Goexit = function() {
 		$curGoroutine.exit = $externalize(true, $Bool);
 		$throw(null);
@@ -3600,7 +3630,7 @@ $packages["io"] = (function() {
 	return $pkg;
 })();
 $packages["unicode"] = (function() {
-	var $pkg = {}, $init, RangeTable, Range16, Range32, CaseRange, d, foldPair, arrayType, sliceType, sliceType$1, ptrType, sliceType$2, sliceType$3, sliceType$4, _L, _Lu, _M, _N, _Nd, _P, _S, _White_Space, _CaseRanges, properties, asciiFold, caseOrbit, to, IsDigit, IsPrint, In, IsLetter, IsSpace, is16, is32, Is, isExcludingLatin, IsUpper, To, ToUpper, ToLower, SimpleFold;
+	var $pkg = {}, $init, RangeTable, Range16, Range32, CaseRange, d, foldPair, arrayType, sliceType, sliceType$1, ptrType, sliceType$2, sliceType$3, sliceType$4, _L, _Lu, _M, _N, _Nd, _P, _S, _White_Space, _CaseRanges, properties, asciiFold, caseOrbit, to, IsDigit, IsPrint, In, IsLetter, IsPunct, IsSpace, is16, is32, Is, isExcludingLatin, IsUpper, To, ToUpper, ToLower, SimpleFold;
 	RangeTable = $pkg.RangeTable = $newType(0, $kindStruct, "unicode.RangeTable", true, "unicode", true, function(R16_, R32_, LatinOffset_) {
 		this.$val = this;
 		if (arguments.length === 0) {
@@ -3732,6 +3762,14 @@ $packages["unicode"] = (function() {
 		return isExcludingLatin($pkg.Letter, r);
 	};
 	$pkg.IsLetter = IsLetter;
+	IsPunct = function(r) {
+		var r, x;
+		if (((r >>> 0)) <= 255) {
+			return !(((((x = ((r << 24 >>> 24)), ((x < 0 || x >= properties.length) ? ($throwRuntimeError("index out of range"), undefined) : properties[x])) & 2) >>> 0) === 0));
+		}
+		return Is($pkg.Punct, r);
+	};
+	$pkg.IsPunct = IsPunct;
 	IsSpace = function(r) {
 		var _1, r;
 		if (((r >>> 0)) <= 255) {
@@ -3927,6 +3965,7 @@ $packages["unicode"] = (function() {
 		$pkg.L = _L;
 		$pkg.M = _M;
 		$pkg.N = _N;
+		$pkg.Punct = _P;
 		$pkg.P = _P;
 		$pkg.S = _S;
 		$pkg.PrintRanges = new sliceType$2([$pkg.L, $pkg.M, $pkg.N, $pkg.P, $pkg.S]);
@@ -5716,7 +5755,7 @@ $packages["math"] = (function() {
 	return $pkg;
 })();
 $packages["syscall"] = (function() {
-	var $pkg = {}, $init, errors, js, race, runtime, sync, SockaddrDatalink, mmapper, Errno, Sockaddr, SockaddrInet4, SockaddrInet6, SockaddrUnix, Timespec, Stat_t, RawSockaddrInet4, RawSockaddrInet6, RawSockaddrUnix, RawSockaddrDatalink, RawSockaddr, RawSockaddrAny, _Socklen, Linger, Iovec, IPMreq, IPv6Mreq, Msghdr, sliceType, sliceType$1, ptrType$2, arrayType, arrayType$1, ptrType$11, arrayType$3, arrayType$4, arrayType$5, arrayType$6, arrayType$10, ptrType$16, arrayType$11, ptrType$17, ptrType$18, structType, ptrType$20, ptrType$21, ptrType$27, mapType, funcType$2, funcType$3, ptrType$28, ptrType$29, ptrType$30, ptrType$31, arrayType$15, ptrType$32, warningPrinted, lineBuffer, syscallModule, alreadyTriedToLoad, minusOne, envs, freebsdConfArch, minRoutingSockaddrLen, mapper, errEAGAIN, errEINVAL, errENOENT, ioSync, ioSync$24ptr, errors$1, init, printWarning, printToConsole, indexByte, runtime_envs, syscall, Syscall, Syscall6, BytePtrFromString, readInt, readIntBE, readIntLE, ParseDirent, CloseOnExec, SetNonblock, msanRead, msanWrite, rsaAlignOf, itoa, uitoa, ReadDirent, anyToSockaddr, Accept, Recvmsg, SendmsgN, direntIno, direntReclen, direntNamlen, errnoErr, Read, Write, Recvfrom, Sendto, SetsockoptByte, SetsockoptInt, SetsockoptInet4Addr, SetsockoptIPMreq, SetsockoptIPv6Mreq, SetsockoptLinger, accept, setsockopt, Shutdown, recvfrom, sendto, recvmsg, sendmsg, fcntl, Chmod, Close, Fchdir, Fchmod, Fchown, Fstat, Fsync, Ftruncate, Getdirentries, Lstat, Open, Pread, Pwrite, read, Seek, Stat, write, mmap, munmap;
+	var $pkg = {}, $init, errors, js, race, runtime, sync, SockaddrDatalink, mmapper, Errno, Sockaddr, SockaddrInet4, SockaddrInet6, SockaddrUnix, Timespec, Stat_t, RawSockaddrInet4, RawSockaddrInet6, RawSockaddrUnix, RawSockaddrDatalink, RawSockaddr, RawSockaddrAny, _Socklen, Linger, Iovec, IPMreq, IPv6Mreq, Msghdr, sliceType, sliceType$1, ptrType$2, arrayType, arrayType$1, ptrType$11, arrayType$3, arrayType$4, arrayType$5, arrayType$6, arrayType$10, ptrType$16, arrayType$11, ptrType$17, ptrType$18, structType, ptrType$20, ptrType$21, ptrType$27, mapType, funcType$2, funcType$3, ptrType$28, ptrType$29, ptrType$30, ptrType$31, arrayType$15, ptrType$32, warningPrinted, lineBuffer, syscallModule, alreadyTriedToLoad, minusOne, envs, freebsdConfArch, minRoutingSockaddrLen, mapper, errEAGAIN, errEINVAL, errENOENT, ioSync, ioSync$24ptr, errors$1, init, printWarning, printToConsole, Exit, indexByte, runtime_envs, syscall, Syscall, Syscall6, BytePtrFromString, readInt, readIntBE, readIntLE, ParseDirent, CloseOnExec, SetNonblock, msanRead, msanWrite, rsaAlignOf, itoa, uitoa, ReadDirent, anyToSockaddr, Accept, Recvmsg, SendmsgN, direntIno, direntReclen, direntNamlen, errnoErr, Read, Write, Recvfrom, Sendto, SetsockoptByte, SetsockoptInt, SetsockoptInet4Addr, SetsockoptIPMreq, SetsockoptIPv6Mreq, SetsockoptLinger, accept, setsockopt, Shutdown, recvfrom, sendto, recvmsg, sendmsg, fcntl, Chmod, Close, Fchdir, Fchmod, Fchown, Fstat, Fsync, Ftruncate, Getdirentries, Lstat, Open, Pread, Pwrite, read, Seek, Stat, write, mmap, munmap;
 	errors = $packages["errors"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	race = $packages["internal/race"];
@@ -6066,6 +6105,11 @@ $packages["syscall"] = (function() {
 			lineBuffer = $subslice(lineBuffer, (i + 1 >> 0));
 		}
 	};
+	Exit = function(code) {
+		var code;
+		Syscall(1, ((code >>> 0)), 0, 0);
+	};
+	$pkg.Exit = Exit;
 	indexByte = function(s, c) {
 		var _i, _ref, b, c, i, s;
 		_ref = s;
@@ -11964,7 +12008,7 @@ $packages["internal/testlog"] = (function() {
 	return $pkg;
 })();
 $packages["os"] = (function() {
-	var $pkg = {}, $init, errors, js, poll, testlog, io, runtime, sync, atomic, syscall, time, timeout, PathError, SyscallError, LinkError, file, dirInfo, File, FileInfo, FileMode, fileStat, sliceType, ptrType, sliceType$1, ptrType$1, sliceType$2, ptrType$2, ptrType$3, ptrType$4, arrayType, sliceType$5, ptrType$12, ptrType$13, funcType$1, ptrType$15, arrayType$3, arrayType$5, ptrType$16, errFinished, lstat, useSyscallwd, runtime_args, init, NewSyscallError, IsNotExist, underlyingError, wrapSyscallError, isNotExist, Open, OpenFile, Chmod, sigpipe, syscallMode, chmod, fixLongPath, NewFile, newFile, epipecheck, openFileNolog, init$1, useSyscallwdDarwin, IsPathSeparator, basename, init$2, Stat, Lstat, fillFileStatFromSys, timespecToTime, statNolog, lstatNolog;
+	var $pkg = {}, $init, errors, js, poll, testlog, io, runtime, sync, atomic, syscall, time, timeout, PathError, SyscallError, LinkError, file, dirInfo, File, FileInfo, FileMode, fileStat, sliceType, ptrType, sliceType$1, ptrType$1, sliceType$2, ptrType$2, ptrType$3, ptrType$4, arrayType, sliceType$5, ptrType$12, ptrType$13, funcType$1, ptrType$15, arrayType$3, arrayType$5, ptrType$16, errFinished, lstat, useSyscallwd, runtime_args, init, runtime_beforeExit, NewSyscallError, IsNotExist, underlyingError, wrapSyscallError, isNotExist, Open, OpenFile, Chmod, sigpipe, syscallMode, chmod, fixLongPath, NewFile, newFile, epipecheck, openFileNolog, init$1, useSyscallwdDarwin, IsPathSeparator, basename, init$2, Exit, Stat, Lstat, fillFileStatFromSys, timespecToTime, statNolog, lstatNolog;
 	errors = $packages["errors"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	poll = $packages["internal/poll"];
@@ -12102,6 +12146,8 @@ $packages["os"] = (function() {
 		if ($pkg.Args.$length === 0) {
 			$pkg.Args = new sliceType(["?"]);
 		}
+	};
+	runtime_beforeExit = function() {
 	};
 	File.ptr.prototype.Readdir = function(n) {
 		var _r, f, n, $s, $r;
@@ -13011,6 +13057,14 @@ $packages["os"] = (function() {
 		}
 		$pkg.Args = runtime_args();
 	};
+	Exit = function(code) {
+		var code;
+		if (code === 0) {
+			runtime_beforeExit();
+		}
+		syscall.Exit(code);
+	};
+	$pkg.Exit = Exit;
 	Stat = function(name) {
 		var name, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; name = $f.name; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -28822,1317 +28876,6 @@ $packages["encoding/gob"] = (function() {
 	$pkg.$init = $init;
 	return $pkg;
 })();
-$packages["encoding/base64"] = (function() {
-	var $pkg = {}, $init, binary, io, strconv, Encoding, encoder, CorruptInputError, arrayType, arrayType$1, sliceType, ptrType, arrayType$2, arrayType$3, arrayType$4, ptrType$1, NewEncoding, NewEncoder;
-	binary = $packages["encoding/binary"];
-	io = $packages["io"];
-	strconv = $packages["strconv"];
-	Encoding = $pkg.Encoding = $newType(0, $kindStruct, "base64.Encoding", true, "encoding/base64", true, function(encode_, decodeMap_, padChar_, strict_) {
-		this.$val = this;
-		if (arguments.length === 0) {
-			this.encode = arrayType.zero();
-			this.decodeMap = arrayType$1.zero();
-			this.padChar = 0;
-			this.strict = false;
-			return;
-		}
-		this.encode = encode_;
-		this.decodeMap = decodeMap_;
-		this.padChar = padChar_;
-		this.strict = strict_;
-	});
-	encoder = $pkg.encoder = $newType(0, $kindStruct, "base64.encoder", true, "encoding/base64", false, function(err_, enc_, w_, buf_, nbuf_, out_) {
-		this.$val = this;
-		if (arguments.length === 0) {
-			this.err = $ifaceNil;
-			this.enc = ptrType.nil;
-			this.w = $ifaceNil;
-			this.buf = arrayType$2.zero();
-			this.nbuf = 0;
-			this.out = arrayType$3.zero();
-			return;
-		}
-		this.err = err_;
-		this.enc = enc_;
-		this.w = w_;
-		this.buf = buf_;
-		this.nbuf = nbuf_;
-		this.out = out_;
-	});
-	CorruptInputError = $pkg.CorruptInputError = $newType(8, $kindInt64, "base64.CorruptInputError", true, "encoding/base64", true, null);
-	arrayType = $arrayType($Uint8, 64);
-	arrayType$1 = $arrayType($Uint8, 256);
-	sliceType = $sliceType($Uint8);
-	ptrType = $ptrType(Encoding);
-	arrayType$2 = $arrayType($Uint8, 3);
-	arrayType$3 = $arrayType($Uint8, 1024);
-	arrayType$4 = $arrayType($Uint8, 4);
-	ptrType$1 = $ptrType(encoder);
-	NewEncoding = function(encoder$1) {
-		var e, encoder$1, i, i$1, i$2, x, x$1, x$2;
-		if (!((encoder$1.length === 64))) {
-			$panic(new $String("encoding alphabet is not 64-bytes long"));
-		}
-		i = 0;
-		while (true) {
-			if (!(i < encoder$1.length)) { break; }
-			if ((encoder$1.charCodeAt(i) === 10) || (encoder$1.charCodeAt(i) === 13)) {
-				$panic(new $String("encoding alphabet contains newline character"));
-			}
-			i = i + (1) >> 0;
-		}
-		e = new Encoding.ptr(arrayType.zero(), arrayType$1.zero(), 0, false);
-		e.padChar = 61;
-		$copyString(new sliceType(e.encode), encoder$1);
-		i$1 = 0;
-		while (true) {
-			if (!(i$1 < 256)) { break; }
-			(x = e.decodeMap, ((i$1 < 0 || i$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[i$1] = 255));
-			i$1 = i$1 + (1) >> 0;
-		}
-		i$2 = 0;
-		while (true) {
-			if (!(i$2 < encoder$1.length)) { break; }
-			(x$1 = e.decodeMap, x$2 = encoder$1.charCodeAt(i$2), ((x$2 < 0 || x$2 >= x$1.length) ? ($throwRuntimeError("index out of range"), undefined) : x$1[x$2] = ((i$2 << 24 >>> 24))));
-			i$2 = i$2 + (1) >> 0;
-		}
-		return e;
-	};
-	$pkg.NewEncoding = NewEncoding;
-	Encoding.ptr.prototype.WithPadding = function(padding) {
-		var enc, i, padding, x;
-		enc = this;
-		if ((padding === 13) || (padding === 10) || padding > 255) {
-			$panic(new $String("invalid padding"));
-		}
-		i = 0;
-		while (true) {
-			if (!(i < 64)) { break; }
-			if ((((x = enc.encode, ((i < 0 || i >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[i])) >> 0)) === padding) {
-				$panic(new $String("padding contained in alphabet"));
-			}
-			i = i + (1) >> 0;
-		}
-		enc.padChar = padding;
-		return enc;
-	};
-	Encoding.prototype.WithPadding = function(padding) { return this.$val.WithPadding(padding); };
-	Encoding.ptr.prototype.Strict = function() {
-		var enc;
-		enc = this;
-		enc.strict = true;
-		return enc;
-	};
-	Encoding.prototype.Strict = function() { return this.$val.Strict(); };
-	Encoding.ptr.prototype.Encode = function(dst, src) {
-		var _1, _q, _tmp, _tmp$1, di, dst, enc, n, remain, si, src, val, val$1, x, x$1, x$10, x$11, x$12, x$13, x$14, x$15, x$16, x$17, x$18, x$19, x$2, x$20, x$21, x$22, x$23, x$24, x$25, x$26, x$27, x$28, x$3, x$4, x$5, x$6, x$7, x$8, x$9;
-		enc = this;
-		if (src.$length === 0) {
-			return;
-		}
-		_tmp = 0;
-		_tmp$1 = 0;
-		di = _tmp;
-		si = _tmp$1;
-		n = $imul(((_q = src.$length / 3, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"))), 3);
-		while (true) {
-			if (!(si < n)) { break; }
-			val = (((((((x = si + 0 >> 0, ((x < 0 || x >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x])) >>> 0)) << 16 >>> 0) | ((((x$1 = si + 1 >> 0, ((x$1 < 0 || x$1 >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x$1])) >>> 0)) << 8 >>> 0)) >>> 0) | (((x$2 = si + 2 >> 0, ((x$2 < 0 || x$2 >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x$2])) >>> 0))) >>> 0;
-			(x$5 = di + 0 >> 0, ((x$5 < 0 || x$5 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$5] = (x$3 = enc.encode, x$4 = ((val >>> 18 >>> 0) & 63) >>> 0, ((x$4 < 0 || x$4 >= x$3.length) ? ($throwRuntimeError("index out of range"), undefined) : x$3[x$4]))));
-			(x$8 = di + 1 >> 0, ((x$8 < 0 || x$8 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$8] = (x$6 = enc.encode, x$7 = ((val >>> 12 >>> 0) & 63) >>> 0, ((x$7 < 0 || x$7 >= x$6.length) ? ($throwRuntimeError("index out of range"), undefined) : x$6[x$7]))));
-			(x$11 = di + 2 >> 0, ((x$11 < 0 || x$11 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$11] = (x$9 = enc.encode, x$10 = ((val >>> 6 >>> 0) & 63) >>> 0, ((x$10 < 0 || x$10 >= x$9.length) ? ($throwRuntimeError("index out of range"), undefined) : x$9[x$10]))));
-			(x$14 = di + 3 >> 0, ((x$14 < 0 || x$14 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$14] = (x$12 = enc.encode, x$13 = (val & 63) >>> 0, ((x$13 < 0 || x$13 >= x$12.length) ? ($throwRuntimeError("index out of range"), undefined) : x$12[x$13]))));
-			si = si + (3) >> 0;
-			di = di + (4) >> 0;
-		}
-		remain = src.$length - si >> 0;
-		if (remain === 0) {
-			return;
-		}
-		val$1 = (((x$15 = si + 0 >> 0, ((x$15 < 0 || x$15 >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x$15])) >>> 0)) << 16 >>> 0;
-		if (remain === 2) {
-			val$1 = (val$1 | (((((x$16 = si + 1 >> 0, ((x$16 < 0 || x$16 >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x$16])) >>> 0)) << 8 >>> 0))) >>> 0;
-		}
-		(x$19 = di + 0 >> 0, ((x$19 < 0 || x$19 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$19] = (x$17 = enc.encode, x$18 = ((val$1 >>> 18 >>> 0) & 63) >>> 0, ((x$18 < 0 || x$18 >= x$17.length) ? ($throwRuntimeError("index out of range"), undefined) : x$17[x$18]))));
-		(x$22 = di + 1 >> 0, ((x$22 < 0 || x$22 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$22] = (x$20 = enc.encode, x$21 = ((val$1 >>> 12 >>> 0) & 63) >>> 0, ((x$21 < 0 || x$21 >= x$20.length) ? ($throwRuntimeError("index out of range"), undefined) : x$20[x$21]))));
-		_1 = remain;
-		if (_1 === (2)) {
-			(x$25 = di + 2 >> 0, ((x$25 < 0 || x$25 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$25] = (x$23 = enc.encode, x$24 = ((val$1 >>> 6 >>> 0) & 63) >>> 0, ((x$24 < 0 || x$24 >= x$23.length) ? ($throwRuntimeError("index out of range"), undefined) : x$23[x$24]))));
-			if (!((enc.padChar === -1))) {
-				(x$26 = di + 3 >> 0, ((x$26 < 0 || x$26 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$26] = ((enc.padChar << 24 >>> 24))));
-			}
-		} else if (_1 === (1)) {
-			if (!((enc.padChar === -1))) {
-				(x$27 = di + 2 >> 0, ((x$27 < 0 || x$27 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$27] = ((enc.padChar << 24 >>> 24))));
-				(x$28 = di + 3 >> 0, ((x$28 < 0 || x$28 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$28] = ((enc.padChar << 24 >>> 24))));
-			}
-		}
-	};
-	Encoding.prototype.Encode = function(dst, src) { return this.$val.Encode(dst, src); };
-	Encoding.ptr.prototype.EncodeToString = function(src) {
-		var buf, enc, src;
-		enc = this;
-		buf = $makeSlice(sliceType, enc.EncodedLen(src.$length));
-		enc.Encode(buf, src);
-		return ($bytesToString(buf));
-	};
-	Encoding.prototype.EncodeToString = function(src) { return this.$val.EncodeToString(src); };
-	encoder.ptr.prototype.Write = function(p) {
-		var _q, _r, _r$1, _r$2, _tmp, _tmp$1, _tmp$2, _tmp$3, _tmp$4, _tmp$5, _tuple, _tuple$1, e, err, i, i$1, n, nn, p, x, x$1, x$2, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; _tmp$2 = $f._tmp$2; _tmp$3 = $f._tmp$3; _tmp$4 = $f._tmp$4; _tmp$5 = $f._tmp$5; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; e = $f.e; err = $f.err; i = $f.i; i$1 = $f.i$1; n = $f.n; nn = $f.nn; p = $f.p; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		n = 0;
-		err = $ifaceNil;
-		e = this;
-		if (!($interfaceIsEqual(e.err, $ifaceNil))) {
-			_tmp = 0;
-			_tmp$1 = e.err;
-			n = _tmp;
-			err = _tmp$1;
-			$s = -1; return [n, err];
-		}
-		/* */ if (e.nbuf > 0) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (e.nbuf > 0) { */ case 1:
-			i = 0;
-			i = 0;
-			while (true) {
-				if (!(i < p.$length && e.nbuf < 3)) { break; }
-				(x = e.buf, x$1 = e.nbuf, ((x$1 < 0 || x$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[x$1] = ((i < 0 || i >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i])));
-				e.nbuf = e.nbuf + (1) >> 0;
-				i = i + (1) >> 0;
-			}
-			n = n + (i) >> 0;
-			p = $subslice(p, i);
-			if (e.nbuf < 3) {
-				$s = -1; return [n, err];
-			}
-			e.enc.Encode(new sliceType(e.out), new sliceType(e.buf));
-			_r = e.w.Write($subslice(new sliceType(e.out), 0, 4)); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_tuple = _r;
-			e.err = _tuple[1];
-			if (!($interfaceIsEqual(e.err, $ifaceNil))) {
-				_tmp$2 = n;
-				_tmp$3 = e.err;
-				n = _tmp$2;
-				err = _tmp$3;
-				$s = -1; return [n, err];
-			}
-			e.nbuf = 0;
-		/* } */ case 2:
-		/* while (true) { */ case 4:
-			/* if (!(p.$length >= 3)) { break; } */ if(!(p.$length >= 3)) { $s = 5; continue; }
-			nn = 768;
-			if (nn > p.$length) {
-				nn = p.$length;
-				nn = nn - ((_r$1 = nn % 3, _r$1 === _r$1 ? _r$1 : $throwRuntimeError("integer divide by zero"))) >> 0;
-			}
-			e.enc.Encode(new sliceType(e.out), $subslice(p, 0, nn));
-			_r$2 = e.w.Write($subslice(new sliceType(e.out), 0, ($imul((_q = nn / 3, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero")), 4)))); /* */ $s = 6; case 6: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-			_tuple$1 = _r$2;
-			e.err = _tuple$1[1];
-			if (!($interfaceIsEqual(e.err, $ifaceNil))) {
-				_tmp$4 = n;
-				_tmp$5 = e.err;
-				n = _tmp$4;
-				err = _tmp$5;
-				$s = -1; return [n, err];
-			}
-			n = n + (nn) >> 0;
-			p = $subslice(p, nn);
-		/* } */ $s = 4; continue; case 5:
-		i$1 = 0;
-		while (true) {
-			if (!(i$1 < p.$length)) { break; }
-			(x$2 = e.buf, ((i$1 < 0 || i$1 >= x$2.length) ? ($throwRuntimeError("index out of range"), undefined) : x$2[i$1] = ((i$1 < 0 || i$1 >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i$1])));
-			i$1 = i$1 + (1) >> 0;
-		}
-		e.nbuf = p.$length;
-		n = n + (p.$length) >> 0;
-		$s = -1; return [n, err];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: encoder.ptr.prototype.Write }; } $f._q = _q; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f._tmp$2 = _tmp$2; $f._tmp$3 = _tmp$3; $f._tmp$4 = _tmp$4; $f._tmp$5 = _tmp$5; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.e = e; $f.err = err; $f.i = i; $f.i$1 = i$1; $f.n = n; $f.nn = nn; $f.p = p; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	encoder.prototype.Write = function(p) { return this.$val.Write(p); };
-	encoder.ptr.prototype.Close = function() {
-		var _r, _tuple, e, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _tuple = $f._tuple; e = $f.e; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		e = this;
-		/* */ if ($interfaceIsEqual(e.err, $ifaceNil) && e.nbuf > 0) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if ($interfaceIsEqual(e.err, $ifaceNil) && e.nbuf > 0) { */ case 1:
-			e.enc.Encode(new sliceType(e.out), $subslice(new sliceType(e.buf), 0, e.nbuf));
-			_r = e.w.Write($subslice(new sliceType(e.out), 0, e.enc.EncodedLen(e.nbuf))); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_tuple = _r;
-			e.err = _tuple[1];
-			e.nbuf = 0;
-		/* } */ case 2:
-		$s = -1; return e.err;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: encoder.ptr.prototype.Close }; } $f._r = _r; $f._tuple = _tuple; $f.e = e; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	encoder.prototype.Close = function() { return this.$val.Close(); };
-	NewEncoder = function(enc, w) {
-		var enc, w;
-		return new encoder.ptr($ifaceNil, enc, w, arrayType$2.zero(), 0, arrayType$3.zero());
-	};
-	$pkg.NewEncoder = NewEncoder;
-	Encoding.ptr.prototype.EncodedLen = function(n) {
-		var _q, _q$1, enc, n;
-		enc = this;
-		if (enc.padChar === -1) {
-			return (_q = ((($imul(n, 8)) + 5 >> 0)) / 6, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
-		}
-		return $imul((_q$1 = ((n + 2 >> 0)) / 3, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero")), 4);
-	};
-	Encoding.prototype.EncodedLen = function(n) { return this.$val.EncodedLen(n); };
-	CorruptInputError.prototype.Error = function() {
-		var e;
-		e = this;
-		return "illegal base64 data at input byte " + strconv.FormatInt((new $Int64(e.$high, e.$low)), 10);
-	};
-	$ptrType(CorruptInputError).prototype.Error = function() { return this.$get().Error(); };
-	Encoding.ptr.prototype.decodeQuantum = function(dst, src, si) {
-		var _1, _2, _tmp, _tmp$1, _tmp$10, _tmp$11, _tmp$12, _tmp$13, _tmp$14, _tmp$15, _tmp$16, _tmp$17, _tmp$18, _tmp$19, _tmp$2, _tmp$20, _tmp$21, _tmp$22, _tmp$23, _tmp$24, _tmp$25, _tmp$26, _tmp$27, _tmp$28, _tmp$29, _tmp$3, _tmp$30, _tmp$31, _tmp$32, _tmp$33, _tmp$34, _tmp$35, _tmp$36, _tmp$37, _tmp$38, _tmp$39, _tmp$4, _tmp$40, _tmp$41, _tmp$42, _tmp$43, _tmp$44, _tmp$5, _tmp$6, _tmp$7, _tmp$8, _tmp$9, dbuf, dinc, dlen, dst, enc, err, in$1, j, n, nsi, out, si, src, val, x;
-		nsi = 0;
-		n = 0;
-		err = $ifaceNil;
-		enc = this;
-		dbuf = arrayType$4.zero();
-		_tmp = 3;
-		_tmp$1 = 4;
-		dinc = _tmp;
-		dlen = _tmp$1;
-		j = 0;
-		while (true) {
-			if (!(j < 4)) { break; }
-			if (src.$length === si) {
-				if ((j === 0)) {
-					_tmp$2 = si;
-					_tmp$3 = 0;
-					_tmp$4 = $ifaceNil;
-					nsi = _tmp$2;
-					n = _tmp$3;
-					err = _tmp$4;
-					return [nsi, n, err];
-				} else if (((j === 1)) || (!((enc.padChar === -1)))) {
-					_tmp$5 = si;
-					_tmp$6 = 0;
-					_tmp$7 = (new CorruptInputError(0, (si - j >> 0)));
-					nsi = _tmp$5;
-					n = _tmp$6;
-					err = _tmp$7;
-					return [nsi, n, err];
-				}
-				_tmp$8 = j - 1 >> 0;
-				_tmp$9 = j;
-				dinc = _tmp$8;
-				dlen = _tmp$9;
-				break;
-			}
-			in$1 = ((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]);
-			si = si + (1) >> 0;
-			out = (x = enc.decodeMap, ((in$1 < 0 || in$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[in$1]));
-			if (!((out === 255))) {
-				((j < 0 || j >= dbuf.length) ? ($throwRuntimeError("index out of range"), undefined) : dbuf[j] = out);
-				j = j + (1) >> 0;
-				continue;
-			}
-			if ((in$1 === 10) || (in$1 === 13)) {
-				j = j - (1) >> 0;
-				j = j + (1) >> 0;
-				continue;
-			}
-			if (!((((in$1 >> 0)) === enc.padChar))) {
-				_tmp$10 = si;
-				_tmp$11 = 0;
-				_tmp$12 = (new CorruptInputError(0, (si - 1 >> 0)));
-				nsi = _tmp$10;
-				n = _tmp$11;
-				err = _tmp$12;
-				return [nsi, n, err];
-			}
-			_1 = j;
-			if ((_1 === (0)) || (_1 === (1))) {
-				_tmp$13 = si;
-				_tmp$14 = 0;
-				_tmp$15 = (new CorruptInputError(0, (si - 1 >> 0)));
-				nsi = _tmp$13;
-				n = _tmp$14;
-				err = _tmp$15;
-				return [nsi, n, err];
-			} else if (_1 === (2)) {
-				while (true) {
-					if (!(si < src.$length && ((((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) === 10) || (((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) === 13)))) { break; }
-					si = si + (1) >> 0;
-				}
-				if (si === src.$length) {
-					_tmp$16 = si;
-					_tmp$17 = 0;
-					_tmp$18 = (new CorruptInputError(0, src.$length));
-					nsi = _tmp$16;
-					n = _tmp$17;
-					err = _tmp$18;
-					return [nsi, n, err];
-				}
-				if (!((((((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) >> 0)) === enc.padChar))) {
-					_tmp$19 = si;
-					_tmp$20 = 0;
-					_tmp$21 = (new CorruptInputError(0, (si - 1 >> 0)));
-					nsi = _tmp$19;
-					n = _tmp$20;
-					err = _tmp$21;
-					return [nsi, n, err];
-				}
-				si = si + (1) >> 0;
-			}
-			while (true) {
-				if (!(si < src.$length && ((((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) === 10) || (((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) === 13)))) { break; }
-				si = si + (1) >> 0;
-			}
-			if (si < src.$length) {
-				err = (new CorruptInputError(0, si));
-			}
-			_tmp$22 = 3;
-			_tmp$23 = j;
-			dinc = _tmp$22;
-			dlen = _tmp$23;
-			break;
-		}
-		val = ((((((((dbuf[0] >>> 0)) << 18 >>> 0) | (((dbuf[1] >>> 0)) << 12 >>> 0)) >>> 0) | (((dbuf[2] >>> 0)) << 6 >>> 0)) >>> 0) | ((dbuf[3] >>> 0))) >>> 0;
-		_tmp$24 = (((val >>> 0 >>> 0) << 24 >>> 24));
-		_tmp$25 = (((val >>> 8 >>> 0) << 24 >>> 24));
-		_tmp$26 = (((val >>> 16 >>> 0) << 24 >>> 24));
-		dbuf[2] = _tmp$24;
-		dbuf[1] = _tmp$25;
-		dbuf[0] = _tmp$26;
-		_2 = dlen;
-		if (_2 === (4)) {
-			(2 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 2] = dbuf[2]);
-			dbuf[2] = 0;
-			(1 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 1] = dbuf[1]);
-			if (enc.strict && !((dbuf[2] === 0))) {
-				_tmp$27 = si;
-				_tmp$28 = 0;
-				_tmp$29 = (new CorruptInputError(0, (si - 1 >> 0)));
-				nsi = _tmp$27;
-				n = _tmp$28;
-				err = _tmp$29;
-				return [nsi, n, err];
-			}
-			dbuf[1] = 0;
-			(0 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 0] = dbuf[0]);
-			if (enc.strict && (!((dbuf[1] === 0)) || !((dbuf[2] === 0)))) {
-				_tmp$30 = si;
-				_tmp$31 = 0;
-				_tmp$32 = (new CorruptInputError(0, (si - 2 >> 0)));
-				nsi = _tmp$30;
-				n = _tmp$31;
-				err = _tmp$32;
-				return [nsi, n, err];
-			}
-		} else if (_2 === (3)) {
-			(1 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 1] = dbuf[1]);
-			if (enc.strict && !((dbuf[2] === 0))) {
-				_tmp$33 = si;
-				_tmp$34 = 0;
-				_tmp$35 = (new CorruptInputError(0, (si - 1 >> 0)));
-				nsi = _tmp$33;
-				n = _tmp$34;
-				err = _tmp$35;
-				return [nsi, n, err];
-			}
-			dbuf[1] = 0;
-			(0 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 0] = dbuf[0]);
-			if (enc.strict && (!((dbuf[1] === 0)) || !((dbuf[2] === 0)))) {
-				_tmp$36 = si;
-				_tmp$37 = 0;
-				_tmp$38 = (new CorruptInputError(0, (si - 2 >> 0)));
-				nsi = _tmp$36;
-				n = _tmp$37;
-				err = _tmp$38;
-				return [nsi, n, err];
-			}
-		} else if (_2 === (2)) {
-			(0 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 0] = dbuf[0]);
-			if (enc.strict && (!((dbuf[1] === 0)) || !((dbuf[2] === 0)))) {
-				_tmp$39 = si;
-				_tmp$40 = 0;
-				_tmp$41 = (new CorruptInputError(0, (si - 2 >> 0)));
-				nsi = _tmp$39;
-				n = _tmp$40;
-				err = _tmp$41;
-				return [nsi, n, err];
-			}
-		}
-		dst = $subslice(dst, dinc);
-		_tmp$42 = si;
-		_tmp$43 = dlen - 1 >> 0;
-		_tmp$44 = err;
-		nsi = _tmp$42;
-		n = _tmp$43;
-		err = _tmp$44;
-		return [nsi, n, err];
-	};
-	Encoding.prototype.decodeQuantum = function(dst, src, si) { return this.$val.decodeQuantum(dst, src, si); };
-	Encoding.ptr.prototype.DecodeString = function(s) {
-		var _tuple, dbuf, enc, err, n, s;
-		enc = this;
-		dbuf = $makeSlice(sliceType, enc.DecodedLen(s.length));
-		_tuple = enc.Decode(dbuf, (new sliceType($stringToBytes(s))));
-		n = _tuple[0];
-		err = _tuple[1];
-		return [$subslice(dbuf, 0, n), err];
-	};
-	Encoding.prototype.DecodeString = function(s) { return this.$val.DecodeString(s); };
-	Encoding.ptr.prototype.Decode = function(dst, src) {
-		var _tmp, _tmp$1, _tmp$2, _tmp$3, _tmp$4, _tmp$5, _tmp$6, _tmp$7, _tmp$8, _tmp$9, _tuple, _tuple$1, _tuple$2, dst, enc, err, ilen, n, ninc, ninc$1, ninc$2, ok, ok$1, olen, si, src;
-		n = 0;
-		err = $ifaceNil;
-		enc = this;
-		if (src.$length === 0) {
-			_tmp = 0;
-			_tmp$1 = $ifaceNil;
-			n = _tmp;
-			err = _tmp$1;
-			return [n, err];
-		}
-		si = 0;
-		ilen = src.$length;
-		olen = dst.$length;
-		while (true) {
-			if (!(false && (ilen - si >> 0) >= 8 && (olen - n >> 0) >= 8)) { break; }
-			ok = enc.decode64($subslice(dst, n), $subslice(src, si));
-			if (ok) {
-				n = n + (6) >> 0;
-				si = si + (8) >> 0;
-			} else {
-				ninc = 0;
-				_tuple = enc.decodeQuantum($subslice(dst, n), src, si);
-				si = _tuple[0];
-				ninc = _tuple[1];
-				err = _tuple[2];
-				n = n + (ninc) >> 0;
-				if (!($interfaceIsEqual(err, $ifaceNil))) {
-					_tmp$2 = n;
-					_tmp$3 = err;
-					n = _tmp$2;
-					err = _tmp$3;
-					return [n, err];
-				}
-			}
-		}
-		while (true) {
-			if (!((ilen - si >> 0) >= 4 && (olen - n >> 0) >= 4)) { break; }
-			ok$1 = enc.decode32($subslice(dst, n), $subslice(src, si));
-			if (ok$1) {
-				n = n + (3) >> 0;
-				si = si + (4) >> 0;
-			} else {
-				ninc$1 = 0;
-				_tuple$1 = enc.decodeQuantum($subslice(dst, n), src, si);
-				si = _tuple$1[0];
-				ninc$1 = _tuple$1[1];
-				err = _tuple$1[2];
-				n = n + (ninc$1) >> 0;
-				if (!($interfaceIsEqual(err, $ifaceNil))) {
-					_tmp$4 = n;
-					_tmp$5 = err;
-					n = _tmp$4;
-					err = _tmp$5;
-					return [n, err];
-				}
-			}
-		}
-		while (true) {
-			if (!(si < src.$length)) { break; }
-			ninc$2 = 0;
-			_tuple$2 = enc.decodeQuantum($subslice(dst, n), src, si);
-			si = _tuple$2[0];
-			ninc$2 = _tuple$2[1];
-			err = _tuple$2[2];
-			n = n + (ninc$2) >> 0;
-			if (!($interfaceIsEqual(err, $ifaceNil))) {
-				_tmp$6 = n;
-				_tmp$7 = err;
-				n = _tmp$6;
-				err = _tmp$7;
-				return [n, err];
-			}
-		}
-		_tmp$8 = n;
-		_tmp$9 = err;
-		n = _tmp$8;
-		err = _tmp$9;
-		return [n, err];
-	};
-	Encoding.prototype.Decode = function(dst, src) { return this.$val.Decode(dst, src); };
-	Encoding.ptr.prototype.decode32 = function(dst, src) {
-		var _tmp, _tmp$1, dn, dst, enc, n, src, x, x$1, x$2, x$3, x$4, x$5, x$6, x$7;
-		enc = this;
-		_tmp = 0;
-		_tmp$1 = 0;
-		dn = _tmp;
-		n = _tmp$1;
-		n = (((x = enc.decodeMap, x$1 = (0 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 0]), ((x$1 < 0 || x$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[x$1])) >>> 0));
-		if (n === 255) {
-			return false;
-		}
-		dn = (dn | ((n << 26 >>> 0))) >>> 0;
-		n = (((x$2 = enc.decodeMap, x$3 = (1 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 1]), ((x$3 < 0 || x$3 >= x$2.length) ? ($throwRuntimeError("index out of range"), undefined) : x$2[x$3])) >>> 0));
-		if (n === 255) {
-			return false;
-		}
-		dn = (dn | ((n << 20 >>> 0))) >>> 0;
-		n = (((x$4 = enc.decodeMap, x$5 = (2 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 2]), ((x$5 < 0 || x$5 >= x$4.length) ? ($throwRuntimeError("index out of range"), undefined) : x$4[x$5])) >>> 0));
-		if (n === 255) {
-			return false;
-		}
-		dn = (dn | ((n << 14 >>> 0))) >>> 0;
-		n = (((x$6 = enc.decodeMap, x$7 = (3 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 3]), ((x$7 < 0 || x$7 >= x$6.length) ? ($throwRuntimeError("index out of range"), undefined) : x$6[x$7])) >>> 0));
-		if (n === 255) {
-			return false;
-		}
-		dn = (dn | ((n << 8 >>> 0))) >>> 0;
-		$clone(binary.BigEndian, binary.bigEndian).PutUint32(dst, dn);
-		return true;
-	};
-	Encoding.prototype.decode32 = function(dst, src) { return this.$val.decode32(dst, src); };
-	Encoding.ptr.prototype.decode64 = function(dst, src) {
-		var _tmp, _tmp$1, dn, dst, enc, n, src, x, x$1, x$10, x$11, x$12, x$13, x$14, x$15, x$16, x$17, x$18, x$19, x$2, x$20, x$21, x$22, x$23, x$3, x$4, x$5, x$6, x$7, x$8, x$9;
-		enc = this;
-		_tmp = new $Uint64(0, 0);
-		_tmp$1 = new $Uint64(0, 0);
-		dn = _tmp;
-		n = _tmp$1;
-		n = (new $Uint64(0, (x = enc.decodeMap, x$1 = (0 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 0]), ((x$1 < 0 || x$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[x$1]))));
-		if ((n.$high === 0 && n.$low === 255)) {
-			return false;
-		}
-		dn = (x$2 = $shiftLeft64(n, 58), new $Uint64(dn.$high | x$2.$high, (dn.$low | x$2.$low) >>> 0));
-		n = (new $Uint64(0, (x$3 = enc.decodeMap, x$4 = (1 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 1]), ((x$4 < 0 || x$4 >= x$3.length) ? ($throwRuntimeError("index out of range"), undefined) : x$3[x$4]))));
-		if ((n.$high === 0 && n.$low === 255)) {
-			return false;
-		}
-		dn = (x$5 = $shiftLeft64(n, 52), new $Uint64(dn.$high | x$5.$high, (dn.$low | x$5.$low) >>> 0));
-		n = (new $Uint64(0, (x$6 = enc.decodeMap, x$7 = (2 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 2]), ((x$7 < 0 || x$7 >= x$6.length) ? ($throwRuntimeError("index out of range"), undefined) : x$6[x$7]))));
-		if ((n.$high === 0 && n.$low === 255)) {
-			return false;
-		}
-		dn = (x$8 = $shiftLeft64(n, 46), new $Uint64(dn.$high | x$8.$high, (dn.$low | x$8.$low) >>> 0));
-		n = (new $Uint64(0, (x$9 = enc.decodeMap, x$10 = (3 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 3]), ((x$10 < 0 || x$10 >= x$9.length) ? ($throwRuntimeError("index out of range"), undefined) : x$9[x$10]))));
-		if ((n.$high === 0 && n.$low === 255)) {
-			return false;
-		}
-		dn = (x$11 = $shiftLeft64(n, 40), new $Uint64(dn.$high | x$11.$high, (dn.$low | x$11.$low) >>> 0));
-		n = (new $Uint64(0, (x$12 = enc.decodeMap, x$13 = (4 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 4]), ((x$13 < 0 || x$13 >= x$12.length) ? ($throwRuntimeError("index out of range"), undefined) : x$12[x$13]))));
-		if ((n.$high === 0 && n.$low === 255)) {
-			return false;
-		}
-		dn = (x$14 = $shiftLeft64(n, 34), new $Uint64(dn.$high | x$14.$high, (dn.$low | x$14.$low) >>> 0));
-		n = (new $Uint64(0, (x$15 = enc.decodeMap, x$16 = (5 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 5]), ((x$16 < 0 || x$16 >= x$15.length) ? ($throwRuntimeError("index out of range"), undefined) : x$15[x$16]))));
-		if ((n.$high === 0 && n.$low === 255)) {
-			return false;
-		}
-		dn = (x$17 = $shiftLeft64(n, 28), new $Uint64(dn.$high | x$17.$high, (dn.$low | x$17.$low) >>> 0));
-		n = (new $Uint64(0, (x$18 = enc.decodeMap, x$19 = (6 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 6]), ((x$19 < 0 || x$19 >= x$18.length) ? ($throwRuntimeError("index out of range"), undefined) : x$18[x$19]))));
-		if ((n.$high === 0 && n.$low === 255)) {
-			return false;
-		}
-		dn = (x$20 = $shiftLeft64(n, 22), new $Uint64(dn.$high | x$20.$high, (dn.$low | x$20.$low) >>> 0));
-		n = (new $Uint64(0, (x$21 = enc.decodeMap, x$22 = (7 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 7]), ((x$22 < 0 || x$22 >= x$21.length) ? ($throwRuntimeError("index out of range"), undefined) : x$21[x$22]))));
-		if ((n.$high === 0 && n.$low === 255)) {
-			return false;
-		}
-		dn = (x$23 = $shiftLeft64(n, 16), new $Uint64(dn.$high | x$23.$high, (dn.$low | x$23.$low) >>> 0));
-		$clone(binary.BigEndian, binary.bigEndian).PutUint64(dst, dn);
-		return true;
-	};
-	Encoding.prototype.decode64 = function(dst, src) { return this.$val.decode64(dst, src); };
-	Encoding.ptr.prototype.DecodedLen = function(n) {
-		var _q, _q$1, enc, n;
-		enc = this;
-		if (enc.padChar === -1) {
-			return (_q = ($imul(n, 6)) / 8, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
-		}
-		return $imul((_q$1 = n / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero")), 3);
-	};
-	Encoding.prototype.DecodedLen = function(n) { return this.$val.DecodedLen(n); };
-	Encoding.methods = [{prop: "WithPadding", name: "WithPadding", pkg: "", typ: $funcType([$Int32], [ptrType], false)}, {prop: "Strict", name: "Strict", pkg: "", typ: $funcType([], [ptrType], false)}];
-	ptrType.methods = [{prop: "Encode", name: "Encode", pkg: "", typ: $funcType([sliceType, sliceType], [], false)}, {prop: "EncodeToString", name: "EncodeToString", pkg: "", typ: $funcType([sliceType], [$String], false)}, {prop: "EncodedLen", name: "EncodedLen", pkg: "", typ: $funcType([$Int], [$Int], false)}, {prop: "decodeQuantum", name: "decodeQuantum", pkg: "encoding/base64", typ: $funcType([sliceType, sliceType, $Int], [$Int, $Int, $error], false)}, {prop: "DecodeString", name: "DecodeString", pkg: "", typ: $funcType([$String], [sliceType, $error], false)}, {prop: "Decode", name: "Decode", pkg: "", typ: $funcType([sliceType, sliceType], [$Int, $error], false)}, {prop: "decode32", name: "decode32", pkg: "encoding/base64", typ: $funcType([sliceType, sliceType], [$Bool], false)}, {prop: "decode64", name: "decode64", pkg: "encoding/base64", typ: $funcType([sliceType, sliceType], [$Bool], false)}, {prop: "DecodedLen", name: "DecodedLen", pkg: "", typ: $funcType([$Int], [$Int], false)}];
-	ptrType$1.methods = [{prop: "Write", name: "Write", pkg: "", typ: $funcType([sliceType], [$Int, $error], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [$error], false)}];
-	CorruptInputError.methods = [{prop: "Error", name: "Error", pkg: "", typ: $funcType([], [$String], false)}];
-	Encoding.init("encoding/base64", [{prop: "encode", name: "encode", anonymous: false, exported: false, typ: arrayType, tag: ""}, {prop: "decodeMap", name: "decodeMap", anonymous: false, exported: false, typ: arrayType$1, tag: ""}, {prop: "padChar", name: "padChar", anonymous: false, exported: false, typ: $Int32, tag: ""}, {prop: "strict", name: "strict", anonymous: false, exported: false, typ: $Bool, tag: ""}]);
-	encoder.init("encoding/base64", [{prop: "err", name: "err", anonymous: false, exported: false, typ: $error, tag: ""}, {prop: "enc", name: "enc", anonymous: false, exported: false, typ: ptrType, tag: ""}, {prop: "w", name: "w", anonymous: false, exported: false, typ: io.Writer, tag: ""}, {prop: "buf", name: "buf", anonymous: false, exported: false, typ: arrayType$2, tag: ""}, {prop: "nbuf", name: "nbuf", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "out", name: "out", anonymous: false, exported: false, typ: arrayType$3, tag: ""}]);
-	$init = function() {
-		$pkg.$init = function() {};
-		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		$r = binary.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = io.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = strconv.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$pkg.StdEncoding = NewEncoding("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
-		$pkg.URLEncoding = NewEncoding("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_");
-		$pkg.RawStdEncoding = $clone($pkg.StdEncoding, Encoding).WithPadding(-1);
-		$pkg.RawURLEncoding = $clone($pkg.URLEncoding, Encoding).WithPadding(-1);
-		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$pkg.$init = $init;
-	return $pkg;
-})();
-$packages["sort"] = (function() {
-	var $pkg = {}, $init, reflect, lessSwap, StringSlice, sliceType$2, funcType, funcType$1, Search, SearchStrings, Slice, insertionSort, siftDown, heapSort, medianOfThree, doPivot, quickSort, Sort, maxDepth, Strings, insertionSort_func, siftDown_func, heapSort_func, medianOfThree_func, doPivot_func, quickSort_func;
-	reflect = $packages["reflect"];
-	lessSwap = $pkg.lessSwap = $newType(0, $kindStruct, "sort.lessSwap", true, "sort", false, function(Less_, Swap_) {
-		this.$val = this;
-		if (arguments.length === 0) {
-			this.Less = $throwNilPointerError;
-			this.Swap = $throwNilPointerError;
-			return;
-		}
-		this.Less = Less_;
-		this.Swap = Swap_;
-	});
-	StringSlice = $pkg.StringSlice = $newType(12, $kindSlice, "sort.StringSlice", true, "sort", true, null);
-	sliceType$2 = $sliceType($String);
-	funcType = $funcType([$Int, $Int], [$Bool], false);
-	funcType$1 = $funcType([$Int, $Int], [], false);
-	Search = function(n, f) {
-		var _r, _tmp, _tmp$1, f, h, i, j, n, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; f = $f.f; h = $f.h; i = $f.i; j = $f.j; n = $f.n; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_tmp = 0;
-		_tmp$1 = n;
-		i = _tmp;
-		j = _tmp$1;
-		/* while (true) { */ case 1:
-			/* if (!(i < j)) { break; } */ if(!(i < j)) { $s = 2; continue; }
-			h = ((((((i + j >> 0) >>> 0)) >>> 1 >>> 0) >> 0));
-			_r = f(h); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			/* */ if (!_r) { $s = 3; continue; }
-			/* */ $s = 4; continue;
-			/* if (!_r) { */ case 3:
-				i = h + 1 >> 0;
-				$s = 5; continue;
-			/* } else { */ case 4:
-				j = h;
-			/* } */ case 5:
-		/* } */ $s = 1; continue; case 2:
-		$s = -1; return i;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Search }; } $f._r = _r; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f.f = f; $f.h = h; $f.i = i; $f.j = j; $f.n = n; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$pkg.Search = Search;
-	SearchStrings = function(a, x) {
-		var _r, a, x, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; a = $f.a; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		a = [a];
-		x = [x];
-		_r = Search(a[0].$length, (function(a, x) { return function(i) {
-			var i;
-			return ((i < 0 || i >= a[0].$length) ? ($throwRuntimeError("index out of range"), undefined) : a[0].$array[a[0].$offset + i]) >= x[0];
-		}; })(a, x)); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		$s = -1; return _r;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: SearchStrings }; } $f._r = _r; $f.a = a; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$pkg.SearchStrings = SearchStrings;
-	StringSlice.prototype.Search = function(x) {
-		var _r, p, x, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; p = $f.p; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		p = this;
-		_r = SearchStrings($subslice(new sliceType$2(p.$array), p.$offset, p.$offset + p.$length), x); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		$s = -1; return _r;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: StringSlice.prototype.Search }; } $f._r = _r; $f.p = p; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$ptrType(StringSlice).prototype.Search = function(x) { return this.$get().Search(x); };
-	Slice = function(slice, less) {
-		var _r, _r$1, length, less, rv, slice, swap, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; length = $f.length; less = $f.less; rv = $f.rv; slice = $f.slice; swap = $f.swap; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_r = reflect.ValueOf(slice); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		rv = _r;
-		_r$1 = reflect.Swapper(slice); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		swap = _r$1;
-		length = $clone(rv, reflect.Value).Len();
-		$r = quickSort_func(new lessSwap.ptr(less, swap), 0, length, maxDepth(length)); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Slice }; } $f._r = _r; $f._r$1 = _r$1; $f.length = length; $f.less = less; $f.rv = rv; $f.slice = slice; $f.swap = swap; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$pkg.Slice = Slice;
-	insertionSort = function(data, a, b) {
-		var _r, _v, a, b, data, i, j, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _v = $f._v; a = $f.a; b = $f.b; data = $f.data; i = $f.i; j = $f.j; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		i = a + 1 >> 0;
-		/* while (true) { */ case 1:
-			/* if (!(i < b)) { break; } */ if(!(i < b)) { $s = 2; continue; }
-			j = i;
-			/* while (true) { */ case 3:
-				if (!(j > a)) { _v = false; $s = 5; continue s; }
-				_r = data.Less(j, j - 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-				_v = _r; case 5:
-				/* if (!(_v)) { break; } */ if(!(_v)) { $s = 4; continue; }
-				$r = data.Swap(j, j - 1 >> 0); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				j = j - (1) >> 0;
-			/* } */ $s = 3; continue; case 4:
-			i = i + (1) >> 0;
-		/* } */ $s = 1; continue; case 2:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: insertionSort }; } $f._r = _r; $f._v = _v; $f.a = a; $f.b = b; $f.data = data; $f.i = i; $f.j = j; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	siftDown = function(data, lo, hi, first) {
-		var _r, _r$1, _v, child, data, first, hi, lo, root, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _v = $f._v; child = $f.child; data = $f.data; first = $f.first; hi = $f.hi; lo = $f.lo; root = $f.root; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		root = lo;
-		/* while (true) { */ case 1:
-			child = ($imul(2, root)) + 1 >> 0;
-			if (child >= hi) {
-				/* break; */ $s = 2; continue;
-			}
-			if (!((child + 1 >> 0) < hi)) { _v = false; $s = 5; continue s; }
-			_r = data.Less(first + child >> 0, (first + child >> 0) + 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_v = _r; case 5:
-			/* */ if (_v) { $s = 3; continue; }
-			/* */ $s = 4; continue;
-			/* if (_v) { */ case 3:
-				child = child + (1) >> 0;
-			/* } */ case 4:
-			_r$1 = data.Less(first + root >> 0, first + child >> 0); /* */ $s = 9; case 9: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			/* */ if (!_r$1) { $s = 7; continue; }
-			/* */ $s = 8; continue;
-			/* if (!_r$1) { */ case 7:
-				$s = -1; return;
-			/* } */ case 8:
-			$r = data.Swap(first + root >> 0, first + child >> 0); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			root = child;
-		/* } */ $s = 1; continue; case 2:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: siftDown }; } $f._r = _r; $f._r$1 = _r$1; $f._v = _v; $f.child = child; $f.data = data; $f.first = first; $f.hi = hi; $f.lo = lo; $f.root = root; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	heapSort = function(data, a, b) {
-		var _q, a, b, data, first, hi, i, i$1, lo, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; a = $f.a; b = $f.b; data = $f.data; first = $f.first; hi = $f.hi; i = $f.i; i$1 = $f.i$1; lo = $f.lo; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		first = a;
-		lo = 0;
-		hi = b - a >> 0;
-		i = (_q = ((hi - 1 >> 0)) / 2, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
-		/* while (true) { */ case 1:
-			/* if (!(i >= 0)) { break; } */ if(!(i >= 0)) { $s = 2; continue; }
-			$r = siftDown(data, i, hi, first); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			i = i - (1) >> 0;
-		/* } */ $s = 1; continue; case 2:
-		i$1 = hi - 1 >> 0;
-		/* while (true) { */ case 4:
-			/* if (!(i$1 >= 0)) { break; } */ if(!(i$1 >= 0)) { $s = 5; continue; }
-			$r = data.Swap(first, first + i$1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = siftDown(data, lo, i$1, first); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			i$1 = i$1 - (1) >> 0;
-		/* } */ $s = 4; continue; case 5:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: heapSort }; } $f._q = _q; $f.a = a; $f.b = b; $f.data = data; $f.first = first; $f.hi = hi; $f.i = i; $f.i$1 = i$1; $f.lo = lo; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	medianOfThree = function(data, m1, m0, m2) {
-		var _r, _r$1, _r$2, data, m0, m1, m2, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; data = $f.data; m0 = $f.m0; m1 = $f.m1; m2 = $f.m2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_r = data.Less(m1, m0); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		/* */ if (_r) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (_r) { */ case 1:
-			$r = data.Swap(m1, m0); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 2:
-		_r$1 = data.Less(m2, m1); /* */ $s = 7; case 7: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		/* */ if (_r$1) { $s = 5; continue; }
-		/* */ $s = 6; continue;
-		/* if (_r$1) { */ case 5:
-			$r = data.Swap(m2, m1); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			_r$2 = data.Less(m1, m0); /* */ $s = 11; case 11: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-			/* */ if (_r$2) { $s = 9; continue; }
-			/* */ $s = 10; continue;
-			/* if (_r$2) { */ case 9:
-				$r = data.Swap(m1, m0); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 10:
-		/* } */ case 6:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: medianOfThree }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f.data = data; $f.m0 = m0; $f.m1 = m1; $f.m2 = m2; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	doPivot = function(data, lo, hi) {
-		var _q, _q$1, _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _tmp, _tmp$1, _tmp$2, _tmp$3, _v, _v$1, _v$2, _v$3, _v$4, a, b, c, data, dups, hi, lo, m, midhi, midlo, pivot, protect, s, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; _q$1 = $f._q$1; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; _tmp$2 = $f._tmp$2; _tmp$3 = $f._tmp$3; _v = $f._v; _v$1 = $f._v$1; _v$2 = $f._v$2; _v$3 = $f._v$3; _v$4 = $f._v$4; a = $f.a; b = $f.b; c = $f.c; data = $f.data; dups = $f.dups; hi = $f.hi; lo = $f.lo; m = $f.m; midhi = $f.midhi; midlo = $f.midlo; pivot = $f.pivot; protect = $f.protect; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		midlo = 0;
-		midhi = 0;
-		m = ((((((lo + hi >> 0) >>> 0)) >>> 1 >>> 0) >> 0));
-		/* */ if ((hi - lo >> 0) > 40) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if ((hi - lo >> 0) > 40) { */ case 1:
-			s = (_q = ((hi - lo >> 0)) / 8, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
-			$r = medianOfThree(data, lo, lo + s >> 0, lo + ($imul(2, s)) >> 0); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = medianOfThree(data, m, m - s >> 0, m + s >> 0); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = medianOfThree(data, hi - 1 >> 0, (hi - 1 >> 0) - s >> 0, (hi - 1 >> 0) - ($imul(2, s)) >> 0); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 2:
-		$r = medianOfThree(data, lo, m, hi - 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		pivot = lo;
-		_tmp = lo + 1 >> 0;
-		_tmp$1 = hi - 1 >> 0;
-		a = _tmp;
-		c = _tmp$1;
-		/* while (true) { */ case 7:
-			if (!(a < c)) { _v = false; $s = 9; continue s; }
-			_r = data.Less(a, pivot); /* */ $s = 10; case 10: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_v = _r; case 9:
-			/* if (!(_v)) { break; } */ if(!(_v)) { $s = 8; continue; }
-			a = a + (1) >> 0;
-		/* } */ $s = 7; continue; case 8:
-		b = a;
-		/* while (true) { */ case 11:
-			/* while (true) { */ case 13:
-				if (!(b < c)) { _v$1 = false; $s = 15; continue s; }
-				_r$1 = data.Less(pivot, b); /* */ $s = 16; case 16: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				_v$1 = !_r$1; case 15:
-				/* if (!(_v$1)) { break; } */ if(!(_v$1)) { $s = 14; continue; }
-				b = b + (1) >> 0;
-			/* } */ $s = 13; continue; case 14:
-			/* while (true) { */ case 17:
-				if (!(b < c)) { _v$2 = false; $s = 19; continue s; }
-				_r$2 = data.Less(pivot, c - 1 >> 0); /* */ $s = 20; case 20: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-				_v$2 = _r$2; case 19:
-				/* if (!(_v$2)) { break; } */ if(!(_v$2)) { $s = 18; continue; }
-				c = c - (1) >> 0;
-			/* } */ $s = 17; continue; case 18:
-			if (b >= c) {
-				/* break; */ $s = 12; continue;
-			}
-			$r = data.Swap(b, c - 1 >> 0); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			b = b + (1) >> 0;
-			c = c - (1) >> 0;
-		/* } */ $s = 11; continue; case 12:
-		protect = (hi - c >> 0) < 5;
-		/* */ if (!protect && (hi - c >> 0) < (_q$1 = ((hi - lo >> 0)) / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero"))) { $s = 22; continue; }
-		/* */ $s = 23; continue;
-		/* if (!protect && (hi - c >> 0) < (_q$1 = ((hi - lo >> 0)) / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero"))) { */ case 22:
-			dups = 0;
-			_r$3 = data.Less(pivot, hi - 1 >> 0); /* */ $s = 26; case 26: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-			/* */ if (!_r$3) { $s = 24; continue; }
-			/* */ $s = 25; continue;
-			/* if (!_r$3) { */ case 24:
-				$r = data.Swap(c, hi - 1 >> 0); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				c = c + (1) >> 0;
-				dups = dups + (1) >> 0;
-			/* } */ case 25:
-			_r$4 = data.Less(b - 1 >> 0, pivot); /* */ $s = 30; case 30: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-			/* */ if (!_r$4) { $s = 28; continue; }
-			/* */ $s = 29; continue;
-			/* if (!_r$4) { */ case 28:
-				b = b - (1) >> 0;
-				dups = dups + (1) >> 0;
-			/* } */ case 29:
-			_r$5 = data.Less(m, pivot); /* */ $s = 33; case 33: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-			/* */ if (!_r$5) { $s = 31; continue; }
-			/* */ $s = 32; continue;
-			/* if (!_r$5) { */ case 31:
-				$r = data.Swap(m, b - 1 >> 0); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				b = b - (1) >> 0;
-				dups = dups + (1) >> 0;
-			/* } */ case 32:
-			protect = dups > 1;
-		/* } */ case 23:
-		/* */ if (protect) { $s = 35; continue; }
-		/* */ $s = 36; continue;
-		/* if (protect) { */ case 35:
-			/* while (true) { */ case 37:
-				/* while (true) { */ case 39:
-					if (!(a < b)) { _v$3 = false; $s = 41; continue s; }
-					_r$6 = data.Less(b - 1 >> 0, pivot); /* */ $s = 42; case 42: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
-					_v$3 = !_r$6; case 41:
-					/* if (!(_v$3)) { break; } */ if(!(_v$3)) { $s = 40; continue; }
-					b = b - (1) >> 0;
-				/* } */ $s = 39; continue; case 40:
-				/* while (true) { */ case 43:
-					if (!(a < b)) { _v$4 = false; $s = 45; continue s; }
-					_r$7 = data.Less(a, pivot); /* */ $s = 46; case 46: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
-					_v$4 = _r$7; case 45:
-					/* if (!(_v$4)) { break; } */ if(!(_v$4)) { $s = 44; continue; }
-					a = a + (1) >> 0;
-				/* } */ $s = 43; continue; case 44:
-				if (a >= b) {
-					/* break; */ $s = 38; continue;
-				}
-				$r = data.Swap(a, b - 1 >> 0); /* */ $s = 47; case 47: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				a = a + (1) >> 0;
-				b = b - (1) >> 0;
-			/* } */ $s = 37; continue; case 38:
-		/* } */ case 36:
-		$r = data.Swap(pivot, b - 1 >> 0); /* */ $s = 48; case 48: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_tmp$2 = b - 1 >> 0;
-		_tmp$3 = c;
-		midlo = _tmp$2;
-		midhi = _tmp$3;
-		$s = -1; return [midlo, midhi];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: doPivot }; } $f._q = _q; $f._q$1 = _q$1; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f._tmp$2 = _tmp$2; $f._tmp$3 = _tmp$3; $f._v = _v; $f._v$1 = _v$1; $f._v$2 = _v$2; $f._v$3 = _v$3; $f._v$4 = _v$4; $f.a = a; $f.b = b; $f.c = c; $f.data = data; $f.dups = dups; $f.hi = hi; $f.lo = lo; $f.m = m; $f.midhi = midhi; $f.midlo = midlo; $f.pivot = pivot; $f.protect = protect; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	quickSort = function(data, a, b, maxDepth$1) {
-		var _r, _r$1, _tuple, a, b, data, i, maxDepth$1, mhi, mlo, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; a = $f.a; b = $f.b; data = $f.data; i = $f.i; maxDepth$1 = $f.maxDepth$1; mhi = $f.mhi; mlo = $f.mlo; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		/* while (true) { */ case 1:
-			/* if (!((b - a >> 0) > 12)) { break; } */ if(!((b - a >> 0) > 12)) { $s = 2; continue; }
-			/* */ if (maxDepth$1 === 0) { $s = 3; continue; }
-			/* */ $s = 4; continue;
-			/* if (maxDepth$1 === 0) { */ case 3:
-				$r = heapSort(data, a, b); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = -1; return;
-			/* } */ case 4:
-			maxDepth$1 = maxDepth$1 - (1) >> 0;
-			_r = doPivot(data, a, b); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_tuple = _r;
-			mlo = _tuple[0];
-			mhi = _tuple[1];
-			/* */ if ((mlo - a >> 0) < (b - mhi >> 0)) { $s = 7; continue; }
-			/* */ $s = 8; continue;
-			/* if ((mlo - a >> 0) < (b - mhi >> 0)) { */ case 7:
-				$r = quickSort(data, a, mlo, maxDepth$1); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				a = mhi;
-				$s = 9; continue;
-			/* } else { */ case 8:
-				$r = quickSort(data, mhi, b, maxDepth$1); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				b = mlo;
-			/* } */ case 9:
-		/* } */ $s = 1; continue; case 2:
-		/* */ if ((b - a >> 0) > 1) { $s = 12; continue; }
-		/* */ $s = 13; continue;
-		/* if ((b - a >> 0) > 1) { */ case 12:
-			i = a + 6 >> 0;
-			/* while (true) { */ case 14:
-				/* if (!(i < b)) { break; } */ if(!(i < b)) { $s = 15; continue; }
-				_r$1 = data.Less(i, i - 6 >> 0); /* */ $s = 18; case 18: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				/* */ if (_r$1) { $s = 16; continue; }
-				/* */ $s = 17; continue;
-				/* if (_r$1) { */ case 16:
-					$r = data.Swap(i, i - 6 >> 0); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 17:
-				i = i + (1) >> 0;
-			/* } */ $s = 14; continue; case 15:
-			$r = insertionSort(data, a, b); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 13:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: quickSort }; } $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.a = a; $f.b = b; $f.data = data; $f.i = i; $f.maxDepth$1 = maxDepth$1; $f.mhi = mhi; $f.mlo = mlo; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	Sort = function(data) {
-		var _r, data, n, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; data = $f.data; n = $f.n; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_r = data.Len(); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		n = _r;
-		$r = quickSort(data, 0, n, maxDepth(n)); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Sort }; } $f._r = _r; $f.data = data; $f.n = n; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$pkg.Sort = Sort;
-	maxDepth = function(n) {
-		var depth, i, n;
-		depth = 0;
-		i = n;
-		while (true) {
-			if (!(i > 0)) { break; }
-			depth = depth + (1) >> 0;
-			i = (i >> $min((1), 31)) >> 0;
-		}
-		return $imul(depth, 2);
-	};
-	StringSlice.prototype.Len = function() {
-		var p;
-		p = this;
-		return p.$length;
-	};
-	$ptrType(StringSlice).prototype.Len = function() { return this.$get().Len(); };
-	StringSlice.prototype.Less = function(i, j) {
-		var i, j, p;
-		p = this;
-		return ((i < 0 || i >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i]) < ((j < 0 || j >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + j]);
-	};
-	$ptrType(StringSlice).prototype.Less = function(i, j) { return this.$get().Less(i, j); };
-	StringSlice.prototype.Swap = function(i, j) {
-		var _tmp, _tmp$1, i, j, p;
-		p = this;
-		_tmp = ((j < 0 || j >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + j]);
-		_tmp$1 = ((i < 0 || i >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i]);
-		((i < 0 || i >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i] = _tmp);
-		((j < 0 || j >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + j] = _tmp$1);
-	};
-	$ptrType(StringSlice).prototype.Swap = function(i, j) { return this.$get().Swap(i, j); };
-	StringSlice.prototype.Sort = function() {
-		var p, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; p = $f.p; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		p = this;
-		$r = Sort(p); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: StringSlice.prototype.Sort }; } $f.p = p; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$ptrType(StringSlice).prototype.Sort = function() { return this.$get().Sort(); };
-	Strings = function(a) {
-		var a, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; a = $f.a; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		$r = Sort(($subslice(new StringSlice(a.$array), a.$offset, a.$offset + a.$length))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Strings }; } $f.a = a; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$pkg.Strings = Strings;
-	insertionSort_func = function(data, a, b) {
-		var _r, _v, a, b, data, i, j, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _v = $f._v; a = $f.a; b = $f.b; data = $f.data; i = $f.i; j = $f.j; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		i = a + 1 >> 0;
-		/* while (true) { */ case 1:
-			/* if (!(i < b)) { break; } */ if(!(i < b)) { $s = 2; continue; }
-			j = i;
-			/* while (true) { */ case 3:
-				if (!(j > a)) { _v = false; $s = 5; continue s; }
-				_r = data.Less(j, j - 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-				_v = _r; case 5:
-				/* if (!(_v)) { break; } */ if(!(_v)) { $s = 4; continue; }
-				$r = data.Swap(j, j - 1 >> 0); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				j = j - (1) >> 0;
-			/* } */ $s = 3; continue; case 4:
-			i = i + (1) >> 0;
-		/* } */ $s = 1; continue; case 2:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: insertionSort_func }; } $f._r = _r; $f._v = _v; $f.a = a; $f.b = b; $f.data = data; $f.i = i; $f.j = j; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	siftDown_func = function(data, lo, hi, first) {
-		var _r, _r$1, _v, child, data, first, hi, lo, root, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _v = $f._v; child = $f.child; data = $f.data; first = $f.first; hi = $f.hi; lo = $f.lo; root = $f.root; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		root = lo;
-		/* while (true) { */ case 1:
-			child = ($imul(2, root)) + 1 >> 0;
-			if (child >= hi) {
-				/* break; */ $s = 2; continue;
-			}
-			if (!((child + 1 >> 0) < hi)) { _v = false; $s = 5; continue s; }
-			_r = data.Less(first + child >> 0, (first + child >> 0) + 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_v = _r; case 5:
-			/* */ if (_v) { $s = 3; continue; }
-			/* */ $s = 4; continue;
-			/* if (_v) { */ case 3:
-				child = child + (1) >> 0;
-			/* } */ case 4:
-			_r$1 = data.Less(first + root >> 0, first + child >> 0); /* */ $s = 9; case 9: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			/* */ if (!_r$1) { $s = 7; continue; }
-			/* */ $s = 8; continue;
-			/* if (!_r$1) { */ case 7:
-				$s = -1; return;
-			/* } */ case 8:
-			$r = data.Swap(first + root >> 0, first + child >> 0); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			root = child;
-		/* } */ $s = 1; continue; case 2:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: siftDown_func }; } $f._r = _r; $f._r$1 = _r$1; $f._v = _v; $f.child = child; $f.data = data; $f.first = first; $f.hi = hi; $f.lo = lo; $f.root = root; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	heapSort_func = function(data, a, b) {
-		var _q, a, b, data, first, hi, i, i$1, lo, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; a = $f.a; b = $f.b; data = $f.data; first = $f.first; hi = $f.hi; i = $f.i; i$1 = $f.i$1; lo = $f.lo; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		first = a;
-		lo = 0;
-		hi = b - a >> 0;
-		i = (_q = ((hi - 1 >> 0)) / 2, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
-		/* while (true) { */ case 1:
-			/* if (!(i >= 0)) { break; } */ if(!(i >= 0)) { $s = 2; continue; }
-			$r = siftDown_func($clone(data, lessSwap), i, hi, first); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			i = i - (1) >> 0;
-		/* } */ $s = 1; continue; case 2:
-		i$1 = hi - 1 >> 0;
-		/* while (true) { */ case 4:
-			/* if (!(i$1 >= 0)) { break; } */ if(!(i$1 >= 0)) { $s = 5; continue; }
-			$r = data.Swap(first, first + i$1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = siftDown_func($clone(data, lessSwap), lo, i$1, first); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			i$1 = i$1 - (1) >> 0;
-		/* } */ $s = 4; continue; case 5:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: heapSort_func }; } $f._q = _q; $f.a = a; $f.b = b; $f.data = data; $f.first = first; $f.hi = hi; $f.i = i; $f.i$1 = i$1; $f.lo = lo; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	medianOfThree_func = function(data, m1, m0, m2) {
-		var _r, _r$1, _r$2, data, m0, m1, m2, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; data = $f.data; m0 = $f.m0; m1 = $f.m1; m2 = $f.m2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_r = data.Less(m1, m0); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		/* */ if (_r) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (_r) { */ case 1:
-			$r = data.Swap(m1, m0); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 2:
-		_r$1 = data.Less(m2, m1); /* */ $s = 7; case 7: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		/* */ if (_r$1) { $s = 5; continue; }
-		/* */ $s = 6; continue;
-		/* if (_r$1) { */ case 5:
-			$r = data.Swap(m2, m1); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			_r$2 = data.Less(m1, m0); /* */ $s = 11; case 11: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-			/* */ if (_r$2) { $s = 9; continue; }
-			/* */ $s = 10; continue;
-			/* if (_r$2) { */ case 9:
-				$r = data.Swap(m1, m0); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 10:
-		/* } */ case 6:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: medianOfThree_func }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f.data = data; $f.m0 = m0; $f.m1 = m1; $f.m2 = m2; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	doPivot_func = function(data, lo, hi) {
-		var _q, _q$1, _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _tmp, _tmp$1, _tmp$2, _tmp$3, _v, _v$1, _v$2, _v$3, _v$4, a, b, c, data, dups, hi, lo, m, midhi, midlo, pivot, protect, s, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; _q$1 = $f._q$1; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; _tmp$2 = $f._tmp$2; _tmp$3 = $f._tmp$3; _v = $f._v; _v$1 = $f._v$1; _v$2 = $f._v$2; _v$3 = $f._v$3; _v$4 = $f._v$4; a = $f.a; b = $f.b; c = $f.c; data = $f.data; dups = $f.dups; hi = $f.hi; lo = $f.lo; m = $f.m; midhi = $f.midhi; midlo = $f.midlo; pivot = $f.pivot; protect = $f.protect; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		midlo = 0;
-		midhi = 0;
-		m = ((((((lo + hi >> 0) >>> 0)) >>> 1 >>> 0) >> 0));
-		/* */ if ((hi - lo >> 0) > 40) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if ((hi - lo >> 0) > 40) { */ case 1:
-			s = (_q = ((hi - lo >> 0)) / 8, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
-			$r = medianOfThree_func($clone(data, lessSwap), lo, lo + s >> 0, lo + ($imul(2, s)) >> 0); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = medianOfThree_func($clone(data, lessSwap), m, m - s >> 0, m + s >> 0); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = medianOfThree_func($clone(data, lessSwap), hi - 1 >> 0, (hi - 1 >> 0) - s >> 0, (hi - 1 >> 0) - ($imul(2, s)) >> 0); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 2:
-		$r = medianOfThree_func($clone(data, lessSwap), lo, m, hi - 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		pivot = lo;
-		_tmp = lo + 1 >> 0;
-		_tmp$1 = hi - 1 >> 0;
-		a = _tmp;
-		c = _tmp$1;
-		/* while (true) { */ case 7:
-			if (!(a < c)) { _v = false; $s = 9; continue s; }
-			_r = data.Less(a, pivot); /* */ $s = 10; case 10: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_v = _r; case 9:
-			/* if (!(_v)) { break; } */ if(!(_v)) { $s = 8; continue; }
-			a = a + (1) >> 0;
-		/* } */ $s = 7; continue; case 8:
-		b = a;
-		/* while (true) { */ case 11:
-			/* while (true) { */ case 13:
-				if (!(b < c)) { _v$1 = false; $s = 15; continue s; }
-				_r$1 = data.Less(pivot, b); /* */ $s = 16; case 16: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				_v$1 = !_r$1; case 15:
-				/* if (!(_v$1)) { break; } */ if(!(_v$1)) { $s = 14; continue; }
-				b = b + (1) >> 0;
-			/* } */ $s = 13; continue; case 14:
-			/* while (true) { */ case 17:
-				if (!(b < c)) { _v$2 = false; $s = 19; continue s; }
-				_r$2 = data.Less(pivot, c - 1 >> 0); /* */ $s = 20; case 20: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-				_v$2 = _r$2; case 19:
-				/* if (!(_v$2)) { break; } */ if(!(_v$2)) { $s = 18; continue; }
-				c = c - (1) >> 0;
-			/* } */ $s = 17; continue; case 18:
-			if (b >= c) {
-				/* break; */ $s = 12; continue;
-			}
-			$r = data.Swap(b, c - 1 >> 0); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			b = b + (1) >> 0;
-			c = c - (1) >> 0;
-		/* } */ $s = 11; continue; case 12:
-		protect = (hi - c >> 0) < 5;
-		/* */ if (!protect && (hi - c >> 0) < (_q$1 = ((hi - lo >> 0)) / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero"))) { $s = 22; continue; }
-		/* */ $s = 23; continue;
-		/* if (!protect && (hi - c >> 0) < (_q$1 = ((hi - lo >> 0)) / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero"))) { */ case 22:
-			dups = 0;
-			_r$3 = data.Less(pivot, hi - 1 >> 0); /* */ $s = 26; case 26: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-			/* */ if (!_r$3) { $s = 24; continue; }
-			/* */ $s = 25; continue;
-			/* if (!_r$3) { */ case 24:
-				$r = data.Swap(c, hi - 1 >> 0); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				c = c + (1) >> 0;
-				dups = dups + (1) >> 0;
-			/* } */ case 25:
-			_r$4 = data.Less(b - 1 >> 0, pivot); /* */ $s = 30; case 30: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-			/* */ if (!_r$4) { $s = 28; continue; }
-			/* */ $s = 29; continue;
-			/* if (!_r$4) { */ case 28:
-				b = b - (1) >> 0;
-				dups = dups + (1) >> 0;
-			/* } */ case 29:
-			_r$5 = data.Less(m, pivot); /* */ $s = 33; case 33: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-			/* */ if (!_r$5) { $s = 31; continue; }
-			/* */ $s = 32; continue;
-			/* if (!_r$5) { */ case 31:
-				$r = data.Swap(m, b - 1 >> 0); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				b = b - (1) >> 0;
-				dups = dups + (1) >> 0;
-			/* } */ case 32:
-			protect = dups > 1;
-		/* } */ case 23:
-		/* */ if (protect) { $s = 35; continue; }
-		/* */ $s = 36; continue;
-		/* if (protect) { */ case 35:
-			/* while (true) { */ case 37:
-				/* while (true) { */ case 39:
-					if (!(a < b)) { _v$3 = false; $s = 41; continue s; }
-					_r$6 = data.Less(b - 1 >> 0, pivot); /* */ $s = 42; case 42: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
-					_v$3 = !_r$6; case 41:
-					/* if (!(_v$3)) { break; } */ if(!(_v$3)) { $s = 40; continue; }
-					b = b - (1) >> 0;
-				/* } */ $s = 39; continue; case 40:
-				/* while (true) { */ case 43:
-					if (!(a < b)) { _v$4 = false; $s = 45; continue s; }
-					_r$7 = data.Less(a, pivot); /* */ $s = 46; case 46: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
-					_v$4 = _r$7; case 45:
-					/* if (!(_v$4)) { break; } */ if(!(_v$4)) { $s = 44; continue; }
-					a = a + (1) >> 0;
-				/* } */ $s = 43; continue; case 44:
-				if (a >= b) {
-					/* break; */ $s = 38; continue;
-				}
-				$r = data.Swap(a, b - 1 >> 0); /* */ $s = 47; case 47: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				a = a + (1) >> 0;
-				b = b - (1) >> 0;
-			/* } */ $s = 37; continue; case 38:
-		/* } */ case 36:
-		$r = data.Swap(pivot, b - 1 >> 0); /* */ $s = 48; case 48: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_tmp$2 = b - 1 >> 0;
-		_tmp$3 = c;
-		midlo = _tmp$2;
-		midhi = _tmp$3;
-		$s = -1; return [midlo, midhi];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: doPivot_func }; } $f._q = _q; $f._q$1 = _q$1; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f._tmp$2 = _tmp$2; $f._tmp$3 = _tmp$3; $f._v = _v; $f._v$1 = _v$1; $f._v$2 = _v$2; $f._v$3 = _v$3; $f._v$4 = _v$4; $f.a = a; $f.b = b; $f.c = c; $f.data = data; $f.dups = dups; $f.hi = hi; $f.lo = lo; $f.m = m; $f.midhi = midhi; $f.midlo = midlo; $f.pivot = pivot; $f.protect = protect; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	quickSort_func = function(data, a, b, maxDepth$1) {
-		var _r, _r$1, _tuple, a, b, data, i, maxDepth$1, mhi, mlo, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; a = $f.a; b = $f.b; data = $f.data; i = $f.i; maxDepth$1 = $f.maxDepth$1; mhi = $f.mhi; mlo = $f.mlo; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		/* while (true) { */ case 1:
-			/* if (!((b - a >> 0) > 12)) { break; } */ if(!((b - a >> 0) > 12)) { $s = 2; continue; }
-			/* */ if (maxDepth$1 === 0) { $s = 3; continue; }
-			/* */ $s = 4; continue;
-			/* if (maxDepth$1 === 0) { */ case 3:
-				$r = heapSort_func($clone(data, lessSwap), a, b); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = -1; return;
-			/* } */ case 4:
-			maxDepth$1 = maxDepth$1 - (1) >> 0;
-			_r = doPivot_func($clone(data, lessSwap), a, b); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_tuple = _r;
-			mlo = _tuple[0];
-			mhi = _tuple[1];
-			/* */ if ((mlo - a >> 0) < (b - mhi >> 0)) { $s = 7; continue; }
-			/* */ $s = 8; continue;
-			/* if ((mlo - a >> 0) < (b - mhi >> 0)) { */ case 7:
-				$r = quickSort_func($clone(data, lessSwap), a, mlo, maxDepth$1); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				a = mhi;
-				$s = 9; continue;
-			/* } else { */ case 8:
-				$r = quickSort_func($clone(data, lessSwap), mhi, b, maxDepth$1); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				b = mlo;
-			/* } */ case 9:
-		/* } */ $s = 1; continue; case 2:
-		/* */ if ((b - a >> 0) > 1) { $s = 12; continue; }
-		/* */ $s = 13; continue;
-		/* if ((b - a >> 0) > 1) { */ case 12:
-			i = a + 6 >> 0;
-			/* while (true) { */ case 14:
-				/* if (!(i < b)) { break; } */ if(!(i < b)) { $s = 15; continue; }
-				_r$1 = data.Less(i, i - 6 >> 0); /* */ $s = 18; case 18: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				/* */ if (_r$1) { $s = 16; continue; }
-				/* */ $s = 17; continue;
-				/* if (_r$1) { */ case 16:
-					$r = data.Swap(i, i - 6 >> 0); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 17:
-				i = i + (1) >> 0;
-			/* } */ $s = 14; continue; case 15:
-			$r = insertionSort_func($clone(data, lessSwap), a, b); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 13:
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: quickSort_func }; } $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.a = a; $f.b = b; $f.data = data; $f.i = i; $f.maxDepth$1 = maxDepth$1; $f.mhi = mhi; $f.mlo = mlo; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	StringSlice.methods = [{prop: "Search", name: "Search", pkg: "", typ: $funcType([$String], [$Int], false)}, {prop: "Len", name: "Len", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Less", name: "Less", pkg: "", typ: $funcType([$Int, $Int], [$Bool], false)}, {prop: "Swap", name: "Swap", pkg: "", typ: $funcType([$Int, $Int], [], false)}, {prop: "Sort", name: "Sort", pkg: "", typ: $funcType([], [], false)}];
-	lessSwap.init("", [{prop: "Less", name: "Less", anonymous: false, exported: true, typ: funcType, tag: ""}, {prop: "Swap", name: "Swap", anonymous: false, exported: true, typ: funcType$1, tag: ""}]);
-	StringSlice.init($String);
-	$init = function() {
-		$pkg.$init = function() {};
-		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		$r = reflect.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$pkg.$init = $init;
-	return $pkg;
-})();
 $packages["strings"] = (function() {
 	var $pkg = {}, $init, errors, js, io, unicode, utf8, Replacer, replacer, trieNode, genericReplacer, appendSliceWriter, stringWriterIface, stringWriter, singleStringReplacer, byteReplacer, byteStringReplacer, stringFinder, asciiSet, sliceType, arrayType, ptrType$1, arrayType$1, ptrType$2, ptrType$3, sliceType$1, ptrType$4, ptrType$5, arrayType$2, sliceType$2, sliceType$3, ptrType$6, arrayType$3, ptrType$8, ptrType$9, ptrType$10, IndexByte, Index, LastIndex, Count, NewReplacer, makeGenericReplacer, getStringWriter, makeSingleStringReplacer, makeStringFinder, longestCommonSuffix, max, explode, Contains, ContainsAny, ContainsRune, IndexRune, IndexAny, genSplit, Split, Join, HasPrefix, HasSuffix, Map, ToLower, TrimLeftFunc, TrimRightFunc, TrimFunc, IndexFunc, indexFunc, lastIndexFunc, makeASCIISet, makeCutsetFunc, TrimLeft, TrimRight, TrimSpace, TrimPrefix, Replace, EqualFold;
 	errors = $packages["errors"];
@@ -31509,6 +30252,1517 @@ $packages["strings"] = (function() {
 		$r = io.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = unicode.$init(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = utf8.$init(); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
+$packages["html"] = (function() {
+	var $pkg = {}, $init, strings, utf8, sliceType, arrayType, sliceType$1, entity, entity2, replacementTable, htmlEscaper, unescapeEntity, EscapeString, UnescapeString;
+	strings = $packages["strings"];
+	utf8 = $packages["unicode/utf8"];
+	sliceType = $sliceType($String);
+	arrayType = $arrayType($Int32, 2);
+	sliceType$1 = $sliceType($Uint8);
+	unescapeEntity = function(b, dst, src) {
+		var _entry, _entry$1, _entry$2, _tmp, _tmp$1, _tmp$10, _tmp$11, _tmp$12, _tmp$13, _tmp$14, _tmp$15, _tmp$16, _tmp$17, _tmp$18, _tmp$19, _tmp$2, _tmp$3, _tmp$4, _tmp$5, _tmp$6, _tmp$7, _tmp$8, _tmp$9, b, c, c$1, dst, dst1, dst1$1, entityName, hex, i, j, maxLen, s, src, src1, x, x$1, x$2, x$3, x$4, x$5;
+		dst1 = 0;
+		src1 = 0;
+		_tmp = 1;
+		_tmp$1 = $subslice(b, src);
+		i = _tmp;
+		s = _tmp$1;
+		if (s.$length <= 1) {
+			((dst < 0 || dst >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + dst] = ((src < 0 || src >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + src]));
+			_tmp$2 = dst + 1 >> 0;
+			_tmp$3 = src + 1 >> 0;
+			dst1 = _tmp$2;
+			src1 = _tmp$3;
+			return [dst1, src1];
+		}
+		if (((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]) === 35) {
+			if (s.$length <= 3) {
+				((dst < 0 || dst >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + dst] = ((src < 0 || src >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + src]));
+				_tmp$4 = dst + 1 >> 0;
+				_tmp$5 = src + 1 >> 0;
+				dst1 = _tmp$4;
+				src1 = _tmp$5;
+				return [dst1, src1];
+			}
+			i = i + (1) >> 0;
+			c = ((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]);
+			hex = false;
+			if ((c === 120) || (c === 88)) {
+				hex = true;
+				i = i + (1) >> 0;
+			}
+			x = 0;
+			while (true) {
+				if (!(i < s.$length)) { break; }
+				c = ((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]);
+				i = i + (1) >> 0;
+				if (hex) {
+					if (48 <= c && c <= 57) {
+						x = (($imul(16, x)) + ((c >> 0)) >> 0) - 48 >> 0;
+						continue;
+					} else if (97 <= c && c <= 102) {
+						x = ((($imul(16, x)) + ((c >> 0)) >> 0) - 97 >> 0) + 10 >> 0;
+						continue;
+					} else if (65 <= c && c <= 70) {
+						x = ((($imul(16, x)) + ((c >> 0)) >> 0) - 65 >> 0) + 10 >> 0;
+						continue;
+					}
+				} else if (48 <= c && c <= 57) {
+					x = (($imul(10, x)) + ((c >> 0)) >> 0) - 48 >> 0;
+					continue;
+				}
+				if (!((c === 59))) {
+					i = i - (1) >> 0;
+				}
+				break;
+			}
+			if (i <= 3) {
+				((dst < 0 || dst >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + dst] = ((src < 0 || src >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + src]));
+				_tmp$6 = dst + 1 >> 0;
+				_tmp$7 = src + 1 >> 0;
+				dst1 = _tmp$6;
+				src1 = _tmp$7;
+				return [dst1, src1];
+			}
+			if (128 <= x && x <= 159) {
+				x = (x$1 = x - 128 >> 0, ((x$1 < 0 || x$1 >= replacementTable.length) ? ($throwRuntimeError("index out of range"), undefined) : replacementTable[x$1]));
+			} else if ((x === 0) || (55296 <= x && x <= 57343) || x > 1114111) {
+				x = 65533;
+			}
+			_tmp$8 = dst + utf8.EncodeRune($subslice(b, dst), x) >> 0;
+			_tmp$9 = src + i >> 0;
+			dst1 = _tmp$8;
+			src1 = _tmp$9;
+			return [dst1, src1];
+		}
+		while (true) {
+			if (!(i < s.$length)) { break; }
+			c$1 = ((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]);
+			i = i + (1) >> 0;
+			if (97 <= c$1 && c$1 <= 122 || 65 <= c$1 && c$1 <= 90 || 48 <= c$1 && c$1 <= 57) {
+				continue;
+			}
+			if (!((c$1 === 59))) {
+				i = i - (1) >> 0;
+			}
+			break;
+		}
+		entityName = $subslice(s, 1, i);
+		if (entityName.$length === 0) {
+		} else if (false && !(((x$2 = entityName.$length - 1 >> 0, ((x$2 < 0 || x$2 >= entityName.$length) ? ($throwRuntimeError("index out of range"), undefined) : entityName.$array[entityName.$offset + x$2])) === 59)) && s.$length > i && (((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]) === 61)) {
+		} else {
+			x$3 = (_entry = entity[$String.keyFor(($bytesToString(entityName)))], _entry !== undefined ? _entry.v : 0);
+			if (!((x$3 === 0))) {
+				_tmp$10 = dst + utf8.EncodeRune($subslice(b, dst), x$3) >> 0;
+				_tmp$11 = src + i >> 0;
+				dst1 = _tmp$10;
+				src1 = _tmp$11;
+				return [dst1, src1];
+			} else {
+				x$4 = $clone((_entry$1 = entity2[$String.keyFor(($bytesToString(entityName)))], _entry$1 !== undefined ? _entry$1.v : arrayType.zero()), arrayType);
+				if (!((x$4[0] === 0))) {
+					dst1$1 = dst + utf8.EncodeRune($subslice(b, dst), x$4[0]) >> 0;
+					_tmp$12 = dst1$1 + utf8.EncodeRune($subslice(b, dst1$1), x$4[1]) >> 0;
+					_tmp$13 = src + i >> 0;
+					dst1 = _tmp$12;
+					src1 = _tmp$13;
+					return [dst1, src1];
+				} else if (true) {
+					maxLen = entityName.$length - 1 >> 0;
+					if (maxLen > 6) {
+						maxLen = 6;
+					}
+					j = maxLen;
+					while (true) {
+						if (!(j > 1)) { break; }
+						x$5 = (_entry$2 = entity[$String.keyFor(($bytesToString($subslice(entityName, 0, j))))], _entry$2 !== undefined ? _entry$2.v : 0);
+						if (!((x$5 === 0))) {
+							_tmp$14 = dst + utf8.EncodeRune($subslice(b, dst), x$5) >> 0;
+							_tmp$15 = (src + j >> 0) + 1 >> 0;
+							dst1 = _tmp$14;
+							src1 = _tmp$15;
+							return [dst1, src1];
+						}
+						j = j - (1) >> 0;
+					}
+				}
+			}
+		}
+		_tmp$16 = dst + i >> 0;
+		_tmp$17 = src + i >> 0;
+		dst1 = _tmp$16;
+		src1 = _tmp$17;
+		$copySlice($subslice(b, dst, dst1), $subslice(b, src, src1));
+		_tmp$18 = dst1;
+		_tmp$19 = src1;
+		dst1 = _tmp$18;
+		src1 = _tmp$19;
+		return [dst1, src1];
+	};
+	EscapeString = function(s) {
+		var _r, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = htmlEscaper.Replace(s); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		$s = -1; return _r;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: EscapeString }; } $f._r = _r; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.EscapeString = EscapeString;
+	UnescapeString = function(s) {
+		var _tuple, _tuple$1, b, dst, i, s, src;
+		i = strings.IndexByte(s, 38);
+		if (i < 0) {
+			return s;
+		}
+		b = (new sliceType$1($stringToBytes(s)));
+		_tuple = unescapeEntity(b, i, i);
+		dst = _tuple[0];
+		src = _tuple[1];
+		while (true) {
+			if (!($substring(s, src).length > 0)) { break; }
+			if (s.charCodeAt(src) === 38) {
+				i = 0;
+			} else {
+				i = strings.IndexByte($substring(s, src), 38);
+			}
+			if (i < 0) {
+				dst = dst + ($copyString($subslice(b, dst), $substring(s, src))) >> 0;
+				break;
+			}
+			if (i > 0) {
+				$copyString($subslice(b, dst), $substring(s, src, (src + i >> 0)));
+			}
+			_tuple$1 = unescapeEntity(b, dst + i >> 0, src + i >> 0);
+			dst = _tuple$1[0];
+			src = _tuple$1[1];
+		}
+		return ($bytesToString($subslice(b, 0, dst)));
+	};
+	$pkg.UnescapeString = UnescapeString;
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = strings.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = utf8.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		entity = $makeMap($String.keyFor, [{ k: "AElig;", v: 198 }, { k: "AMP;", v: 38 }, { k: "Aacute;", v: 193 }, { k: "Abreve;", v: 258 }, { k: "Acirc;", v: 194 }, { k: "Acy;", v: 1040 }, { k: "Afr;", v: 120068 }, { k: "Agrave;", v: 192 }, { k: "Alpha;", v: 913 }, { k: "Amacr;", v: 256 }, { k: "And;", v: 10835 }, { k: "Aogon;", v: 260 }, { k: "Aopf;", v: 120120 }, { k: "ApplyFunction;", v: 8289 }, { k: "Aring;", v: 197 }, { k: "Ascr;", v: 119964 }, { k: "Assign;", v: 8788 }, { k: "Atilde;", v: 195 }, { k: "Auml;", v: 196 }, { k: "Backslash;", v: 8726 }, { k: "Barv;", v: 10983 }, { k: "Barwed;", v: 8966 }, { k: "Bcy;", v: 1041 }, { k: "Because;", v: 8757 }, { k: "Bernoullis;", v: 8492 }, { k: "Beta;", v: 914 }, { k: "Bfr;", v: 120069 }, { k: "Bopf;", v: 120121 }, { k: "Breve;", v: 728 }, { k: "Bscr;", v: 8492 }, { k: "Bumpeq;", v: 8782 }, { k: "CHcy;", v: 1063 }, { k: "COPY;", v: 169 }, { k: "Cacute;", v: 262 }, { k: "Cap;", v: 8914 }, { k: "CapitalDifferentialD;", v: 8517 }, { k: "Cayleys;", v: 8493 }, { k: "Ccaron;", v: 268 }, { k: "Ccedil;", v: 199 }, { k: "Ccirc;", v: 264 }, { k: "Cconint;", v: 8752 }, { k: "Cdot;", v: 266 }, { k: "Cedilla;", v: 184 }, { k: "CenterDot;", v: 183 }, { k: "Cfr;", v: 8493 }, { k: "Chi;", v: 935 }, { k: "CircleDot;", v: 8857 }, { k: "CircleMinus;", v: 8854 }, { k: "CirclePlus;", v: 8853 }, { k: "CircleTimes;", v: 8855 }, { k: "ClockwiseContourIntegral;", v: 8754 }, { k: "CloseCurlyDoubleQuote;", v: 8221 }, { k: "CloseCurlyQuote;", v: 8217 }, { k: "Colon;", v: 8759 }, { k: "Colone;", v: 10868 }, { k: "Congruent;", v: 8801 }, { k: "Conint;", v: 8751 }, { k: "ContourIntegral;", v: 8750 }, { k: "Copf;", v: 8450 }, { k: "Coproduct;", v: 8720 }, { k: "CounterClockwiseContourIntegral;", v: 8755 }, { k: "Cross;", v: 10799 }, { k: "Cscr;", v: 119966 }, { k: "Cup;", v: 8915 }, { k: "CupCap;", v: 8781 }, { k: "DD;", v: 8517 }, { k: "DDotrahd;", v: 10513 }, { k: "DJcy;", v: 1026 }, { k: "DScy;", v: 1029 }, { k: "DZcy;", v: 1039 }, { k: "Dagger;", v: 8225 }, { k: "Darr;", v: 8609 }, { k: "Dashv;", v: 10980 }, { k: "Dcaron;", v: 270 }, { k: "Dcy;", v: 1044 }, { k: "Del;", v: 8711 }, { k: "Delta;", v: 916 }, { k: "Dfr;", v: 120071 }, { k: "DiacriticalAcute;", v: 180 }, { k: "DiacriticalDot;", v: 729 }, { k: "DiacriticalDoubleAcute;", v: 733 }, { k: "DiacriticalGrave;", v: 96 }, { k: "DiacriticalTilde;", v: 732 }, { k: "Diamond;", v: 8900 }, { k: "DifferentialD;", v: 8518 }, { k: "Dopf;", v: 120123 }, { k: "Dot;", v: 168 }, { k: "DotDot;", v: 8412 }, { k: "DotEqual;", v: 8784 }, { k: "DoubleContourIntegral;", v: 8751 }, { k: "DoubleDot;", v: 168 }, { k: "DoubleDownArrow;", v: 8659 }, { k: "DoubleLeftArrow;", v: 8656 }, { k: "DoubleLeftRightArrow;", v: 8660 }, { k: "DoubleLeftTee;", v: 10980 }, { k: "DoubleLongLeftArrow;", v: 10232 }, { k: "DoubleLongLeftRightArrow;", v: 10234 }, { k: "DoubleLongRightArrow;", v: 10233 }, { k: "DoubleRightArrow;", v: 8658 }, { k: "DoubleRightTee;", v: 8872 }, { k: "DoubleUpArrow;", v: 8657 }, { k: "DoubleUpDownArrow;", v: 8661 }, { k: "DoubleVerticalBar;", v: 8741 }, { k: "DownArrow;", v: 8595 }, { k: "DownArrowBar;", v: 10515 }, { k: "DownArrowUpArrow;", v: 8693 }, { k: "DownBreve;", v: 785 }, { k: "DownLeftRightVector;", v: 10576 }, { k: "DownLeftTeeVector;", v: 10590 }, { k: "DownLeftVector;", v: 8637 }, { k: "DownLeftVectorBar;", v: 10582 }, { k: "DownRightTeeVector;", v: 10591 }, { k: "DownRightVector;", v: 8641 }, { k: "DownRightVectorBar;", v: 10583 }, { k: "DownTee;", v: 8868 }, { k: "DownTeeArrow;", v: 8615 }, { k: "Downarrow;", v: 8659 }, { k: "Dscr;", v: 119967 }, { k: "Dstrok;", v: 272 }, { k: "ENG;", v: 330 }, { k: "ETH;", v: 208 }, { k: "Eacute;", v: 201 }, { k: "Ecaron;", v: 282 }, { k: "Ecirc;", v: 202 }, { k: "Ecy;", v: 1069 }, { k: "Edot;", v: 278 }, { k: "Efr;", v: 120072 }, { k: "Egrave;", v: 200 }, { k: "Element;", v: 8712 }, { k: "Emacr;", v: 274 }, { k: "EmptySmallSquare;", v: 9723 }, { k: "EmptyVerySmallSquare;", v: 9643 }, { k: "Eogon;", v: 280 }, { k: "Eopf;", v: 120124 }, { k: "Epsilon;", v: 917 }, { k: "Equal;", v: 10869 }, { k: "EqualTilde;", v: 8770 }, { k: "Equilibrium;", v: 8652 }, { k: "Escr;", v: 8496 }, { k: "Esim;", v: 10867 }, { k: "Eta;", v: 919 }, { k: "Euml;", v: 203 }, { k: "Exists;", v: 8707 }, { k: "ExponentialE;", v: 8519 }, { k: "Fcy;", v: 1060 }, { k: "Ffr;", v: 120073 }, { k: "FilledSmallSquare;", v: 9724 }, { k: "FilledVerySmallSquare;", v: 9642 }, { k: "Fopf;", v: 120125 }, { k: "ForAll;", v: 8704 }, { k: "Fouriertrf;", v: 8497 }, { k: "Fscr;", v: 8497 }, { k: "GJcy;", v: 1027 }, { k: "GT;", v: 62 }, { k: "Gamma;", v: 915 }, { k: "Gammad;", v: 988 }, { k: "Gbreve;", v: 286 }, { k: "Gcedil;", v: 290 }, { k: "Gcirc;", v: 284 }, { k: "Gcy;", v: 1043 }, { k: "Gdot;", v: 288 }, { k: "Gfr;", v: 120074 }, { k: "Gg;", v: 8921 }, { k: "Gopf;", v: 120126 }, { k: "GreaterEqual;", v: 8805 }, { k: "GreaterEqualLess;", v: 8923 }, { k: "GreaterFullEqual;", v: 8807 }, { k: "GreaterGreater;", v: 10914 }, { k: "GreaterLess;", v: 8823 }, { k: "GreaterSlantEqual;", v: 10878 }, { k: "GreaterTilde;", v: 8819 }, { k: "Gscr;", v: 119970 }, { k: "Gt;", v: 8811 }, { k: "HARDcy;", v: 1066 }, { k: "Hacek;", v: 711 }, { k: "Hat;", v: 94 }, { k: "Hcirc;", v: 292 }, { k: "Hfr;", v: 8460 }, { k: "HilbertSpace;", v: 8459 }, { k: "Hopf;", v: 8461 }, { k: "HorizontalLine;", v: 9472 }, { k: "Hscr;", v: 8459 }, { k: "Hstrok;", v: 294 }, { k: "HumpDownHump;", v: 8782 }, { k: "HumpEqual;", v: 8783 }, { k: "IEcy;", v: 1045 }, { k: "IJlig;", v: 306 }, { k: "IOcy;", v: 1025 }, { k: "Iacute;", v: 205 }, { k: "Icirc;", v: 206 }, { k: "Icy;", v: 1048 }, { k: "Idot;", v: 304 }, { k: "Ifr;", v: 8465 }, { k: "Igrave;", v: 204 }, { k: "Im;", v: 8465 }, { k: "Imacr;", v: 298 }, { k: "ImaginaryI;", v: 8520 }, { k: "Implies;", v: 8658 }, { k: "Int;", v: 8748 }, { k: "Integral;", v: 8747 }, { k: "Intersection;", v: 8898 }, { k: "InvisibleComma;", v: 8291 }, { k: "InvisibleTimes;", v: 8290 }, { k: "Iogon;", v: 302 }, { k: "Iopf;", v: 120128 }, { k: "Iota;", v: 921 }, { k: "Iscr;", v: 8464 }, { k: "Itilde;", v: 296 }, { k: "Iukcy;", v: 1030 }, { k: "Iuml;", v: 207 }, { k: "Jcirc;", v: 308 }, { k: "Jcy;", v: 1049 }, { k: "Jfr;", v: 120077 }, { k: "Jopf;", v: 120129 }, { k: "Jscr;", v: 119973 }, { k: "Jsercy;", v: 1032 }, { k: "Jukcy;", v: 1028 }, { k: "KHcy;", v: 1061 }, { k: "KJcy;", v: 1036 }, { k: "Kappa;", v: 922 }, { k: "Kcedil;", v: 310 }, { k: "Kcy;", v: 1050 }, { k: "Kfr;", v: 120078 }, { k: "Kopf;", v: 120130 }, { k: "Kscr;", v: 119974 }, { k: "LJcy;", v: 1033 }, { k: "LT;", v: 60 }, { k: "Lacute;", v: 313 }, { k: "Lambda;", v: 923 }, { k: "Lang;", v: 10218 }, { k: "Laplacetrf;", v: 8466 }, { k: "Larr;", v: 8606 }, { k: "Lcaron;", v: 317 }, { k: "Lcedil;", v: 315 }, { k: "Lcy;", v: 1051 }, { k: "LeftAngleBracket;", v: 10216 }, { k: "LeftArrow;", v: 8592 }, { k: "LeftArrowBar;", v: 8676 }, { k: "LeftArrowRightArrow;", v: 8646 }, { k: "LeftCeiling;", v: 8968 }, { k: "LeftDoubleBracket;", v: 10214 }, { k: "LeftDownTeeVector;", v: 10593 }, { k: "LeftDownVector;", v: 8643 }, { k: "LeftDownVectorBar;", v: 10585 }, { k: "LeftFloor;", v: 8970 }, { k: "LeftRightArrow;", v: 8596 }, { k: "LeftRightVector;", v: 10574 }, { k: "LeftTee;", v: 8867 }, { k: "LeftTeeArrow;", v: 8612 }, { k: "LeftTeeVector;", v: 10586 }, { k: "LeftTriangle;", v: 8882 }, { k: "LeftTriangleBar;", v: 10703 }, { k: "LeftTriangleEqual;", v: 8884 }, { k: "LeftUpDownVector;", v: 10577 }, { k: "LeftUpTeeVector;", v: 10592 }, { k: "LeftUpVector;", v: 8639 }, { k: "LeftUpVectorBar;", v: 10584 }, { k: "LeftVector;", v: 8636 }, { k: "LeftVectorBar;", v: 10578 }, { k: "Leftarrow;", v: 8656 }, { k: "Leftrightarrow;", v: 8660 }, { k: "LessEqualGreater;", v: 8922 }, { k: "LessFullEqual;", v: 8806 }, { k: "LessGreater;", v: 8822 }, { k: "LessLess;", v: 10913 }, { k: "LessSlantEqual;", v: 10877 }, { k: "LessTilde;", v: 8818 }, { k: "Lfr;", v: 120079 }, { k: "Ll;", v: 8920 }, { k: "Lleftarrow;", v: 8666 }, { k: "Lmidot;", v: 319 }, { k: "LongLeftArrow;", v: 10229 }, { k: "LongLeftRightArrow;", v: 10231 }, { k: "LongRightArrow;", v: 10230 }, { k: "Longleftarrow;", v: 10232 }, { k: "Longleftrightarrow;", v: 10234 }, { k: "Longrightarrow;", v: 10233 }, { k: "Lopf;", v: 120131 }, { k: "LowerLeftArrow;", v: 8601 }, { k: "LowerRightArrow;", v: 8600 }, { k: "Lscr;", v: 8466 }, { k: "Lsh;", v: 8624 }, { k: "Lstrok;", v: 321 }, { k: "Lt;", v: 8810 }, { k: "Map;", v: 10501 }, { k: "Mcy;", v: 1052 }, { k: "MediumSpace;", v: 8287 }, { k: "Mellintrf;", v: 8499 }, { k: "Mfr;", v: 120080 }, { k: "MinusPlus;", v: 8723 }, { k: "Mopf;", v: 120132 }, { k: "Mscr;", v: 8499 }, { k: "Mu;", v: 924 }, { k: "NJcy;", v: 1034 }, { k: "Nacute;", v: 323 }, { k: "Ncaron;", v: 327 }, { k: "Ncedil;", v: 325 }, { k: "Ncy;", v: 1053 }, { k: "NegativeMediumSpace;", v: 8203 }, { k: "NegativeThickSpace;", v: 8203 }, { k: "NegativeThinSpace;", v: 8203 }, { k: "NegativeVeryThinSpace;", v: 8203 }, { k: "NestedGreaterGreater;", v: 8811 }, { k: "NestedLessLess;", v: 8810 }, { k: "NewLine;", v: 10 }, { k: "Nfr;", v: 120081 }, { k: "NoBreak;", v: 8288 }, { k: "NonBreakingSpace;", v: 160 }, { k: "Nopf;", v: 8469 }, { k: "Not;", v: 10988 }, { k: "NotCongruent;", v: 8802 }, { k: "NotCupCap;", v: 8813 }, { k: "NotDoubleVerticalBar;", v: 8742 }, { k: "NotElement;", v: 8713 }, { k: "NotEqual;", v: 8800 }, { k: "NotExists;", v: 8708 }, { k: "NotGreater;", v: 8815 }, { k: "NotGreaterEqual;", v: 8817 }, { k: "NotGreaterLess;", v: 8825 }, { k: "NotGreaterTilde;", v: 8821 }, { k: "NotLeftTriangle;", v: 8938 }, { k: "NotLeftTriangleEqual;", v: 8940 }, { k: "NotLess;", v: 8814 }, { k: "NotLessEqual;", v: 8816 }, { k: "NotLessGreater;", v: 8824 }, { k: "NotLessTilde;", v: 8820 }, { k: "NotPrecedes;", v: 8832 }, { k: "NotPrecedesSlantEqual;", v: 8928 }, { k: "NotReverseElement;", v: 8716 }, { k: "NotRightTriangle;", v: 8939 }, { k: "NotRightTriangleEqual;", v: 8941 }, { k: "NotSquareSubsetEqual;", v: 8930 }, { k: "NotSquareSupersetEqual;", v: 8931 }, { k: "NotSubsetEqual;", v: 8840 }, { k: "NotSucceeds;", v: 8833 }, { k: "NotSucceedsSlantEqual;", v: 8929 }, { k: "NotSupersetEqual;", v: 8841 }, { k: "NotTilde;", v: 8769 }, { k: "NotTildeEqual;", v: 8772 }, { k: "NotTildeFullEqual;", v: 8775 }, { k: "NotTildeTilde;", v: 8777 }, { k: "NotVerticalBar;", v: 8740 }, { k: "Nscr;", v: 119977 }, { k: "Ntilde;", v: 209 }, { k: "Nu;", v: 925 }, { k: "OElig;", v: 338 }, { k: "Oacute;", v: 211 }, { k: "Ocirc;", v: 212 }, { k: "Ocy;", v: 1054 }, { k: "Odblac;", v: 336 }, { k: "Ofr;", v: 120082 }, { k: "Ograve;", v: 210 }, { k: "Omacr;", v: 332 }, { k: "Omega;", v: 937 }, { k: "Omicron;", v: 927 }, { k: "Oopf;", v: 120134 }, { k: "OpenCurlyDoubleQuote;", v: 8220 }, { k: "OpenCurlyQuote;", v: 8216 }, { k: "Or;", v: 10836 }, { k: "Oscr;", v: 119978 }, { k: "Oslash;", v: 216 }, { k: "Otilde;", v: 213 }, { k: "Otimes;", v: 10807 }, { k: "Ouml;", v: 214 }, { k: "OverBar;", v: 8254 }, { k: "OverBrace;", v: 9182 }, { k: "OverBracket;", v: 9140 }, { k: "OverParenthesis;", v: 9180 }, { k: "PartialD;", v: 8706 }, { k: "Pcy;", v: 1055 }, { k: "Pfr;", v: 120083 }, { k: "Phi;", v: 934 }, { k: "Pi;", v: 928 }, { k: "PlusMinus;", v: 177 }, { k: "Poincareplane;", v: 8460 }, { k: "Popf;", v: 8473 }, { k: "Pr;", v: 10939 }, { k: "Precedes;", v: 8826 }, { k: "PrecedesEqual;", v: 10927 }, { k: "PrecedesSlantEqual;", v: 8828 }, { k: "PrecedesTilde;", v: 8830 }, { k: "Prime;", v: 8243 }, { k: "Product;", v: 8719 }, { k: "Proportion;", v: 8759 }, { k: "Proportional;", v: 8733 }, { k: "Pscr;", v: 119979 }, { k: "Psi;", v: 936 }, { k: "QUOT;", v: 34 }, { k: "Qfr;", v: 120084 }, { k: "Qopf;", v: 8474 }, { k: "Qscr;", v: 119980 }, { k: "RBarr;", v: 10512 }, { k: "REG;", v: 174 }, { k: "Racute;", v: 340 }, { k: "Rang;", v: 10219 }, { k: "Rarr;", v: 8608 }, { k: "Rarrtl;", v: 10518 }, { k: "Rcaron;", v: 344 }, { k: "Rcedil;", v: 342 }, { k: "Rcy;", v: 1056 }, { k: "Re;", v: 8476 }, { k: "ReverseElement;", v: 8715 }, { k: "ReverseEquilibrium;", v: 8651 }, { k: "ReverseUpEquilibrium;", v: 10607 }, { k: "Rfr;", v: 8476 }, { k: "Rho;", v: 929 }, { k: "RightAngleBracket;", v: 10217 }, { k: "RightArrow;", v: 8594 }, { k: "RightArrowBar;", v: 8677 }, { k: "RightArrowLeftArrow;", v: 8644 }, { k: "RightCeiling;", v: 8969 }, { k: "RightDoubleBracket;", v: 10215 }, { k: "RightDownTeeVector;", v: 10589 }, { k: "RightDownVector;", v: 8642 }, { k: "RightDownVectorBar;", v: 10581 }, { k: "RightFloor;", v: 8971 }, { k: "RightTee;", v: 8866 }, { k: "RightTeeArrow;", v: 8614 }, { k: "RightTeeVector;", v: 10587 }, { k: "RightTriangle;", v: 8883 }, { k: "RightTriangleBar;", v: 10704 }, { k: "RightTriangleEqual;", v: 8885 }, { k: "RightUpDownVector;", v: 10575 }, { k: "RightUpTeeVector;", v: 10588 }, { k: "RightUpVector;", v: 8638 }, { k: "RightUpVectorBar;", v: 10580 }, { k: "RightVector;", v: 8640 }, { k: "RightVectorBar;", v: 10579 }, { k: "Rightarrow;", v: 8658 }, { k: "Ropf;", v: 8477 }, { k: "RoundImplies;", v: 10608 }, { k: "Rrightarrow;", v: 8667 }, { k: "Rscr;", v: 8475 }, { k: "Rsh;", v: 8625 }, { k: "RuleDelayed;", v: 10740 }, { k: "SHCHcy;", v: 1065 }, { k: "SHcy;", v: 1064 }, { k: "SOFTcy;", v: 1068 }, { k: "Sacute;", v: 346 }, { k: "Sc;", v: 10940 }, { k: "Scaron;", v: 352 }, { k: "Scedil;", v: 350 }, { k: "Scirc;", v: 348 }, { k: "Scy;", v: 1057 }, { k: "Sfr;", v: 120086 }, { k: "ShortDownArrow;", v: 8595 }, { k: "ShortLeftArrow;", v: 8592 }, { k: "ShortRightArrow;", v: 8594 }, { k: "ShortUpArrow;", v: 8593 }, { k: "Sigma;", v: 931 }, { k: "SmallCircle;", v: 8728 }, { k: "Sopf;", v: 120138 }, { k: "Sqrt;", v: 8730 }, { k: "Square;", v: 9633 }, { k: "SquareIntersection;", v: 8851 }, { k: "SquareSubset;", v: 8847 }, { k: "SquareSubsetEqual;", v: 8849 }, { k: "SquareSuperset;", v: 8848 }, { k: "SquareSupersetEqual;", v: 8850 }, { k: "SquareUnion;", v: 8852 }, { k: "Sscr;", v: 119982 }, { k: "Star;", v: 8902 }, { k: "Sub;", v: 8912 }, { k: "Subset;", v: 8912 }, { k: "SubsetEqual;", v: 8838 }, { k: "Succeeds;", v: 8827 }, { k: "SucceedsEqual;", v: 10928 }, { k: "SucceedsSlantEqual;", v: 8829 }, { k: "SucceedsTilde;", v: 8831 }, { k: "SuchThat;", v: 8715 }, { k: "Sum;", v: 8721 }, { k: "Sup;", v: 8913 }, { k: "Superset;", v: 8835 }, { k: "SupersetEqual;", v: 8839 }, { k: "Supset;", v: 8913 }, { k: "THORN;", v: 222 }, { k: "TRADE;", v: 8482 }, { k: "TSHcy;", v: 1035 }, { k: "TScy;", v: 1062 }, { k: "Tab;", v: 9 }, { k: "Tau;", v: 932 }, { k: "Tcaron;", v: 356 }, { k: "Tcedil;", v: 354 }, { k: "Tcy;", v: 1058 }, { k: "Tfr;", v: 120087 }, { k: "Therefore;", v: 8756 }, { k: "Theta;", v: 920 }, { k: "ThinSpace;", v: 8201 }, { k: "Tilde;", v: 8764 }, { k: "TildeEqual;", v: 8771 }, { k: "TildeFullEqual;", v: 8773 }, { k: "TildeTilde;", v: 8776 }, { k: "Topf;", v: 120139 }, { k: "TripleDot;", v: 8411 }, { k: "Tscr;", v: 119983 }, { k: "Tstrok;", v: 358 }, { k: "Uacute;", v: 218 }, { k: "Uarr;", v: 8607 }, { k: "Uarrocir;", v: 10569 }, { k: "Ubrcy;", v: 1038 }, { k: "Ubreve;", v: 364 }, { k: "Ucirc;", v: 219 }, { k: "Ucy;", v: 1059 }, { k: "Udblac;", v: 368 }, { k: "Ufr;", v: 120088 }, { k: "Ugrave;", v: 217 }, { k: "Umacr;", v: 362 }, { k: "UnderBar;", v: 95 }, { k: "UnderBrace;", v: 9183 }, { k: "UnderBracket;", v: 9141 }, { k: "UnderParenthesis;", v: 9181 }, { k: "Union;", v: 8899 }, { k: "UnionPlus;", v: 8846 }, { k: "Uogon;", v: 370 }, { k: "Uopf;", v: 120140 }, { k: "UpArrow;", v: 8593 }, { k: "UpArrowBar;", v: 10514 }, { k: "UpArrowDownArrow;", v: 8645 }, { k: "UpDownArrow;", v: 8597 }, { k: "UpEquilibrium;", v: 10606 }, { k: "UpTee;", v: 8869 }, { k: "UpTeeArrow;", v: 8613 }, { k: "Uparrow;", v: 8657 }, { k: "Updownarrow;", v: 8661 }, { k: "UpperLeftArrow;", v: 8598 }, { k: "UpperRightArrow;", v: 8599 }, { k: "Upsi;", v: 978 }, { k: "Upsilon;", v: 933 }, { k: "Uring;", v: 366 }, { k: "Uscr;", v: 119984 }, { k: "Utilde;", v: 360 }, { k: "Uuml;", v: 220 }, { k: "VDash;", v: 8875 }, { k: "Vbar;", v: 10987 }, { k: "Vcy;", v: 1042 }, { k: "Vdash;", v: 8873 }, { k: "Vdashl;", v: 10982 }, { k: "Vee;", v: 8897 }, { k: "Verbar;", v: 8214 }, { k: "Vert;", v: 8214 }, { k: "VerticalBar;", v: 8739 }, { k: "VerticalLine;", v: 124 }, { k: "VerticalSeparator;", v: 10072 }, { k: "VerticalTilde;", v: 8768 }, { k: "VeryThinSpace;", v: 8202 }, { k: "Vfr;", v: 120089 }, { k: "Vopf;", v: 120141 }, { k: "Vscr;", v: 119985 }, { k: "Vvdash;", v: 8874 }, { k: "Wcirc;", v: 372 }, { k: "Wedge;", v: 8896 }, { k: "Wfr;", v: 120090 }, { k: "Wopf;", v: 120142 }, { k: "Wscr;", v: 119986 }, { k: "Xfr;", v: 120091 }, { k: "Xi;", v: 926 }, { k: "Xopf;", v: 120143 }, { k: "Xscr;", v: 119987 }, { k: "YAcy;", v: 1071 }, { k: "YIcy;", v: 1031 }, { k: "YUcy;", v: 1070 }, { k: "Yacute;", v: 221 }, { k: "Ycirc;", v: 374 }, { k: "Ycy;", v: 1067 }, { k: "Yfr;", v: 120092 }, { k: "Yopf;", v: 120144 }, { k: "Yscr;", v: 119988 }, { k: "Yuml;", v: 376 }, { k: "ZHcy;", v: 1046 }, { k: "Zacute;", v: 377 }, { k: "Zcaron;", v: 381 }, { k: "Zcy;", v: 1047 }, { k: "Zdot;", v: 379 }, { k: "ZeroWidthSpace;", v: 8203 }, { k: "Zeta;", v: 918 }, { k: "Zfr;", v: 8488 }, { k: "Zopf;", v: 8484 }, { k: "Zscr;", v: 119989 }, { k: "aacute;", v: 225 }, { k: "abreve;", v: 259 }, { k: "ac;", v: 8766 }, { k: "acd;", v: 8767 }, { k: "acirc;", v: 226 }, { k: "acute;", v: 180 }, { k: "acy;", v: 1072 }, { k: "aelig;", v: 230 }, { k: "af;", v: 8289 }, { k: "afr;", v: 120094 }, { k: "agrave;", v: 224 }, { k: "alefsym;", v: 8501 }, { k: "aleph;", v: 8501 }, { k: "alpha;", v: 945 }, { k: "amacr;", v: 257 }, { k: "amalg;", v: 10815 }, { k: "amp;", v: 38 }, { k: "and;", v: 8743 }, { k: "andand;", v: 10837 }, { k: "andd;", v: 10844 }, { k: "andslope;", v: 10840 }, { k: "andv;", v: 10842 }, { k: "ang;", v: 8736 }, { k: "ange;", v: 10660 }, { k: "angle;", v: 8736 }, { k: "angmsd;", v: 8737 }, { k: "angmsdaa;", v: 10664 }, { k: "angmsdab;", v: 10665 }, { k: "angmsdac;", v: 10666 }, { k: "angmsdad;", v: 10667 }, { k: "angmsdae;", v: 10668 }, { k: "angmsdaf;", v: 10669 }, { k: "angmsdag;", v: 10670 }, { k: "angmsdah;", v: 10671 }, { k: "angrt;", v: 8735 }, { k: "angrtvb;", v: 8894 }, { k: "angrtvbd;", v: 10653 }, { k: "angsph;", v: 8738 }, { k: "angst;", v: 197 }, { k: "angzarr;", v: 9084 }, { k: "aogon;", v: 261 }, { k: "aopf;", v: 120146 }, { k: "ap;", v: 8776 }, { k: "apE;", v: 10864 }, { k: "apacir;", v: 10863 }, { k: "ape;", v: 8778 }, { k: "apid;", v: 8779 }, { k: "apos;", v: 39 }, { k: "approx;", v: 8776 }, { k: "approxeq;", v: 8778 }, { k: "aring;", v: 229 }, { k: "ascr;", v: 119990 }, { k: "ast;", v: 42 }, { k: "asymp;", v: 8776 }, { k: "asympeq;", v: 8781 }, { k: "atilde;", v: 227 }, { k: "auml;", v: 228 }, { k: "awconint;", v: 8755 }, { k: "awint;", v: 10769 }, { k: "bNot;", v: 10989 }, { k: "backcong;", v: 8780 }, { k: "backepsilon;", v: 1014 }, { k: "backprime;", v: 8245 }, { k: "backsim;", v: 8765 }, { k: "backsimeq;", v: 8909 }, { k: "barvee;", v: 8893 }, { k: "barwed;", v: 8965 }, { k: "barwedge;", v: 8965 }, { k: "bbrk;", v: 9141 }, { k: "bbrktbrk;", v: 9142 }, { k: "bcong;", v: 8780 }, { k: "bcy;", v: 1073 }, { k: "bdquo;", v: 8222 }, { k: "becaus;", v: 8757 }, { k: "because;", v: 8757 }, { k: "bemptyv;", v: 10672 }, { k: "bepsi;", v: 1014 }, { k: "bernou;", v: 8492 }, { k: "beta;", v: 946 }, { k: "beth;", v: 8502 }, { k: "between;", v: 8812 }, { k: "bfr;", v: 120095 }, { k: "bigcap;", v: 8898 }, { k: "bigcirc;", v: 9711 }, { k: "bigcup;", v: 8899 }, { k: "bigodot;", v: 10752 }, { k: "bigoplus;", v: 10753 }, { k: "bigotimes;", v: 10754 }, { k: "bigsqcup;", v: 10758 }, { k: "bigstar;", v: 9733 }, { k: "bigtriangledown;", v: 9661 }, { k: "bigtriangleup;", v: 9651 }, { k: "biguplus;", v: 10756 }, { k: "bigvee;", v: 8897 }, { k: "bigwedge;", v: 8896 }, { k: "bkarow;", v: 10509 }, { k: "blacklozenge;", v: 10731 }, { k: "blacksquare;", v: 9642 }, { k: "blacktriangle;", v: 9652 }, { k: "blacktriangledown;", v: 9662 }, { k: "blacktriangleleft;", v: 9666 }, { k: "blacktriangleright;", v: 9656 }, { k: "blank;", v: 9251 }, { k: "blk12;", v: 9618 }, { k: "blk14;", v: 9617 }, { k: "blk34;", v: 9619 }, { k: "block;", v: 9608 }, { k: "bnot;", v: 8976 }, { k: "bopf;", v: 120147 }, { k: "bot;", v: 8869 }, { k: "bottom;", v: 8869 }, { k: "bowtie;", v: 8904 }, { k: "boxDL;", v: 9559 }, { k: "boxDR;", v: 9556 }, { k: "boxDl;", v: 9558 }, { k: "boxDr;", v: 9555 }, { k: "boxH;", v: 9552 }, { k: "boxHD;", v: 9574 }, { k: "boxHU;", v: 9577 }, { k: "boxHd;", v: 9572 }, { k: "boxHu;", v: 9575 }, { k: "boxUL;", v: 9565 }, { k: "boxUR;", v: 9562 }, { k: "boxUl;", v: 9564 }, { k: "boxUr;", v: 9561 }, { k: "boxV;", v: 9553 }, { k: "boxVH;", v: 9580 }, { k: "boxVL;", v: 9571 }, { k: "boxVR;", v: 9568 }, { k: "boxVh;", v: 9579 }, { k: "boxVl;", v: 9570 }, { k: "boxVr;", v: 9567 }, { k: "boxbox;", v: 10697 }, { k: "boxdL;", v: 9557 }, { k: "boxdR;", v: 9554 }, { k: "boxdl;", v: 9488 }, { k: "boxdr;", v: 9484 }, { k: "boxh;", v: 9472 }, { k: "boxhD;", v: 9573 }, { k: "boxhU;", v: 9576 }, { k: "boxhd;", v: 9516 }, { k: "boxhu;", v: 9524 }, { k: "boxminus;", v: 8863 }, { k: "boxplus;", v: 8862 }, { k: "boxtimes;", v: 8864 }, { k: "boxuL;", v: 9563 }, { k: "boxuR;", v: 9560 }, { k: "boxul;", v: 9496 }, { k: "boxur;", v: 9492 }, { k: "boxv;", v: 9474 }, { k: "boxvH;", v: 9578 }, { k: "boxvL;", v: 9569 }, { k: "boxvR;", v: 9566 }, { k: "boxvh;", v: 9532 }, { k: "boxvl;", v: 9508 }, { k: "boxvr;", v: 9500 }, { k: "bprime;", v: 8245 }, { k: "breve;", v: 728 }, { k: "brvbar;", v: 166 }, { k: "bscr;", v: 119991 }, { k: "bsemi;", v: 8271 }, { k: "bsim;", v: 8765 }, { k: "bsime;", v: 8909 }, { k: "bsol;", v: 92 }, { k: "bsolb;", v: 10693 }, { k: "bsolhsub;", v: 10184 }, { k: "bull;", v: 8226 }, { k: "bullet;", v: 8226 }, { k: "bump;", v: 8782 }, { k: "bumpE;", v: 10926 }, { k: "bumpe;", v: 8783 }, { k: "bumpeq;", v: 8783 }, { k: "cacute;", v: 263 }, { k: "cap;", v: 8745 }, { k: "capand;", v: 10820 }, { k: "capbrcup;", v: 10825 }, { k: "capcap;", v: 10827 }, { k: "capcup;", v: 10823 }, { k: "capdot;", v: 10816 }, { k: "caret;", v: 8257 }, { k: "caron;", v: 711 }, { k: "ccaps;", v: 10829 }, { k: "ccaron;", v: 269 }, { k: "ccedil;", v: 231 }, { k: "ccirc;", v: 265 }, { k: "ccups;", v: 10828 }, { k: "ccupssm;", v: 10832 }, { k: "cdot;", v: 267 }, { k: "cedil;", v: 184 }, { k: "cemptyv;", v: 10674 }, { k: "cent;", v: 162 }, { k: "centerdot;", v: 183 }, { k: "cfr;", v: 120096 }, { k: "chcy;", v: 1095 }, { k: "check;", v: 10003 }, { k: "checkmark;", v: 10003 }, { k: "chi;", v: 967 }, { k: "cir;", v: 9675 }, { k: "cirE;", v: 10691 }, { k: "circ;", v: 710 }, { k: "circeq;", v: 8791 }, { k: "circlearrowleft;", v: 8634 }, { k: "circlearrowright;", v: 8635 }, { k: "circledR;", v: 174 }, { k: "circledS;", v: 9416 }, { k: "circledast;", v: 8859 }, { k: "circledcirc;", v: 8858 }, { k: "circleddash;", v: 8861 }, { k: "cire;", v: 8791 }, { k: "cirfnint;", v: 10768 }, { k: "cirmid;", v: 10991 }, { k: "cirscir;", v: 10690 }, { k: "clubs;", v: 9827 }, { k: "clubsuit;", v: 9827 }, { k: "colon;", v: 58 }, { k: "colone;", v: 8788 }, { k: "coloneq;", v: 8788 }, { k: "comma;", v: 44 }, { k: "commat;", v: 64 }, { k: "comp;", v: 8705 }, { k: "compfn;", v: 8728 }, { k: "complement;", v: 8705 }, { k: "complexes;", v: 8450 }, { k: "cong;", v: 8773 }, { k: "congdot;", v: 10861 }, { k: "conint;", v: 8750 }, { k: "copf;", v: 120148 }, { k: "coprod;", v: 8720 }, { k: "copy;", v: 169 }, { k: "copysr;", v: 8471 }, { k: "crarr;", v: 8629 }, { k: "cross;", v: 10007 }, { k: "cscr;", v: 119992 }, { k: "csub;", v: 10959 }, { k: "csube;", v: 10961 }, { k: "csup;", v: 10960 }, { k: "csupe;", v: 10962 }, { k: "ctdot;", v: 8943 }, { k: "cudarrl;", v: 10552 }, { k: "cudarrr;", v: 10549 }, { k: "cuepr;", v: 8926 }, { k: "cuesc;", v: 8927 }, { k: "cularr;", v: 8630 }, { k: "cularrp;", v: 10557 }, { k: "cup;", v: 8746 }, { k: "cupbrcap;", v: 10824 }, { k: "cupcap;", v: 10822 }, { k: "cupcup;", v: 10826 }, { k: "cupdot;", v: 8845 }, { k: "cupor;", v: 10821 }, { k: "curarr;", v: 8631 }, { k: "curarrm;", v: 10556 }, { k: "curlyeqprec;", v: 8926 }, { k: "curlyeqsucc;", v: 8927 }, { k: "curlyvee;", v: 8910 }, { k: "curlywedge;", v: 8911 }, { k: "curren;", v: 164 }, { k: "curvearrowleft;", v: 8630 }, { k: "curvearrowright;", v: 8631 }, { k: "cuvee;", v: 8910 }, { k: "cuwed;", v: 8911 }, { k: "cwconint;", v: 8754 }, { k: "cwint;", v: 8753 }, { k: "cylcty;", v: 9005 }, { k: "dArr;", v: 8659 }, { k: "dHar;", v: 10597 }, { k: "dagger;", v: 8224 }, { k: "daleth;", v: 8504 }, { k: "darr;", v: 8595 }, { k: "dash;", v: 8208 }, { k: "dashv;", v: 8867 }, { k: "dbkarow;", v: 10511 }, { k: "dblac;", v: 733 }, { k: "dcaron;", v: 271 }, { k: "dcy;", v: 1076 }, { k: "dd;", v: 8518 }, { k: "ddagger;", v: 8225 }, { k: "ddarr;", v: 8650 }, { k: "ddotseq;", v: 10871 }, { k: "deg;", v: 176 }, { k: "delta;", v: 948 }, { k: "demptyv;", v: 10673 }, { k: "dfisht;", v: 10623 }, { k: "dfr;", v: 120097 }, { k: "dharl;", v: 8643 }, { k: "dharr;", v: 8642 }, { k: "diam;", v: 8900 }, { k: "diamond;", v: 8900 }, { k: "diamondsuit;", v: 9830 }, { k: "diams;", v: 9830 }, { k: "die;", v: 168 }, { k: "digamma;", v: 989 }, { k: "disin;", v: 8946 }, { k: "div;", v: 247 }, { k: "divide;", v: 247 }, { k: "divideontimes;", v: 8903 }, { k: "divonx;", v: 8903 }, { k: "djcy;", v: 1106 }, { k: "dlcorn;", v: 8990 }, { k: "dlcrop;", v: 8973 }, { k: "dollar;", v: 36 }, { k: "dopf;", v: 120149 }, { k: "dot;", v: 729 }, { k: "doteq;", v: 8784 }, { k: "doteqdot;", v: 8785 }, { k: "dotminus;", v: 8760 }, { k: "dotplus;", v: 8724 }, { k: "dotsquare;", v: 8865 }, { k: "doublebarwedge;", v: 8966 }, { k: "downarrow;", v: 8595 }, { k: "downdownarrows;", v: 8650 }, { k: "downharpoonleft;", v: 8643 }, { k: "downharpoonright;", v: 8642 }, { k: "drbkarow;", v: 10512 }, { k: "drcorn;", v: 8991 }, { k: "drcrop;", v: 8972 }, { k: "dscr;", v: 119993 }, { k: "dscy;", v: 1109 }, { k: "dsol;", v: 10742 }, { k: "dstrok;", v: 273 }, { k: "dtdot;", v: 8945 }, { k: "dtri;", v: 9663 }, { k: "dtrif;", v: 9662 }, { k: "duarr;", v: 8693 }, { k: "duhar;", v: 10607 }, { k: "dwangle;", v: 10662 }, { k: "dzcy;", v: 1119 }, { k: "dzigrarr;", v: 10239 }, { k: "eDDot;", v: 10871 }, { k: "eDot;", v: 8785 }, { k: "eacute;", v: 233 }, { k: "easter;", v: 10862 }, { k: "ecaron;", v: 283 }, { k: "ecir;", v: 8790 }, { k: "ecirc;", v: 234 }, { k: "ecolon;", v: 8789 }, { k: "ecy;", v: 1101 }, { k: "edot;", v: 279 }, { k: "ee;", v: 8519 }, { k: "efDot;", v: 8786 }, { k: "efr;", v: 120098 }, { k: "eg;", v: 10906 }, { k: "egrave;", v: 232 }, { k: "egs;", v: 10902 }, { k: "egsdot;", v: 10904 }, { k: "el;", v: 10905 }, { k: "elinters;", v: 9191 }, { k: "ell;", v: 8467 }, { k: "els;", v: 10901 }, { k: "elsdot;", v: 10903 }, { k: "emacr;", v: 275 }, { k: "empty;", v: 8709 }, { k: "emptyset;", v: 8709 }, { k: "emptyv;", v: 8709 }, { k: "emsp;", v: 8195 }, { k: "emsp13;", v: 8196 }, { k: "emsp14;", v: 8197 }, { k: "eng;", v: 331 }, { k: "ensp;", v: 8194 }, { k: "eogon;", v: 281 }, { k: "eopf;", v: 120150 }, { k: "epar;", v: 8917 }, { k: "eparsl;", v: 10723 }, { k: "eplus;", v: 10865 }, { k: "epsi;", v: 949 }, { k: "epsilon;", v: 949 }, { k: "epsiv;", v: 1013 }, { k: "eqcirc;", v: 8790 }, { k: "eqcolon;", v: 8789 }, { k: "eqsim;", v: 8770 }, { k: "eqslantgtr;", v: 10902 }, { k: "eqslantless;", v: 10901 }, { k: "equals;", v: 61 }, { k: "equest;", v: 8799 }, { k: "equiv;", v: 8801 }, { k: "equivDD;", v: 10872 }, { k: "eqvparsl;", v: 10725 }, { k: "erDot;", v: 8787 }, { k: "erarr;", v: 10609 }, { k: "escr;", v: 8495 }, { k: "esdot;", v: 8784 }, { k: "esim;", v: 8770 }, { k: "eta;", v: 951 }, { k: "eth;", v: 240 }, { k: "euml;", v: 235 }, { k: "euro;", v: 8364 }, { k: "excl;", v: 33 }, { k: "exist;", v: 8707 }, { k: "expectation;", v: 8496 }, { k: "exponentiale;", v: 8519 }, { k: "fallingdotseq;", v: 8786 }, { k: "fcy;", v: 1092 }, { k: "female;", v: 9792 }, { k: "ffilig;", v: 64259 }, { k: "fflig;", v: 64256 }, { k: "ffllig;", v: 64260 }, { k: "ffr;", v: 120099 }, { k: "filig;", v: 64257 }, { k: "flat;", v: 9837 }, { k: "fllig;", v: 64258 }, { k: "fltns;", v: 9649 }, { k: "fnof;", v: 402 }, { k: "fopf;", v: 120151 }, { k: "forall;", v: 8704 }, { k: "fork;", v: 8916 }, { k: "forkv;", v: 10969 }, { k: "fpartint;", v: 10765 }, { k: "frac12;", v: 189 }, { k: "frac13;", v: 8531 }, { k: "frac14;", v: 188 }, { k: "frac15;", v: 8533 }, { k: "frac16;", v: 8537 }, { k: "frac18;", v: 8539 }, { k: "frac23;", v: 8532 }, { k: "frac25;", v: 8534 }, { k: "frac34;", v: 190 }, { k: "frac35;", v: 8535 }, { k: "frac38;", v: 8540 }, { k: "frac45;", v: 8536 }, { k: "frac56;", v: 8538 }, { k: "frac58;", v: 8541 }, { k: "frac78;", v: 8542 }, { k: "frasl;", v: 8260 }, { k: "frown;", v: 8994 }, { k: "fscr;", v: 119995 }, { k: "gE;", v: 8807 }, { k: "gEl;", v: 10892 }, { k: "gacute;", v: 501 }, { k: "gamma;", v: 947 }, { k: "gammad;", v: 989 }, { k: "gap;", v: 10886 }, { k: "gbreve;", v: 287 }, { k: "gcirc;", v: 285 }, { k: "gcy;", v: 1075 }, { k: "gdot;", v: 289 }, { k: "ge;", v: 8805 }, { k: "gel;", v: 8923 }, { k: "geq;", v: 8805 }, { k: "geqq;", v: 8807 }, { k: "geqslant;", v: 10878 }, { k: "ges;", v: 10878 }, { k: "gescc;", v: 10921 }, { k: "gesdot;", v: 10880 }, { k: "gesdoto;", v: 10882 }, { k: "gesdotol;", v: 10884 }, { k: "gesles;", v: 10900 }, { k: "gfr;", v: 120100 }, { k: "gg;", v: 8811 }, { k: "ggg;", v: 8921 }, { k: "gimel;", v: 8503 }, { k: "gjcy;", v: 1107 }, { k: "gl;", v: 8823 }, { k: "glE;", v: 10898 }, { k: "gla;", v: 10917 }, { k: "glj;", v: 10916 }, { k: "gnE;", v: 8809 }, { k: "gnap;", v: 10890 }, { k: "gnapprox;", v: 10890 }, { k: "gne;", v: 10888 }, { k: "gneq;", v: 10888 }, { k: "gneqq;", v: 8809 }, { k: "gnsim;", v: 8935 }, { k: "gopf;", v: 120152 }, { k: "grave;", v: 96 }, { k: "gscr;", v: 8458 }, { k: "gsim;", v: 8819 }, { k: "gsime;", v: 10894 }, { k: "gsiml;", v: 10896 }, { k: "gt;", v: 62 }, { k: "gtcc;", v: 10919 }, { k: "gtcir;", v: 10874 }, { k: "gtdot;", v: 8919 }, { k: "gtlPar;", v: 10645 }, { k: "gtquest;", v: 10876 }, { k: "gtrapprox;", v: 10886 }, { k: "gtrarr;", v: 10616 }, { k: "gtrdot;", v: 8919 }, { k: "gtreqless;", v: 8923 }, { k: "gtreqqless;", v: 10892 }, { k: "gtrless;", v: 8823 }, { k: "gtrsim;", v: 8819 }, { k: "hArr;", v: 8660 }, { k: "hairsp;", v: 8202 }, { k: "half;", v: 189 }, { k: "hamilt;", v: 8459 }, { k: "hardcy;", v: 1098 }, { k: "harr;", v: 8596 }, { k: "harrcir;", v: 10568 }, { k: "harrw;", v: 8621 }, { k: "hbar;", v: 8463 }, { k: "hcirc;", v: 293 }, { k: "hearts;", v: 9829 }, { k: "heartsuit;", v: 9829 }, { k: "hellip;", v: 8230 }, { k: "hercon;", v: 8889 }, { k: "hfr;", v: 120101 }, { k: "hksearow;", v: 10533 }, { k: "hkswarow;", v: 10534 }, { k: "hoarr;", v: 8703 }, { k: "homtht;", v: 8763 }, { k: "hookleftarrow;", v: 8617 }, { k: "hookrightarrow;", v: 8618 }, { k: "hopf;", v: 120153 }, { k: "horbar;", v: 8213 }, { k: "hscr;", v: 119997 }, { k: "hslash;", v: 8463 }, { k: "hstrok;", v: 295 }, { k: "hybull;", v: 8259 }, { k: "hyphen;", v: 8208 }, { k: "iacute;", v: 237 }, { k: "ic;", v: 8291 }, { k: "icirc;", v: 238 }, { k: "icy;", v: 1080 }, { k: "iecy;", v: 1077 }, { k: "iexcl;", v: 161 }, { k: "iff;", v: 8660 }, { k: "ifr;", v: 120102 }, { k: "igrave;", v: 236 }, { k: "ii;", v: 8520 }, { k: "iiiint;", v: 10764 }, { k: "iiint;", v: 8749 }, { k: "iinfin;", v: 10716 }, { k: "iiota;", v: 8489 }, { k: "ijlig;", v: 307 }, { k: "imacr;", v: 299 }, { k: "image;", v: 8465 }, { k: "imagline;", v: 8464 }, { k: "imagpart;", v: 8465 }, { k: "imath;", v: 305 }, { k: "imof;", v: 8887 }, { k: "imped;", v: 437 }, { k: "in;", v: 8712 }, { k: "incare;", v: 8453 }, { k: "infin;", v: 8734 }, { k: "infintie;", v: 10717 }, { k: "inodot;", v: 305 }, { k: "int;", v: 8747 }, { k: "intcal;", v: 8890 }, { k: "integers;", v: 8484 }, { k: "intercal;", v: 8890 }, { k: "intlarhk;", v: 10775 }, { k: "intprod;", v: 10812 }, { k: "iocy;", v: 1105 }, { k: "iogon;", v: 303 }, { k: "iopf;", v: 120154 }, { k: "iota;", v: 953 }, { k: "iprod;", v: 10812 }, { k: "iquest;", v: 191 }, { k: "iscr;", v: 119998 }, { k: "isin;", v: 8712 }, { k: "isinE;", v: 8953 }, { k: "isindot;", v: 8949 }, { k: "isins;", v: 8948 }, { k: "isinsv;", v: 8947 }, { k: "isinv;", v: 8712 }, { k: "it;", v: 8290 }, { k: "itilde;", v: 297 }, { k: "iukcy;", v: 1110 }, { k: "iuml;", v: 239 }, { k: "jcirc;", v: 309 }, { k: "jcy;", v: 1081 }, { k: "jfr;", v: 120103 }, { k: "jmath;", v: 567 }, { k: "jopf;", v: 120155 }, { k: "jscr;", v: 119999 }, { k: "jsercy;", v: 1112 }, { k: "jukcy;", v: 1108 }, { k: "kappa;", v: 954 }, { k: "kappav;", v: 1008 }, { k: "kcedil;", v: 311 }, { k: "kcy;", v: 1082 }, { k: "kfr;", v: 120104 }, { k: "kgreen;", v: 312 }, { k: "khcy;", v: 1093 }, { k: "kjcy;", v: 1116 }, { k: "kopf;", v: 120156 }, { k: "kscr;", v: 120000 }, { k: "lAarr;", v: 8666 }, { k: "lArr;", v: 8656 }, { k: "lAtail;", v: 10523 }, { k: "lBarr;", v: 10510 }, { k: "lE;", v: 8806 }, { k: "lEg;", v: 10891 }, { k: "lHar;", v: 10594 }, { k: "lacute;", v: 314 }, { k: "laemptyv;", v: 10676 }, { k: "lagran;", v: 8466 }, { k: "lambda;", v: 955 }, { k: "lang;", v: 10216 }, { k: "langd;", v: 10641 }, { k: "langle;", v: 10216 }, { k: "lap;", v: 10885 }, { k: "laquo;", v: 171 }, { k: "larr;", v: 8592 }, { k: "larrb;", v: 8676 }, { k: "larrbfs;", v: 10527 }, { k: "larrfs;", v: 10525 }, { k: "larrhk;", v: 8617 }, { k: "larrlp;", v: 8619 }, { k: "larrpl;", v: 10553 }, { k: "larrsim;", v: 10611 }, { k: "larrtl;", v: 8610 }, { k: "lat;", v: 10923 }, { k: "latail;", v: 10521 }, { k: "late;", v: 10925 }, { k: "lbarr;", v: 10508 }, { k: "lbbrk;", v: 10098 }, { k: "lbrace;", v: 123 }, { k: "lbrack;", v: 91 }, { k: "lbrke;", v: 10635 }, { k: "lbrksld;", v: 10639 }, { k: "lbrkslu;", v: 10637 }, { k: "lcaron;", v: 318 }, { k: "lcedil;", v: 316 }, { k: "lceil;", v: 8968 }, { k: "lcub;", v: 123 }, { k: "lcy;", v: 1083 }, { k: "ldca;", v: 10550 }, { k: "ldquo;", v: 8220 }, { k: "ldquor;", v: 8222 }, { k: "ldrdhar;", v: 10599 }, { k: "ldrushar;", v: 10571 }, { k: "ldsh;", v: 8626 }, { k: "le;", v: 8804 }, { k: "leftarrow;", v: 8592 }, { k: "leftarrowtail;", v: 8610 }, { k: "leftharpoondown;", v: 8637 }, { k: "leftharpoonup;", v: 8636 }, { k: "leftleftarrows;", v: 8647 }, { k: "leftrightarrow;", v: 8596 }, { k: "leftrightarrows;", v: 8646 }, { k: "leftrightharpoons;", v: 8651 }, { k: "leftrightsquigarrow;", v: 8621 }, { k: "leftthreetimes;", v: 8907 }, { k: "leg;", v: 8922 }, { k: "leq;", v: 8804 }, { k: "leqq;", v: 8806 }, { k: "leqslant;", v: 10877 }, { k: "les;", v: 10877 }, { k: "lescc;", v: 10920 }, { k: "lesdot;", v: 10879 }, { k: "lesdoto;", v: 10881 }, { k: "lesdotor;", v: 10883 }, { k: "lesges;", v: 10899 }, { k: "lessapprox;", v: 10885 }, { k: "lessdot;", v: 8918 }, { k: "lesseqgtr;", v: 8922 }, { k: "lesseqqgtr;", v: 10891 }, { k: "lessgtr;", v: 8822 }, { k: "lesssim;", v: 8818 }, { k: "lfisht;", v: 10620 }, { k: "lfloor;", v: 8970 }, { k: "lfr;", v: 120105 }, { k: "lg;", v: 8822 }, { k: "lgE;", v: 10897 }, { k: "lhard;", v: 8637 }, { k: "lharu;", v: 8636 }, { k: "lharul;", v: 10602 }, { k: "lhblk;", v: 9604 }, { k: "ljcy;", v: 1113 }, { k: "ll;", v: 8810 }, { k: "llarr;", v: 8647 }, { k: "llcorner;", v: 8990 }, { k: "llhard;", v: 10603 }, { k: "lltri;", v: 9722 }, { k: "lmidot;", v: 320 }, { k: "lmoust;", v: 9136 }, { k: "lmoustache;", v: 9136 }, { k: "lnE;", v: 8808 }, { k: "lnap;", v: 10889 }, { k: "lnapprox;", v: 10889 }, { k: "lne;", v: 10887 }, { k: "lneq;", v: 10887 }, { k: "lneqq;", v: 8808 }, { k: "lnsim;", v: 8934 }, { k: "loang;", v: 10220 }, { k: "loarr;", v: 8701 }, { k: "lobrk;", v: 10214 }, { k: "longleftarrow;", v: 10229 }, { k: "longleftrightarrow;", v: 10231 }, { k: "longmapsto;", v: 10236 }, { k: "longrightarrow;", v: 10230 }, { k: "looparrowleft;", v: 8619 }, { k: "looparrowright;", v: 8620 }, { k: "lopar;", v: 10629 }, { k: "lopf;", v: 120157 }, { k: "loplus;", v: 10797 }, { k: "lotimes;", v: 10804 }, { k: "lowast;", v: 8727 }, { k: "lowbar;", v: 95 }, { k: "loz;", v: 9674 }, { k: "lozenge;", v: 9674 }, { k: "lozf;", v: 10731 }, { k: "lpar;", v: 40 }, { k: "lparlt;", v: 10643 }, { k: "lrarr;", v: 8646 }, { k: "lrcorner;", v: 8991 }, { k: "lrhar;", v: 8651 }, { k: "lrhard;", v: 10605 }, { k: "lrm;", v: 8206 }, { k: "lrtri;", v: 8895 }, { k: "lsaquo;", v: 8249 }, { k: "lscr;", v: 120001 }, { k: "lsh;", v: 8624 }, { k: "lsim;", v: 8818 }, { k: "lsime;", v: 10893 }, { k: "lsimg;", v: 10895 }, { k: "lsqb;", v: 91 }, { k: "lsquo;", v: 8216 }, { k: "lsquor;", v: 8218 }, { k: "lstrok;", v: 322 }, { k: "lt;", v: 60 }, { k: "ltcc;", v: 10918 }, { k: "ltcir;", v: 10873 }, { k: "ltdot;", v: 8918 }, { k: "lthree;", v: 8907 }, { k: "ltimes;", v: 8905 }, { k: "ltlarr;", v: 10614 }, { k: "ltquest;", v: 10875 }, { k: "ltrPar;", v: 10646 }, { k: "ltri;", v: 9667 }, { k: "ltrie;", v: 8884 }, { k: "ltrif;", v: 9666 }, { k: "lurdshar;", v: 10570 }, { k: "luruhar;", v: 10598 }, { k: "mDDot;", v: 8762 }, { k: "macr;", v: 175 }, { k: "male;", v: 9794 }, { k: "malt;", v: 10016 }, { k: "maltese;", v: 10016 }, { k: "map;", v: 8614 }, { k: "mapsto;", v: 8614 }, { k: "mapstodown;", v: 8615 }, { k: "mapstoleft;", v: 8612 }, { k: "mapstoup;", v: 8613 }, { k: "marker;", v: 9646 }, { k: "mcomma;", v: 10793 }, { k: "mcy;", v: 1084 }, { k: "mdash;", v: 8212 }, { k: "measuredangle;", v: 8737 }, { k: "mfr;", v: 120106 }, { k: "mho;", v: 8487 }, { k: "micro;", v: 181 }, { k: "mid;", v: 8739 }, { k: "midast;", v: 42 }, { k: "midcir;", v: 10992 }, { k: "middot;", v: 183 }, { k: "minus;", v: 8722 }, { k: "minusb;", v: 8863 }, { k: "minusd;", v: 8760 }, { k: "minusdu;", v: 10794 }, { k: "mlcp;", v: 10971 }, { k: "mldr;", v: 8230 }, { k: "mnplus;", v: 8723 }, { k: "models;", v: 8871 }, { k: "mopf;", v: 120158 }, { k: "mp;", v: 8723 }, { k: "mscr;", v: 120002 }, { k: "mstpos;", v: 8766 }, { k: "mu;", v: 956 }, { k: "multimap;", v: 8888 }, { k: "mumap;", v: 8888 }, { k: "nLeftarrow;", v: 8653 }, { k: "nLeftrightarrow;", v: 8654 }, { k: "nRightarrow;", v: 8655 }, { k: "nVDash;", v: 8879 }, { k: "nVdash;", v: 8878 }, { k: "nabla;", v: 8711 }, { k: "nacute;", v: 324 }, { k: "nap;", v: 8777 }, { k: "napos;", v: 329 }, { k: "napprox;", v: 8777 }, { k: "natur;", v: 9838 }, { k: "natural;", v: 9838 }, { k: "naturals;", v: 8469 }, { k: "nbsp;", v: 160 }, { k: "ncap;", v: 10819 }, { k: "ncaron;", v: 328 }, { k: "ncedil;", v: 326 }, { k: "ncong;", v: 8775 }, { k: "ncup;", v: 10818 }, { k: "ncy;", v: 1085 }, { k: "ndash;", v: 8211 }, { k: "ne;", v: 8800 }, { k: "neArr;", v: 8663 }, { k: "nearhk;", v: 10532 }, { k: "nearr;", v: 8599 }, { k: "nearrow;", v: 8599 }, { k: "nequiv;", v: 8802 }, { k: "nesear;", v: 10536 }, { k: "nexist;", v: 8708 }, { k: "nexists;", v: 8708 }, { k: "nfr;", v: 120107 }, { k: "nge;", v: 8817 }, { k: "ngeq;", v: 8817 }, { k: "ngsim;", v: 8821 }, { k: "ngt;", v: 8815 }, { k: "ngtr;", v: 8815 }, { k: "nhArr;", v: 8654 }, { k: "nharr;", v: 8622 }, { k: "nhpar;", v: 10994 }, { k: "ni;", v: 8715 }, { k: "nis;", v: 8956 }, { k: "nisd;", v: 8954 }, { k: "niv;", v: 8715 }, { k: "njcy;", v: 1114 }, { k: "nlArr;", v: 8653 }, { k: "nlarr;", v: 8602 }, { k: "nldr;", v: 8229 }, { k: "nle;", v: 8816 }, { k: "nleftarrow;", v: 8602 }, { k: "nleftrightarrow;", v: 8622 }, { k: "nleq;", v: 8816 }, { k: "nless;", v: 8814 }, { k: "nlsim;", v: 8820 }, { k: "nlt;", v: 8814 }, { k: "nltri;", v: 8938 }, { k: "nltrie;", v: 8940 }, { k: "nmid;", v: 8740 }, { k: "nopf;", v: 120159 }, { k: "not;", v: 172 }, { k: "notin;", v: 8713 }, { k: "notinva;", v: 8713 }, { k: "notinvb;", v: 8951 }, { k: "notinvc;", v: 8950 }, { k: "notni;", v: 8716 }, { k: "notniva;", v: 8716 }, { k: "notnivb;", v: 8958 }, { k: "notnivc;", v: 8957 }, { k: "npar;", v: 8742 }, { k: "nparallel;", v: 8742 }, { k: "npolint;", v: 10772 }, { k: "npr;", v: 8832 }, { k: "nprcue;", v: 8928 }, { k: "nprec;", v: 8832 }, { k: "nrArr;", v: 8655 }, { k: "nrarr;", v: 8603 }, { k: "nrightarrow;", v: 8603 }, { k: "nrtri;", v: 8939 }, { k: "nrtrie;", v: 8941 }, { k: "nsc;", v: 8833 }, { k: "nsccue;", v: 8929 }, { k: "nscr;", v: 120003 }, { k: "nshortmid;", v: 8740 }, { k: "nshortparallel;", v: 8742 }, { k: "nsim;", v: 8769 }, { k: "nsime;", v: 8772 }, { k: "nsimeq;", v: 8772 }, { k: "nsmid;", v: 8740 }, { k: "nspar;", v: 8742 }, { k: "nsqsube;", v: 8930 }, { k: "nsqsupe;", v: 8931 }, { k: "nsub;", v: 8836 }, { k: "nsube;", v: 8840 }, { k: "nsubseteq;", v: 8840 }, { k: "nsucc;", v: 8833 }, { k: "nsup;", v: 8837 }, { k: "nsupe;", v: 8841 }, { k: "nsupseteq;", v: 8841 }, { k: "ntgl;", v: 8825 }, { k: "ntilde;", v: 241 }, { k: "ntlg;", v: 8824 }, { k: "ntriangleleft;", v: 8938 }, { k: "ntrianglelefteq;", v: 8940 }, { k: "ntriangleright;", v: 8939 }, { k: "ntrianglerighteq;", v: 8941 }, { k: "nu;", v: 957 }, { k: "num;", v: 35 }, { k: "numero;", v: 8470 }, { k: "numsp;", v: 8199 }, { k: "nvDash;", v: 8877 }, { k: "nvHarr;", v: 10500 }, { k: "nvdash;", v: 8876 }, { k: "nvinfin;", v: 10718 }, { k: "nvlArr;", v: 10498 }, { k: "nvrArr;", v: 10499 }, { k: "nwArr;", v: 8662 }, { k: "nwarhk;", v: 10531 }, { k: "nwarr;", v: 8598 }, { k: "nwarrow;", v: 8598 }, { k: "nwnear;", v: 10535 }, { k: "oS;", v: 9416 }, { k: "oacute;", v: 243 }, { k: "oast;", v: 8859 }, { k: "ocir;", v: 8858 }, { k: "ocirc;", v: 244 }, { k: "ocy;", v: 1086 }, { k: "odash;", v: 8861 }, { k: "odblac;", v: 337 }, { k: "odiv;", v: 10808 }, { k: "odot;", v: 8857 }, { k: "odsold;", v: 10684 }, { k: "oelig;", v: 339 }, { k: "ofcir;", v: 10687 }, { k: "ofr;", v: 120108 }, { k: "ogon;", v: 731 }, { k: "ograve;", v: 242 }, { k: "ogt;", v: 10689 }, { k: "ohbar;", v: 10677 }, { k: "ohm;", v: 937 }, { k: "oint;", v: 8750 }, { k: "olarr;", v: 8634 }, { k: "olcir;", v: 10686 }, { k: "olcross;", v: 10683 }, { k: "oline;", v: 8254 }, { k: "olt;", v: 10688 }, { k: "omacr;", v: 333 }, { k: "omega;", v: 969 }, { k: "omicron;", v: 959 }, { k: "omid;", v: 10678 }, { k: "ominus;", v: 8854 }, { k: "oopf;", v: 120160 }, { k: "opar;", v: 10679 }, { k: "operp;", v: 10681 }, { k: "oplus;", v: 8853 }, { k: "or;", v: 8744 }, { k: "orarr;", v: 8635 }, { k: "ord;", v: 10845 }, { k: "order;", v: 8500 }, { k: "orderof;", v: 8500 }, { k: "ordf;", v: 170 }, { k: "ordm;", v: 186 }, { k: "origof;", v: 8886 }, { k: "oror;", v: 10838 }, { k: "orslope;", v: 10839 }, { k: "orv;", v: 10843 }, { k: "oscr;", v: 8500 }, { k: "oslash;", v: 248 }, { k: "osol;", v: 8856 }, { k: "otilde;", v: 245 }, { k: "otimes;", v: 8855 }, { k: "otimesas;", v: 10806 }, { k: "ouml;", v: 246 }, { k: "ovbar;", v: 9021 }, { k: "par;", v: 8741 }, { k: "para;", v: 182 }, { k: "parallel;", v: 8741 }, { k: "parsim;", v: 10995 }, { k: "parsl;", v: 11005 }, { k: "part;", v: 8706 }, { k: "pcy;", v: 1087 }, { k: "percnt;", v: 37 }, { k: "period;", v: 46 }, { k: "permil;", v: 8240 }, { k: "perp;", v: 8869 }, { k: "pertenk;", v: 8241 }, { k: "pfr;", v: 120109 }, { k: "phi;", v: 966 }, { k: "phiv;", v: 981 }, { k: "phmmat;", v: 8499 }, { k: "phone;", v: 9742 }, { k: "pi;", v: 960 }, { k: "pitchfork;", v: 8916 }, { k: "piv;", v: 982 }, { k: "planck;", v: 8463 }, { k: "planckh;", v: 8462 }, { k: "plankv;", v: 8463 }, { k: "plus;", v: 43 }, { k: "plusacir;", v: 10787 }, { k: "plusb;", v: 8862 }, { k: "pluscir;", v: 10786 }, { k: "plusdo;", v: 8724 }, { k: "plusdu;", v: 10789 }, { k: "pluse;", v: 10866 }, { k: "plusmn;", v: 177 }, { k: "plussim;", v: 10790 }, { k: "plustwo;", v: 10791 }, { k: "pm;", v: 177 }, { k: "pointint;", v: 10773 }, { k: "popf;", v: 120161 }, { k: "pound;", v: 163 }, { k: "pr;", v: 8826 }, { k: "prE;", v: 10931 }, { k: "prap;", v: 10935 }, { k: "prcue;", v: 8828 }, { k: "pre;", v: 10927 }, { k: "prec;", v: 8826 }, { k: "precapprox;", v: 10935 }, { k: "preccurlyeq;", v: 8828 }, { k: "preceq;", v: 10927 }, { k: "precnapprox;", v: 10937 }, { k: "precneqq;", v: 10933 }, { k: "precnsim;", v: 8936 }, { k: "precsim;", v: 8830 }, { k: "prime;", v: 8242 }, { k: "primes;", v: 8473 }, { k: "prnE;", v: 10933 }, { k: "prnap;", v: 10937 }, { k: "prnsim;", v: 8936 }, { k: "prod;", v: 8719 }, { k: "profalar;", v: 9006 }, { k: "profline;", v: 8978 }, { k: "profsurf;", v: 8979 }, { k: "prop;", v: 8733 }, { k: "propto;", v: 8733 }, { k: "prsim;", v: 8830 }, { k: "prurel;", v: 8880 }, { k: "pscr;", v: 120005 }, { k: "psi;", v: 968 }, { k: "puncsp;", v: 8200 }, { k: "qfr;", v: 120110 }, { k: "qint;", v: 10764 }, { k: "qopf;", v: 120162 }, { k: "qprime;", v: 8279 }, { k: "qscr;", v: 120006 }, { k: "quaternions;", v: 8461 }, { k: "quatint;", v: 10774 }, { k: "quest;", v: 63 }, { k: "questeq;", v: 8799 }, { k: "quot;", v: 34 }, { k: "rAarr;", v: 8667 }, { k: "rArr;", v: 8658 }, { k: "rAtail;", v: 10524 }, { k: "rBarr;", v: 10511 }, { k: "rHar;", v: 10596 }, { k: "racute;", v: 341 }, { k: "radic;", v: 8730 }, { k: "raemptyv;", v: 10675 }, { k: "rang;", v: 10217 }, { k: "rangd;", v: 10642 }, { k: "range;", v: 10661 }, { k: "rangle;", v: 10217 }, { k: "raquo;", v: 187 }, { k: "rarr;", v: 8594 }, { k: "rarrap;", v: 10613 }, { k: "rarrb;", v: 8677 }, { k: "rarrbfs;", v: 10528 }, { k: "rarrc;", v: 10547 }, { k: "rarrfs;", v: 10526 }, { k: "rarrhk;", v: 8618 }, { k: "rarrlp;", v: 8620 }, { k: "rarrpl;", v: 10565 }, { k: "rarrsim;", v: 10612 }, { k: "rarrtl;", v: 8611 }, { k: "rarrw;", v: 8605 }, { k: "ratail;", v: 10522 }, { k: "ratio;", v: 8758 }, { k: "rationals;", v: 8474 }, { k: "rbarr;", v: 10509 }, { k: "rbbrk;", v: 10099 }, { k: "rbrace;", v: 125 }, { k: "rbrack;", v: 93 }, { k: "rbrke;", v: 10636 }, { k: "rbrksld;", v: 10638 }, { k: "rbrkslu;", v: 10640 }, { k: "rcaron;", v: 345 }, { k: "rcedil;", v: 343 }, { k: "rceil;", v: 8969 }, { k: "rcub;", v: 125 }, { k: "rcy;", v: 1088 }, { k: "rdca;", v: 10551 }, { k: "rdldhar;", v: 10601 }, { k: "rdquo;", v: 8221 }, { k: "rdquor;", v: 8221 }, { k: "rdsh;", v: 8627 }, { k: "real;", v: 8476 }, { k: "realine;", v: 8475 }, { k: "realpart;", v: 8476 }, { k: "reals;", v: 8477 }, { k: "rect;", v: 9645 }, { k: "reg;", v: 174 }, { k: "rfisht;", v: 10621 }, { k: "rfloor;", v: 8971 }, { k: "rfr;", v: 120111 }, { k: "rhard;", v: 8641 }, { k: "rharu;", v: 8640 }, { k: "rharul;", v: 10604 }, { k: "rho;", v: 961 }, { k: "rhov;", v: 1009 }, { k: "rightarrow;", v: 8594 }, { k: "rightarrowtail;", v: 8611 }, { k: "rightharpoondown;", v: 8641 }, { k: "rightharpoonup;", v: 8640 }, { k: "rightleftarrows;", v: 8644 }, { k: "rightleftharpoons;", v: 8652 }, { k: "rightrightarrows;", v: 8649 }, { k: "rightsquigarrow;", v: 8605 }, { k: "rightthreetimes;", v: 8908 }, { k: "ring;", v: 730 }, { k: "risingdotseq;", v: 8787 }, { k: "rlarr;", v: 8644 }, { k: "rlhar;", v: 8652 }, { k: "rlm;", v: 8207 }, { k: "rmoust;", v: 9137 }, { k: "rmoustache;", v: 9137 }, { k: "rnmid;", v: 10990 }, { k: "roang;", v: 10221 }, { k: "roarr;", v: 8702 }, { k: "robrk;", v: 10215 }, { k: "ropar;", v: 10630 }, { k: "ropf;", v: 120163 }, { k: "roplus;", v: 10798 }, { k: "rotimes;", v: 10805 }, { k: "rpar;", v: 41 }, { k: "rpargt;", v: 10644 }, { k: "rppolint;", v: 10770 }, { k: "rrarr;", v: 8649 }, { k: "rsaquo;", v: 8250 }, { k: "rscr;", v: 120007 }, { k: "rsh;", v: 8625 }, { k: "rsqb;", v: 93 }, { k: "rsquo;", v: 8217 }, { k: "rsquor;", v: 8217 }, { k: "rthree;", v: 8908 }, { k: "rtimes;", v: 8906 }, { k: "rtri;", v: 9657 }, { k: "rtrie;", v: 8885 }, { k: "rtrif;", v: 9656 }, { k: "rtriltri;", v: 10702 }, { k: "ruluhar;", v: 10600 }, { k: "rx;", v: 8478 }, { k: "sacute;", v: 347 }, { k: "sbquo;", v: 8218 }, { k: "sc;", v: 8827 }, { k: "scE;", v: 10932 }, { k: "scap;", v: 10936 }, { k: "scaron;", v: 353 }, { k: "sccue;", v: 8829 }, { k: "sce;", v: 10928 }, { k: "scedil;", v: 351 }, { k: "scirc;", v: 349 }, { k: "scnE;", v: 10934 }, { k: "scnap;", v: 10938 }, { k: "scnsim;", v: 8937 }, { k: "scpolint;", v: 10771 }, { k: "scsim;", v: 8831 }, { k: "scy;", v: 1089 }, { k: "sdot;", v: 8901 }, { k: "sdotb;", v: 8865 }, { k: "sdote;", v: 10854 }, { k: "seArr;", v: 8664 }, { k: "searhk;", v: 10533 }, { k: "searr;", v: 8600 }, { k: "searrow;", v: 8600 }, { k: "sect;", v: 167 }, { k: "semi;", v: 59 }, { k: "seswar;", v: 10537 }, { k: "setminus;", v: 8726 }, { k: "setmn;", v: 8726 }, { k: "sext;", v: 10038 }, { k: "sfr;", v: 120112 }, { k: "sfrown;", v: 8994 }, { k: "sharp;", v: 9839 }, { k: "shchcy;", v: 1097 }, { k: "shcy;", v: 1096 }, { k: "shortmid;", v: 8739 }, { k: "shortparallel;", v: 8741 }, { k: "shy;", v: 173 }, { k: "sigma;", v: 963 }, { k: "sigmaf;", v: 962 }, { k: "sigmav;", v: 962 }, { k: "sim;", v: 8764 }, { k: "simdot;", v: 10858 }, { k: "sime;", v: 8771 }, { k: "simeq;", v: 8771 }, { k: "simg;", v: 10910 }, { k: "simgE;", v: 10912 }, { k: "siml;", v: 10909 }, { k: "simlE;", v: 10911 }, { k: "simne;", v: 8774 }, { k: "simplus;", v: 10788 }, { k: "simrarr;", v: 10610 }, { k: "slarr;", v: 8592 }, { k: "smallsetminus;", v: 8726 }, { k: "smashp;", v: 10803 }, { k: "smeparsl;", v: 10724 }, { k: "smid;", v: 8739 }, { k: "smile;", v: 8995 }, { k: "smt;", v: 10922 }, { k: "smte;", v: 10924 }, { k: "softcy;", v: 1100 }, { k: "sol;", v: 47 }, { k: "solb;", v: 10692 }, { k: "solbar;", v: 9023 }, { k: "sopf;", v: 120164 }, { k: "spades;", v: 9824 }, { k: "spadesuit;", v: 9824 }, { k: "spar;", v: 8741 }, { k: "sqcap;", v: 8851 }, { k: "sqcup;", v: 8852 }, { k: "sqsub;", v: 8847 }, { k: "sqsube;", v: 8849 }, { k: "sqsubset;", v: 8847 }, { k: "sqsubseteq;", v: 8849 }, { k: "sqsup;", v: 8848 }, { k: "sqsupe;", v: 8850 }, { k: "sqsupset;", v: 8848 }, { k: "sqsupseteq;", v: 8850 }, { k: "squ;", v: 9633 }, { k: "square;", v: 9633 }, { k: "squarf;", v: 9642 }, { k: "squf;", v: 9642 }, { k: "srarr;", v: 8594 }, { k: "sscr;", v: 120008 }, { k: "ssetmn;", v: 8726 }, { k: "ssmile;", v: 8995 }, { k: "sstarf;", v: 8902 }, { k: "star;", v: 9734 }, { k: "starf;", v: 9733 }, { k: "straightepsilon;", v: 1013 }, { k: "straightphi;", v: 981 }, { k: "strns;", v: 175 }, { k: "sub;", v: 8834 }, { k: "subE;", v: 10949 }, { k: "subdot;", v: 10941 }, { k: "sube;", v: 8838 }, { k: "subedot;", v: 10947 }, { k: "submult;", v: 10945 }, { k: "subnE;", v: 10955 }, { k: "subne;", v: 8842 }, { k: "subplus;", v: 10943 }, { k: "subrarr;", v: 10617 }, { k: "subset;", v: 8834 }, { k: "subseteq;", v: 8838 }, { k: "subseteqq;", v: 10949 }, { k: "subsetneq;", v: 8842 }, { k: "subsetneqq;", v: 10955 }, { k: "subsim;", v: 10951 }, { k: "subsub;", v: 10965 }, { k: "subsup;", v: 10963 }, { k: "succ;", v: 8827 }, { k: "succapprox;", v: 10936 }, { k: "succcurlyeq;", v: 8829 }, { k: "succeq;", v: 10928 }, { k: "succnapprox;", v: 10938 }, { k: "succneqq;", v: 10934 }, { k: "succnsim;", v: 8937 }, { k: "succsim;", v: 8831 }, { k: "sum;", v: 8721 }, { k: "sung;", v: 9834 }, { k: "sup;", v: 8835 }, { k: "sup1;", v: 185 }, { k: "sup2;", v: 178 }, { k: "sup3;", v: 179 }, { k: "supE;", v: 10950 }, { k: "supdot;", v: 10942 }, { k: "supdsub;", v: 10968 }, { k: "supe;", v: 8839 }, { k: "supedot;", v: 10948 }, { k: "suphsol;", v: 10185 }, { k: "suphsub;", v: 10967 }, { k: "suplarr;", v: 10619 }, { k: "supmult;", v: 10946 }, { k: "supnE;", v: 10956 }, { k: "supne;", v: 8843 }, { k: "supplus;", v: 10944 }, { k: "supset;", v: 8835 }, { k: "supseteq;", v: 8839 }, { k: "supseteqq;", v: 10950 }, { k: "supsetneq;", v: 8843 }, { k: "supsetneqq;", v: 10956 }, { k: "supsim;", v: 10952 }, { k: "supsub;", v: 10964 }, { k: "supsup;", v: 10966 }, { k: "swArr;", v: 8665 }, { k: "swarhk;", v: 10534 }, { k: "swarr;", v: 8601 }, { k: "swarrow;", v: 8601 }, { k: "swnwar;", v: 10538 }, { k: "szlig;", v: 223 }, { k: "target;", v: 8982 }, { k: "tau;", v: 964 }, { k: "tbrk;", v: 9140 }, { k: "tcaron;", v: 357 }, { k: "tcedil;", v: 355 }, { k: "tcy;", v: 1090 }, { k: "tdot;", v: 8411 }, { k: "telrec;", v: 8981 }, { k: "tfr;", v: 120113 }, { k: "there4;", v: 8756 }, { k: "therefore;", v: 8756 }, { k: "theta;", v: 952 }, { k: "thetasym;", v: 977 }, { k: "thetav;", v: 977 }, { k: "thickapprox;", v: 8776 }, { k: "thicksim;", v: 8764 }, { k: "thinsp;", v: 8201 }, { k: "thkap;", v: 8776 }, { k: "thksim;", v: 8764 }, { k: "thorn;", v: 254 }, { k: "tilde;", v: 732 }, { k: "times;", v: 215 }, { k: "timesb;", v: 8864 }, { k: "timesbar;", v: 10801 }, { k: "timesd;", v: 10800 }, { k: "tint;", v: 8749 }, { k: "toea;", v: 10536 }, { k: "top;", v: 8868 }, { k: "topbot;", v: 9014 }, { k: "topcir;", v: 10993 }, { k: "topf;", v: 120165 }, { k: "topfork;", v: 10970 }, { k: "tosa;", v: 10537 }, { k: "tprime;", v: 8244 }, { k: "trade;", v: 8482 }, { k: "triangle;", v: 9653 }, { k: "triangledown;", v: 9663 }, { k: "triangleleft;", v: 9667 }, { k: "trianglelefteq;", v: 8884 }, { k: "triangleq;", v: 8796 }, { k: "triangleright;", v: 9657 }, { k: "trianglerighteq;", v: 8885 }, { k: "tridot;", v: 9708 }, { k: "trie;", v: 8796 }, { k: "triminus;", v: 10810 }, { k: "triplus;", v: 10809 }, { k: "trisb;", v: 10701 }, { k: "tritime;", v: 10811 }, { k: "trpezium;", v: 9186 }, { k: "tscr;", v: 120009 }, { k: "tscy;", v: 1094 }, { k: "tshcy;", v: 1115 }, { k: "tstrok;", v: 359 }, { k: "twixt;", v: 8812 }, { k: "twoheadleftarrow;", v: 8606 }, { k: "twoheadrightarrow;", v: 8608 }, { k: "uArr;", v: 8657 }, { k: "uHar;", v: 10595 }, { k: "uacute;", v: 250 }, { k: "uarr;", v: 8593 }, { k: "ubrcy;", v: 1118 }, { k: "ubreve;", v: 365 }, { k: "ucirc;", v: 251 }, { k: "ucy;", v: 1091 }, { k: "udarr;", v: 8645 }, { k: "udblac;", v: 369 }, { k: "udhar;", v: 10606 }, { k: "ufisht;", v: 10622 }, { k: "ufr;", v: 120114 }, { k: "ugrave;", v: 249 }, { k: "uharl;", v: 8639 }, { k: "uharr;", v: 8638 }, { k: "uhblk;", v: 9600 }, { k: "ulcorn;", v: 8988 }, { k: "ulcorner;", v: 8988 }, { k: "ulcrop;", v: 8975 }, { k: "ultri;", v: 9720 }, { k: "umacr;", v: 363 }, { k: "uml;", v: 168 }, { k: "uogon;", v: 371 }, { k: "uopf;", v: 120166 }, { k: "uparrow;", v: 8593 }, { k: "updownarrow;", v: 8597 }, { k: "upharpoonleft;", v: 8639 }, { k: "upharpoonright;", v: 8638 }, { k: "uplus;", v: 8846 }, { k: "upsi;", v: 965 }, { k: "upsih;", v: 978 }, { k: "upsilon;", v: 965 }, { k: "upuparrows;", v: 8648 }, { k: "urcorn;", v: 8989 }, { k: "urcorner;", v: 8989 }, { k: "urcrop;", v: 8974 }, { k: "uring;", v: 367 }, { k: "urtri;", v: 9721 }, { k: "uscr;", v: 120010 }, { k: "utdot;", v: 8944 }, { k: "utilde;", v: 361 }, { k: "utri;", v: 9653 }, { k: "utrif;", v: 9652 }, { k: "uuarr;", v: 8648 }, { k: "uuml;", v: 252 }, { k: "uwangle;", v: 10663 }, { k: "vArr;", v: 8661 }, { k: "vBar;", v: 10984 }, { k: "vBarv;", v: 10985 }, { k: "vDash;", v: 8872 }, { k: "vangrt;", v: 10652 }, { k: "varepsilon;", v: 1013 }, { k: "varkappa;", v: 1008 }, { k: "varnothing;", v: 8709 }, { k: "varphi;", v: 981 }, { k: "varpi;", v: 982 }, { k: "varpropto;", v: 8733 }, { k: "varr;", v: 8597 }, { k: "varrho;", v: 1009 }, { k: "varsigma;", v: 962 }, { k: "vartheta;", v: 977 }, { k: "vartriangleleft;", v: 8882 }, { k: "vartriangleright;", v: 8883 }, { k: "vcy;", v: 1074 }, { k: "vdash;", v: 8866 }, { k: "vee;", v: 8744 }, { k: "veebar;", v: 8891 }, { k: "veeeq;", v: 8794 }, { k: "vellip;", v: 8942 }, { k: "verbar;", v: 124 }, { k: "vert;", v: 124 }, { k: "vfr;", v: 120115 }, { k: "vltri;", v: 8882 }, { k: "vopf;", v: 120167 }, { k: "vprop;", v: 8733 }, { k: "vrtri;", v: 8883 }, { k: "vscr;", v: 120011 }, { k: "vzigzag;", v: 10650 }, { k: "wcirc;", v: 373 }, { k: "wedbar;", v: 10847 }, { k: "wedge;", v: 8743 }, { k: "wedgeq;", v: 8793 }, { k: "weierp;", v: 8472 }, { k: "wfr;", v: 120116 }, { k: "wopf;", v: 120168 }, { k: "wp;", v: 8472 }, { k: "wr;", v: 8768 }, { k: "wreath;", v: 8768 }, { k: "wscr;", v: 120012 }, { k: "xcap;", v: 8898 }, { k: "xcirc;", v: 9711 }, { k: "xcup;", v: 8899 }, { k: "xdtri;", v: 9661 }, { k: "xfr;", v: 120117 }, { k: "xhArr;", v: 10234 }, { k: "xharr;", v: 10231 }, { k: "xi;", v: 958 }, { k: "xlArr;", v: 10232 }, { k: "xlarr;", v: 10229 }, { k: "xmap;", v: 10236 }, { k: "xnis;", v: 8955 }, { k: "xodot;", v: 10752 }, { k: "xopf;", v: 120169 }, { k: "xoplus;", v: 10753 }, { k: "xotime;", v: 10754 }, { k: "xrArr;", v: 10233 }, { k: "xrarr;", v: 10230 }, { k: "xscr;", v: 120013 }, { k: "xsqcup;", v: 10758 }, { k: "xuplus;", v: 10756 }, { k: "xutri;", v: 9651 }, { k: "xvee;", v: 8897 }, { k: "xwedge;", v: 8896 }, { k: "yacute;", v: 253 }, { k: "yacy;", v: 1103 }, { k: "ycirc;", v: 375 }, { k: "ycy;", v: 1099 }, { k: "yen;", v: 165 }, { k: "yfr;", v: 120118 }, { k: "yicy;", v: 1111 }, { k: "yopf;", v: 120170 }, { k: "yscr;", v: 120014 }, { k: "yucy;", v: 1102 }, { k: "yuml;", v: 255 }, { k: "zacute;", v: 378 }, { k: "zcaron;", v: 382 }, { k: "zcy;", v: 1079 }, { k: "zdot;", v: 380 }, { k: "zeetrf;", v: 8488 }, { k: "zeta;", v: 950 }, { k: "zfr;", v: 120119 }, { k: "zhcy;", v: 1078 }, { k: "zigrarr;", v: 8669 }, { k: "zopf;", v: 120171 }, { k: "zscr;", v: 120015 }, { k: "zwj;", v: 8205 }, { k: "zwnj;", v: 8204 }, { k: "AElig", v: 198 }, { k: "AMP", v: 38 }, { k: "Aacute", v: 193 }, { k: "Acirc", v: 194 }, { k: "Agrave", v: 192 }, { k: "Aring", v: 197 }, { k: "Atilde", v: 195 }, { k: "Auml", v: 196 }, { k: "COPY", v: 169 }, { k: "Ccedil", v: 199 }, { k: "ETH", v: 208 }, { k: "Eacute", v: 201 }, { k: "Ecirc", v: 202 }, { k: "Egrave", v: 200 }, { k: "Euml", v: 203 }, { k: "GT", v: 62 }, { k: "Iacute", v: 205 }, { k: "Icirc", v: 206 }, { k: "Igrave", v: 204 }, { k: "Iuml", v: 207 }, { k: "LT", v: 60 }, { k: "Ntilde", v: 209 }, { k: "Oacute", v: 211 }, { k: "Ocirc", v: 212 }, { k: "Ograve", v: 210 }, { k: "Oslash", v: 216 }, { k: "Otilde", v: 213 }, { k: "Ouml", v: 214 }, { k: "QUOT", v: 34 }, { k: "REG", v: 174 }, { k: "THORN", v: 222 }, { k: "Uacute", v: 218 }, { k: "Ucirc", v: 219 }, { k: "Ugrave", v: 217 }, { k: "Uuml", v: 220 }, { k: "Yacute", v: 221 }, { k: "aacute", v: 225 }, { k: "acirc", v: 226 }, { k: "acute", v: 180 }, { k: "aelig", v: 230 }, { k: "agrave", v: 224 }, { k: "amp", v: 38 }, { k: "aring", v: 229 }, { k: "atilde", v: 227 }, { k: "auml", v: 228 }, { k: "brvbar", v: 166 }, { k: "ccedil", v: 231 }, { k: "cedil", v: 184 }, { k: "cent", v: 162 }, { k: "copy", v: 169 }, { k: "curren", v: 164 }, { k: "deg", v: 176 }, { k: "divide", v: 247 }, { k: "eacute", v: 233 }, { k: "ecirc", v: 234 }, { k: "egrave", v: 232 }, { k: "eth", v: 240 }, { k: "euml", v: 235 }, { k: "frac12", v: 189 }, { k: "frac14", v: 188 }, { k: "frac34", v: 190 }, { k: "gt", v: 62 }, { k: "iacute", v: 237 }, { k: "icirc", v: 238 }, { k: "iexcl", v: 161 }, { k: "igrave", v: 236 }, { k: "iquest", v: 191 }, { k: "iuml", v: 239 }, { k: "laquo", v: 171 }, { k: "lt", v: 60 }, { k: "macr", v: 175 }, { k: "micro", v: 181 }, { k: "middot", v: 183 }, { k: "nbsp", v: 160 }, { k: "not", v: 172 }, { k: "ntilde", v: 241 }, { k: "oacute", v: 243 }, { k: "ocirc", v: 244 }, { k: "ograve", v: 242 }, { k: "ordf", v: 170 }, { k: "ordm", v: 186 }, { k: "oslash", v: 248 }, { k: "otilde", v: 245 }, { k: "ouml", v: 246 }, { k: "para", v: 182 }, { k: "plusmn", v: 177 }, { k: "pound", v: 163 }, { k: "quot", v: 34 }, { k: "raquo", v: 187 }, { k: "reg", v: 174 }, { k: "sect", v: 167 }, { k: "shy", v: 173 }, { k: "sup1", v: 185 }, { k: "sup2", v: 178 }, { k: "sup3", v: 179 }, { k: "szlig", v: 223 }, { k: "thorn", v: 254 }, { k: "times", v: 215 }, { k: "uacute", v: 250 }, { k: "ucirc", v: 251 }, { k: "ugrave", v: 249 }, { k: "uml", v: 168 }, { k: "uuml", v: 252 }, { k: "yacute", v: 253 }, { k: "yen", v: 165 }, { k: "yuml", v: 255 }]);
+		entity2 = $makeMap($String.keyFor, [{ k: "NotEqualTilde;", v: $toNativeArray($kindInt32, [8770, 824]) }, { k: "NotGreaterFullEqual;", v: $toNativeArray($kindInt32, [8807, 824]) }, { k: "NotGreaterGreater;", v: $toNativeArray($kindInt32, [8811, 824]) }, { k: "NotGreaterSlantEqual;", v: $toNativeArray($kindInt32, [10878, 824]) }, { k: "NotHumpDownHump;", v: $toNativeArray($kindInt32, [8782, 824]) }, { k: "NotHumpEqual;", v: $toNativeArray($kindInt32, [8783, 824]) }, { k: "NotLeftTriangleBar;", v: $toNativeArray($kindInt32, [10703, 824]) }, { k: "NotLessLess;", v: $toNativeArray($kindInt32, [8810, 824]) }, { k: "NotLessSlantEqual;", v: $toNativeArray($kindInt32, [10877, 824]) }, { k: "NotNestedGreaterGreater;", v: $toNativeArray($kindInt32, [10914, 824]) }, { k: "NotNestedLessLess;", v: $toNativeArray($kindInt32, [10913, 824]) }, { k: "NotPrecedesEqual;", v: $toNativeArray($kindInt32, [10927, 824]) }, { k: "NotRightTriangleBar;", v: $toNativeArray($kindInt32, [10704, 824]) }, { k: "NotSquareSubset;", v: $toNativeArray($kindInt32, [8847, 824]) }, { k: "NotSquareSuperset;", v: $toNativeArray($kindInt32, [8848, 824]) }, { k: "NotSubset;", v: $toNativeArray($kindInt32, [8834, 8402]) }, { k: "NotSucceedsEqual;", v: $toNativeArray($kindInt32, [10928, 824]) }, { k: "NotSucceedsTilde;", v: $toNativeArray($kindInt32, [8831, 824]) }, { k: "NotSuperset;", v: $toNativeArray($kindInt32, [8835, 8402]) }, { k: "ThickSpace;", v: $toNativeArray($kindInt32, [8287, 8202]) }, { k: "acE;", v: $toNativeArray($kindInt32, [8766, 819]) }, { k: "bne;", v: $toNativeArray($kindInt32, [61, 8421]) }, { k: "bnequiv;", v: $toNativeArray($kindInt32, [8801, 8421]) }, { k: "caps;", v: $toNativeArray($kindInt32, [8745, 65024]) }, { k: "cups;", v: $toNativeArray($kindInt32, [8746, 65024]) }, { k: "fjlig;", v: $toNativeArray($kindInt32, [102, 106]) }, { k: "gesl;", v: $toNativeArray($kindInt32, [8923, 65024]) }, { k: "gvertneqq;", v: $toNativeArray($kindInt32, [8809, 65024]) }, { k: "gvnE;", v: $toNativeArray($kindInt32, [8809, 65024]) }, { k: "lates;", v: $toNativeArray($kindInt32, [10925, 65024]) }, { k: "lesg;", v: $toNativeArray($kindInt32, [8922, 65024]) }, { k: "lvertneqq;", v: $toNativeArray($kindInt32, [8808, 65024]) }, { k: "lvnE;", v: $toNativeArray($kindInt32, [8808, 65024]) }, { k: "nGg;", v: $toNativeArray($kindInt32, [8921, 824]) }, { k: "nGtv;", v: $toNativeArray($kindInt32, [8811, 824]) }, { k: "nLl;", v: $toNativeArray($kindInt32, [8920, 824]) }, { k: "nLtv;", v: $toNativeArray($kindInt32, [8810, 824]) }, { k: "nang;", v: $toNativeArray($kindInt32, [8736, 8402]) }, { k: "napE;", v: $toNativeArray($kindInt32, [10864, 824]) }, { k: "napid;", v: $toNativeArray($kindInt32, [8779, 824]) }, { k: "nbump;", v: $toNativeArray($kindInt32, [8782, 824]) }, { k: "nbumpe;", v: $toNativeArray($kindInt32, [8783, 824]) }, { k: "ncongdot;", v: $toNativeArray($kindInt32, [10861, 824]) }, { k: "nedot;", v: $toNativeArray($kindInt32, [8784, 824]) }, { k: "nesim;", v: $toNativeArray($kindInt32, [8770, 824]) }, { k: "ngE;", v: $toNativeArray($kindInt32, [8807, 824]) }, { k: "ngeqq;", v: $toNativeArray($kindInt32, [8807, 824]) }, { k: "ngeqslant;", v: $toNativeArray($kindInt32, [10878, 824]) }, { k: "nges;", v: $toNativeArray($kindInt32, [10878, 824]) }, { k: "nlE;", v: $toNativeArray($kindInt32, [8806, 824]) }, { k: "nleqq;", v: $toNativeArray($kindInt32, [8806, 824]) }, { k: "nleqslant;", v: $toNativeArray($kindInt32, [10877, 824]) }, { k: "nles;", v: $toNativeArray($kindInt32, [10877, 824]) }, { k: "notinE;", v: $toNativeArray($kindInt32, [8953, 824]) }, { k: "notindot;", v: $toNativeArray($kindInt32, [8949, 824]) }, { k: "nparsl;", v: $toNativeArray($kindInt32, [11005, 8421]) }, { k: "npart;", v: $toNativeArray($kindInt32, [8706, 824]) }, { k: "npre;", v: $toNativeArray($kindInt32, [10927, 824]) }, { k: "npreceq;", v: $toNativeArray($kindInt32, [10927, 824]) }, { k: "nrarrc;", v: $toNativeArray($kindInt32, [10547, 824]) }, { k: "nrarrw;", v: $toNativeArray($kindInt32, [8605, 824]) }, { k: "nsce;", v: $toNativeArray($kindInt32, [10928, 824]) }, { k: "nsubE;", v: $toNativeArray($kindInt32, [10949, 824]) }, { k: "nsubset;", v: $toNativeArray($kindInt32, [8834, 8402]) }, { k: "nsubseteqq;", v: $toNativeArray($kindInt32, [10949, 824]) }, { k: "nsucceq;", v: $toNativeArray($kindInt32, [10928, 824]) }, { k: "nsupE;", v: $toNativeArray($kindInt32, [10950, 824]) }, { k: "nsupset;", v: $toNativeArray($kindInt32, [8835, 8402]) }, { k: "nsupseteqq;", v: $toNativeArray($kindInt32, [10950, 824]) }, { k: "nvap;", v: $toNativeArray($kindInt32, [8781, 8402]) }, { k: "nvge;", v: $toNativeArray($kindInt32, [8805, 8402]) }, { k: "nvgt;", v: $toNativeArray($kindInt32, [62, 8402]) }, { k: "nvle;", v: $toNativeArray($kindInt32, [8804, 8402]) }, { k: "nvlt;", v: $toNativeArray($kindInt32, [60, 8402]) }, { k: "nvltrie;", v: $toNativeArray($kindInt32, [8884, 8402]) }, { k: "nvrtrie;", v: $toNativeArray($kindInt32, [8885, 8402]) }, { k: "nvsim;", v: $toNativeArray($kindInt32, [8764, 8402]) }, { k: "race;", v: $toNativeArray($kindInt32, [8765, 817]) }, { k: "smtes;", v: $toNativeArray($kindInt32, [10924, 65024]) }, { k: "sqcaps;", v: $toNativeArray($kindInt32, [8851, 65024]) }, { k: "sqcups;", v: $toNativeArray($kindInt32, [8852, 65024]) }, { k: "varsubsetneq;", v: $toNativeArray($kindInt32, [8842, 65024]) }, { k: "varsubsetneqq;", v: $toNativeArray($kindInt32, [10955, 65024]) }, { k: "varsupsetneq;", v: $toNativeArray($kindInt32, [8843, 65024]) }, { k: "varsupsetneqq;", v: $toNativeArray($kindInt32, [10956, 65024]) }, { k: "vnsub;", v: $toNativeArray($kindInt32, [8834, 8402]) }, { k: "vnsup;", v: $toNativeArray($kindInt32, [8835, 8402]) }, { k: "vsubnE;", v: $toNativeArray($kindInt32, [10955, 65024]) }, { k: "vsubne;", v: $toNativeArray($kindInt32, [8842, 65024]) }, { k: "vsupnE;", v: $toNativeArray($kindInt32, [10956, 65024]) }, { k: "vsupne;", v: $toNativeArray($kindInt32, [8843, 65024]) }]);
+		replacementTable = $toNativeArray($kindInt32, [8364, 129, 8218, 402, 8222, 8230, 8224, 8225, 710, 8240, 352, 8249, 338, 141, 381, 143, 144, 8216, 8217, 8220, 8221, 8226, 8211, 8212, 732, 8482, 353, 8250, 339, 157, 382, 376]);
+		htmlEscaper = strings.NewReplacer(new sliceType(["&", "&amp;", "'", "&#39;", "<", "&lt;", ">", "&gt;", "\"", "&#34;"]));
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
+$packages["encoding/base64"] = (function() {
+	var $pkg = {}, $init, binary, io, strconv, Encoding, encoder, CorruptInputError, arrayType, arrayType$1, sliceType, ptrType, arrayType$2, arrayType$3, arrayType$4, ptrType$1, NewEncoding, NewEncoder;
+	binary = $packages["encoding/binary"];
+	io = $packages["io"];
+	strconv = $packages["strconv"];
+	Encoding = $pkg.Encoding = $newType(0, $kindStruct, "base64.Encoding", true, "encoding/base64", true, function(encode_, decodeMap_, padChar_, strict_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.encode = arrayType.zero();
+			this.decodeMap = arrayType$1.zero();
+			this.padChar = 0;
+			this.strict = false;
+			return;
+		}
+		this.encode = encode_;
+		this.decodeMap = decodeMap_;
+		this.padChar = padChar_;
+		this.strict = strict_;
+	});
+	encoder = $pkg.encoder = $newType(0, $kindStruct, "base64.encoder", true, "encoding/base64", false, function(err_, enc_, w_, buf_, nbuf_, out_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.err = $ifaceNil;
+			this.enc = ptrType.nil;
+			this.w = $ifaceNil;
+			this.buf = arrayType$2.zero();
+			this.nbuf = 0;
+			this.out = arrayType$3.zero();
+			return;
+		}
+		this.err = err_;
+		this.enc = enc_;
+		this.w = w_;
+		this.buf = buf_;
+		this.nbuf = nbuf_;
+		this.out = out_;
+	});
+	CorruptInputError = $pkg.CorruptInputError = $newType(8, $kindInt64, "base64.CorruptInputError", true, "encoding/base64", true, null);
+	arrayType = $arrayType($Uint8, 64);
+	arrayType$1 = $arrayType($Uint8, 256);
+	sliceType = $sliceType($Uint8);
+	ptrType = $ptrType(Encoding);
+	arrayType$2 = $arrayType($Uint8, 3);
+	arrayType$3 = $arrayType($Uint8, 1024);
+	arrayType$4 = $arrayType($Uint8, 4);
+	ptrType$1 = $ptrType(encoder);
+	NewEncoding = function(encoder$1) {
+		var e, encoder$1, i, i$1, i$2, x, x$1, x$2;
+		if (!((encoder$1.length === 64))) {
+			$panic(new $String("encoding alphabet is not 64-bytes long"));
+		}
+		i = 0;
+		while (true) {
+			if (!(i < encoder$1.length)) { break; }
+			if ((encoder$1.charCodeAt(i) === 10) || (encoder$1.charCodeAt(i) === 13)) {
+				$panic(new $String("encoding alphabet contains newline character"));
+			}
+			i = i + (1) >> 0;
+		}
+		e = new Encoding.ptr(arrayType.zero(), arrayType$1.zero(), 0, false);
+		e.padChar = 61;
+		$copyString(new sliceType(e.encode), encoder$1);
+		i$1 = 0;
+		while (true) {
+			if (!(i$1 < 256)) { break; }
+			(x = e.decodeMap, ((i$1 < 0 || i$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[i$1] = 255));
+			i$1 = i$1 + (1) >> 0;
+		}
+		i$2 = 0;
+		while (true) {
+			if (!(i$2 < encoder$1.length)) { break; }
+			(x$1 = e.decodeMap, x$2 = encoder$1.charCodeAt(i$2), ((x$2 < 0 || x$2 >= x$1.length) ? ($throwRuntimeError("index out of range"), undefined) : x$1[x$2] = ((i$2 << 24 >>> 24))));
+			i$2 = i$2 + (1) >> 0;
+		}
+		return e;
+	};
+	$pkg.NewEncoding = NewEncoding;
+	Encoding.ptr.prototype.WithPadding = function(padding) {
+		var enc, i, padding, x;
+		enc = this;
+		if ((padding === 13) || (padding === 10) || padding > 255) {
+			$panic(new $String("invalid padding"));
+		}
+		i = 0;
+		while (true) {
+			if (!(i < 64)) { break; }
+			if ((((x = enc.encode, ((i < 0 || i >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[i])) >> 0)) === padding) {
+				$panic(new $String("padding contained in alphabet"));
+			}
+			i = i + (1) >> 0;
+		}
+		enc.padChar = padding;
+		return enc;
+	};
+	Encoding.prototype.WithPadding = function(padding) { return this.$val.WithPadding(padding); };
+	Encoding.ptr.prototype.Strict = function() {
+		var enc;
+		enc = this;
+		enc.strict = true;
+		return enc;
+	};
+	Encoding.prototype.Strict = function() { return this.$val.Strict(); };
+	Encoding.ptr.prototype.Encode = function(dst, src) {
+		var _1, _q, _tmp, _tmp$1, di, dst, enc, n, remain, si, src, val, val$1, x, x$1, x$10, x$11, x$12, x$13, x$14, x$15, x$16, x$17, x$18, x$19, x$2, x$20, x$21, x$22, x$23, x$24, x$25, x$26, x$27, x$28, x$3, x$4, x$5, x$6, x$7, x$8, x$9;
+		enc = this;
+		if (src.$length === 0) {
+			return;
+		}
+		_tmp = 0;
+		_tmp$1 = 0;
+		di = _tmp;
+		si = _tmp$1;
+		n = $imul(((_q = src.$length / 3, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"))), 3);
+		while (true) {
+			if (!(si < n)) { break; }
+			val = (((((((x = si + 0 >> 0, ((x < 0 || x >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x])) >>> 0)) << 16 >>> 0) | ((((x$1 = si + 1 >> 0, ((x$1 < 0 || x$1 >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x$1])) >>> 0)) << 8 >>> 0)) >>> 0) | (((x$2 = si + 2 >> 0, ((x$2 < 0 || x$2 >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x$2])) >>> 0))) >>> 0;
+			(x$5 = di + 0 >> 0, ((x$5 < 0 || x$5 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$5] = (x$3 = enc.encode, x$4 = ((val >>> 18 >>> 0) & 63) >>> 0, ((x$4 < 0 || x$4 >= x$3.length) ? ($throwRuntimeError("index out of range"), undefined) : x$3[x$4]))));
+			(x$8 = di + 1 >> 0, ((x$8 < 0 || x$8 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$8] = (x$6 = enc.encode, x$7 = ((val >>> 12 >>> 0) & 63) >>> 0, ((x$7 < 0 || x$7 >= x$6.length) ? ($throwRuntimeError("index out of range"), undefined) : x$6[x$7]))));
+			(x$11 = di + 2 >> 0, ((x$11 < 0 || x$11 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$11] = (x$9 = enc.encode, x$10 = ((val >>> 6 >>> 0) & 63) >>> 0, ((x$10 < 0 || x$10 >= x$9.length) ? ($throwRuntimeError("index out of range"), undefined) : x$9[x$10]))));
+			(x$14 = di + 3 >> 0, ((x$14 < 0 || x$14 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$14] = (x$12 = enc.encode, x$13 = (val & 63) >>> 0, ((x$13 < 0 || x$13 >= x$12.length) ? ($throwRuntimeError("index out of range"), undefined) : x$12[x$13]))));
+			si = si + (3) >> 0;
+			di = di + (4) >> 0;
+		}
+		remain = src.$length - si >> 0;
+		if (remain === 0) {
+			return;
+		}
+		val$1 = (((x$15 = si + 0 >> 0, ((x$15 < 0 || x$15 >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x$15])) >>> 0)) << 16 >>> 0;
+		if (remain === 2) {
+			val$1 = (val$1 | (((((x$16 = si + 1 >> 0, ((x$16 < 0 || x$16 >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + x$16])) >>> 0)) << 8 >>> 0))) >>> 0;
+		}
+		(x$19 = di + 0 >> 0, ((x$19 < 0 || x$19 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$19] = (x$17 = enc.encode, x$18 = ((val$1 >>> 18 >>> 0) & 63) >>> 0, ((x$18 < 0 || x$18 >= x$17.length) ? ($throwRuntimeError("index out of range"), undefined) : x$17[x$18]))));
+		(x$22 = di + 1 >> 0, ((x$22 < 0 || x$22 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$22] = (x$20 = enc.encode, x$21 = ((val$1 >>> 12 >>> 0) & 63) >>> 0, ((x$21 < 0 || x$21 >= x$20.length) ? ($throwRuntimeError("index out of range"), undefined) : x$20[x$21]))));
+		_1 = remain;
+		if (_1 === (2)) {
+			(x$25 = di + 2 >> 0, ((x$25 < 0 || x$25 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$25] = (x$23 = enc.encode, x$24 = ((val$1 >>> 6 >>> 0) & 63) >>> 0, ((x$24 < 0 || x$24 >= x$23.length) ? ($throwRuntimeError("index out of range"), undefined) : x$23[x$24]))));
+			if (!((enc.padChar === -1))) {
+				(x$26 = di + 3 >> 0, ((x$26 < 0 || x$26 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$26] = ((enc.padChar << 24 >>> 24))));
+			}
+		} else if (_1 === (1)) {
+			if (!((enc.padChar === -1))) {
+				(x$27 = di + 2 >> 0, ((x$27 < 0 || x$27 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$27] = ((enc.padChar << 24 >>> 24))));
+				(x$28 = di + 3 >> 0, ((x$28 < 0 || x$28 >= dst.$length) ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + x$28] = ((enc.padChar << 24 >>> 24))));
+			}
+		}
+	};
+	Encoding.prototype.Encode = function(dst, src) { return this.$val.Encode(dst, src); };
+	Encoding.ptr.prototype.EncodeToString = function(src) {
+		var buf, enc, src;
+		enc = this;
+		buf = $makeSlice(sliceType, enc.EncodedLen(src.$length));
+		enc.Encode(buf, src);
+		return ($bytesToString(buf));
+	};
+	Encoding.prototype.EncodeToString = function(src) { return this.$val.EncodeToString(src); };
+	encoder.ptr.prototype.Write = function(p) {
+		var _q, _r, _r$1, _r$2, _tmp, _tmp$1, _tmp$2, _tmp$3, _tmp$4, _tmp$5, _tuple, _tuple$1, e, err, i, i$1, n, nn, p, x, x$1, x$2, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; _tmp$2 = $f._tmp$2; _tmp$3 = $f._tmp$3; _tmp$4 = $f._tmp$4; _tmp$5 = $f._tmp$5; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; e = $f.e; err = $f.err; i = $f.i; i$1 = $f.i$1; n = $f.n; nn = $f.nn; p = $f.p; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		n = 0;
+		err = $ifaceNil;
+		e = this;
+		if (!($interfaceIsEqual(e.err, $ifaceNil))) {
+			_tmp = 0;
+			_tmp$1 = e.err;
+			n = _tmp;
+			err = _tmp$1;
+			$s = -1; return [n, err];
+		}
+		/* */ if (e.nbuf > 0) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (e.nbuf > 0) { */ case 1:
+			i = 0;
+			i = 0;
+			while (true) {
+				if (!(i < p.$length && e.nbuf < 3)) { break; }
+				(x = e.buf, x$1 = e.nbuf, ((x$1 < 0 || x$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[x$1] = ((i < 0 || i >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i])));
+				e.nbuf = e.nbuf + (1) >> 0;
+				i = i + (1) >> 0;
+			}
+			n = n + (i) >> 0;
+			p = $subslice(p, i);
+			if (e.nbuf < 3) {
+				$s = -1; return [n, err];
+			}
+			e.enc.Encode(new sliceType(e.out), new sliceType(e.buf));
+			_r = e.w.Write($subslice(new sliceType(e.out), 0, 4)); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_tuple = _r;
+			e.err = _tuple[1];
+			if (!($interfaceIsEqual(e.err, $ifaceNil))) {
+				_tmp$2 = n;
+				_tmp$3 = e.err;
+				n = _tmp$2;
+				err = _tmp$3;
+				$s = -1; return [n, err];
+			}
+			e.nbuf = 0;
+		/* } */ case 2:
+		/* while (true) { */ case 4:
+			/* if (!(p.$length >= 3)) { break; } */ if(!(p.$length >= 3)) { $s = 5; continue; }
+			nn = 768;
+			if (nn > p.$length) {
+				nn = p.$length;
+				nn = nn - ((_r$1 = nn % 3, _r$1 === _r$1 ? _r$1 : $throwRuntimeError("integer divide by zero"))) >> 0;
+			}
+			e.enc.Encode(new sliceType(e.out), $subslice(p, 0, nn));
+			_r$2 = e.w.Write($subslice(new sliceType(e.out), 0, ($imul((_q = nn / 3, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero")), 4)))); /* */ $s = 6; case 6: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			_tuple$1 = _r$2;
+			e.err = _tuple$1[1];
+			if (!($interfaceIsEqual(e.err, $ifaceNil))) {
+				_tmp$4 = n;
+				_tmp$5 = e.err;
+				n = _tmp$4;
+				err = _tmp$5;
+				$s = -1; return [n, err];
+			}
+			n = n + (nn) >> 0;
+			p = $subslice(p, nn);
+		/* } */ $s = 4; continue; case 5:
+		i$1 = 0;
+		while (true) {
+			if (!(i$1 < p.$length)) { break; }
+			(x$2 = e.buf, ((i$1 < 0 || i$1 >= x$2.length) ? ($throwRuntimeError("index out of range"), undefined) : x$2[i$1] = ((i$1 < 0 || i$1 >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i$1])));
+			i$1 = i$1 + (1) >> 0;
+		}
+		e.nbuf = p.$length;
+		n = n + (p.$length) >> 0;
+		$s = -1; return [n, err];
+		/* */ } return; } if ($f === undefined) { $f = { $blk: encoder.ptr.prototype.Write }; } $f._q = _q; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f._tmp$2 = _tmp$2; $f._tmp$3 = _tmp$3; $f._tmp$4 = _tmp$4; $f._tmp$5 = _tmp$5; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.e = e; $f.err = err; $f.i = i; $f.i$1 = i$1; $f.n = n; $f.nn = nn; $f.p = p; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	encoder.prototype.Write = function(p) { return this.$val.Write(p); };
+	encoder.ptr.prototype.Close = function() {
+		var _r, _tuple, e, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _tuple = $f._tuple; e = $f.e; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		e = this;
+		/* */ if ($interfaceIsEqual(e.err, $ifaceNil) && e.nbuf > 0) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if ($interfaceIsEqual(e.err, $ifaceNil) && e.nbuf > 0) { */ case 1:
+			e.enc.Encode(new sliceType(e.out), $subslice(new sliceType(e.buf), 0, e.nbuf));
+			_r = e.w.Write($subslice(new sliceType(e.out), 0, e.enc.EncodedLen(e.nbuf))); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_tuple = _r;
+			e.err = _tuple[1];
+			e.nbuf = 0;
+		/* } */ case 2:
+		$s = -1; return e.err;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: encoder.ptr.prototype.Close }; } $f._r = _r; $f._tuple = _tuple; $f.e = e; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	encoder.prototype.Close = function() { return this.$val.Close(); };
+	NewEncoder = function(enc, w) {
+		var enc, w;
+		return new encoder.ptr($ifaceNil, enc, w, arrayType$2.zero(), 0, arrayType$3.zero());
+	};
+	$pkg.NewEncoder = NewEncoder;
+	Encoding.ptr.prototype.EncodedLen = function(n) {
+		var _q, _q$1, enc, n;
+		enc = this;
+		if (enc.padChar === -1) {
+			return (_q = ((($imul(n, 8)) + 5 >> 0)) / 6, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
+		}
+		return $imul((_q$1 = ((n + 2 >> 0)) / 3, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero")), 4);
+	};
+	Encoding.prototype.EncodedLen = function(n) { return this.$val.EncodedLen(n); };
+	CorruptInputError.prototype.Error = function() {
+		var e;
+		e = this;
+		return "illegal base64 data at input byte " + strconv.FormatInt((new $Int64(e.$high, e.$low)), 10);
+	};
+	$ptrType(CorruptInputError).prototype.Error = function() { return this.$get().Error(); };
+	Encoding.ptr.prototype.decodeQuantum = function(dst, src, si) {
+		var _1, _2, _tmp, _tmp$1, _tmp$10, _tmp$11, _tmp$12, _tmp$13, _tmp$14, _tmp$15, _tmp$16, _tmp$17, _tmp$18, _tmp$19, _tmp$2, _tmp$20, _tmp$21, _tmp$22, _tmp$23, _tmp$24, _tmp$25, _tmp$26, _tmp$27, _tmp$28, _tmp$29, _tmp$3, _tmp$30, _tmp$31, _tmp$32, _tmp$33, _tmp$34, _tmp$35, _tmp$36, _tmp$37, _tmp$38, _tmp$39, _tmp$4, _tmp$40, _tmp$41, _tmp$42, _tmp$43, _tmp$44, _tmp$5, _tmp$6, _tmp$7, _tmp$8, _tmp$9, dbuf, dinc, dlen, dst, enc, err, in$1, j, n, nsi, out, si, src, val, x;
+		nsi = 0;
+		n = 0;
+		err = $ifaceNil;
+		enc = this;
+		dbuf = arrayType$4.zero();
+		_tmp = 3;
+		_tmp$1 = 4;
+		dinc = _tmp;
+		dlen = _tmp$1;
+		j = 0;
+		while (true) {
+			if (!(j < 4)) { break; }
+			if (src.$length === si) {
+				if ((j === 0)) {
+					_tmp$2 = si;
+					_tmp$3 = 0;
+					_tmp$4 = $ifaceNil;
+					nsi = _tmp$2;
+					n = _tmp$3;
+					err = _tmp$4;
+					return [nsi, n, err];
+				} else if (((j === 1)) || (!((enc.padChar === -1)))) {
+					_tmp$5 = si;
+					_tmp$6 = 0;
+					_tmp$7 = (new CorruptInputError(0, (si - j >> 0)));
+					nsi = _tmp$5;
+					n = _tmp$6;
+					err = _tmp$7;
+					return [nsi, n, err];
+				}
+				_tmp$8 = j - 1 >> 0;
+				_tmp$9 = j;
+				dinc = _tmp$8;
+				dlen = _tmp$9;
+				break;
+			}
+			in$1 = ((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]);
+			si = si + (1) >> 0;
+			out = (x = enc.decodeMap, ((in$1 < 0 || in$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[in$1]));
+			if (!((out === 255))) {
+				((j < 0 || j >= dbuf.length) ? ($throwRuntimeError("index out of range"), undefined) : dbuf[j] = out);
+				j = j + (1) >> 0;
+				continue;
+			}
+			if ((in$1 === 10) || (in$1 === 13)) {
+				j = j - (1) >> 0;
+				j = j + (1) >> 0;
+				continue;
+			}
+			if (!((((in$1 >> 0)) === enc.padChar))) {
+				_tmp$10 = si;
+				_tmp$11 = 0;
+				_tmp$12 = (new CorruptInputError(0, (si - 1 >> 0)));
+				nsi = _tmp$10;
+				n = _tmp$11;
+				err = _tmp$12;
+				return [nsi, n, err];
+			}
+			_1 = j;
+			if ((_1 === (0)) || (_1 === (1))) {
+				_tmp$13 = si;
+				_tmp$14 = 0;
+				_tmp$15 = (new CorruptInputError(0, (si - 1 >> 0)));
+				nsi = _tmp$13;
+				n = _tmp$14;
+				err = _tmp$15;
+				return [nsi, n, err];
+			} else if (_1 === (2)) {
+				while (true) {
+					if (!(si < src.$length && ((((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) === 10) || (((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) === 13)))) { break; }
+					si = si + (1) >> 0;
+				}
+				if (si === src.$length) {
+					_tmp$16 = si;
+					_tmp$17 = 0;
+					_tmp$18 = (new CorruptInputError(0, src.$length));
+					nsi = _tmp$16;
+					n = _tmp$17;
+					err = _tmp$18;
+					return [nsi, n, err];
+				}
+				if (!((((((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) >> 0)) === enc.padChar))) {
+					_tmp$19 = si;
+					_tmp$20 = 0;
+					_tmp$21 = (new CorruptInputError(0, (si - 1 >> 0)));
+					nsi = _tmp$19;
+					n = _tmp$20;
+					err = _tmp$21;
+					return [nsi, n, err];
+				}
+				si = si + (1) >> 0;
+			}
+			while (true) {
+				if (!(si < src.$length && ((((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) === 10) || (((si < 0 || si >= src.$length) ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + si]) === 13)))) { break; }
+				si = si + (1) >> 0;
+			}
+			if (si < src.$length) {
+				err = (new CorruptInputError(0, si));
+			}
+			_tmp$22 = 3;
+			_tmp$23 = j;
+			dinc = _tmp$22;
+			dlen = _tmp$23;
+			break;
+		}
+		val = ((((((((dbuf[0] >>> 0)) << 18 >>> 0) | (((dbuf[1] >>> 0)) << 12 >>> 0)) >>> 0) | (((dbuf[2] >>> 0)) << 6 >>> 0)) >>> 0) | ((dbuf[3] >>> 0))) >>> 0;
+		_tmp$24 = (((val >>> 0 >>> 0) << 24 >>> 24));
+		_tmp$25 = (((val >>> 8 >>> 0) << 24 >>> 24));
+		_tmp$26 = (((val >>> 16 >>> 0) << 24 >>> 24));
+		dbuf[2] = _tmp$24;
+		dbuf[1] = _tmp$25;
+		dbuf[0] = _tmp$26;
+		_2 = dlen;
+		if (_2 === (4)) {
+			(2 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 2] = dbuf[2]);
+			dbuf[2] = 0;
+			(1 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 1] = dbuf[1]);
+			if (enc.strict && !((dbuf[2] === 0))) {
+				_tmp$27 = si;
+				_tmp$28 = 0;
+				_tmp$29 = (new CorruptInputError(0, (si - 1 >> 0)));
+				nsi = _tmp$27;
+				n = _tmp$28;
+				err = _tmp$29;
+				return [nsi, n, err];
+			}
+			dbuf[1] = 0;
+			(0 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 0] = dbuf[0]);
+			if (enc.strict && (!((dbuf[1] === 0)) || !((dbuf[2] === 0)))) {
+				_tmp$30 = si;
+				_tmp$31 = 0;
+				_tmp$32 = (new CorruptInputError(0, (si - 2 >> 0)));
+				nsi = _tmp$30;
+				n = _tmp$31;
+				err = _tmp$32;
+				return [nsi, n, err];
+			}
+		} else if (_2 === (3)) {
+			(1 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 1] = dbuf[1]);
+			if (enc.strict && !((dbuf[2] === 0))) {
+				_tmp$33 = si;
+				_tmp$34 = 0;
+				_tmp$35 = (new CorruptInputError(0, (si - 1 >> 0)));
+				nsi = _tmp$33;
+				n = _tmp$34;
+				err = _tmp$35;
+				return [nsi, n, err];
+			}
+			dbuf[1] = 0;
+			(0 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 0] = dbuf[0]);
+			if (enc.strict && (!((dbuf[1] === 0)) || !((dbuf[2] === 0)))) {
+				_tmp$36 = si;
+				_tmp$37 = 0;
+				_tmp$38 = (new CorruptInputError(0, (si - 2 >> 0)));
+				nsi = _tmp$36;
+				n = _tmp$37;
+				err = _tmp$38;
+				return [nsi, n, err];
+			}
+		} else if (_2 === (2)) {
+			(0 >= dst.$length ? ($throwRuntimeError("index out of range"), undefined) : dst.$array[dst.$offset + 0] = dbuf[0]);
+			if (enc.strict && (!((dbuf[1] === 0)) || !((dbuf[2] === 0)))) {
+				_tmp$39 = si;
+				_tmp$40 = 0;
+				_tmp$41 = (new CorruptInputError(0, (si - 2 >> 0)));
+				nsi = _tmp$39;
+				n = _tmp$40;
+				err = _tmp$41;
+				return [nsi, n, err];
+			}
+		}
+		dst = $subslice(dst, dinc);
+		_tmp$42 = si;
+		_tmp$43 = dlen - 1 >> 0;
+		_tmp$44 = err;
+		nsi = _tmp$42;
+		n = _tmp$43;
+		err = _tmp$44;
+		return [nsi, n, err];
+	};
+	Encoding.prototype.decodeQuantum = function(dst, src, si) { return this.$val.decodeQuantum(dst, src, si); };
+	Encoding.ptr.prototype.DecodeString = function(s) {
+		var _tuple, dbuf, enc, err, n, s;
+		enc = this;
+		dbuf = $makeSlice(sliceType, enc.DecodedLen(s.length));
+		_tuple = enc.Decode(dbuf, (new sliceType($stringToBytes(s))));
+		n = _tuple[0];
+		err = _tuple[1];
+		return [$subslice(dbuf, 0, n), err];
+	};
+	Encoding.prototype.DecodeString = function(s) { return this.$val.DecodeString(s); };
+	Encoding.ptr.prototype.Decode = function(dst, src) {
+		var _tmp, _tmp$1, _tmp$2, _tmp$3, _tmp$4, _tmp$5, _tmp$6, _tmp$7, _tmp$8, _tmp$9, _tuple, _tuple$1, _tuple$2, dst, enc, err, ilen, n, ninc, ninc$1, ninc$2, ok, ok$1, olen, si, src;
+		n = 0;
+		err = $ifaceNil;
+		enc = this;
+		if (src.$length === 0) {
+			_tmp = 0;
+			_tmp$1 = $ifaceNil;
+			n = _tmp;
+			err = _tmp$1;
+			return [n, err];
+		}
+		si = 0;
+		ilen = src.$length;
+		olen = dst.$length;
+		while (true) {
+			if (!(false && (ilen - si >> 0) >= 8 && (olen - n >> 0) >= 8)) { break; }
+			ok = enc.decode64($subslice(dst, n), $subslice(src, si));
+			if (ok) {
+				n = n + (6) >> 0;
+				si = si + (8) >> 0;
+			} else {
+				ninc = 0;
+				_tuple = enc.decodeQuantum($subslice(dst, n), src, si);
+				si = _tuple[0];
+				ninc = _tuple[1];
+				err = _tuple[2];
+				n = n + (ninc) >> 0;
+				if (!($interfaceIsEqual(err, $ifaceNil))) {
+					_tmp$2 = n;
+					_tmp$3 = err;
+					n = _tmp$2;
+					err = _tmp$3;
+					return [n, err];
+				}
+			}
+		}
+		while (true) {
+			if (!((ilen - si >> 0) >= 4 && (olen - n >> 0) >= 4)) { break; }
+			ok$1 = enc.decode32($subslice(dst, n), $subslice(src, si));
+			if (ok$1) {
+				n = n + (3) >> 0;
+				si = si + (4) >> 0;
+			} else {
+				ninc$1 = 0;
+				_tuple$1 = enc.decodeQuantum($subslice(dst, n), src, si);
+				si = _tuple$1[0];
+				ninc$1 = _tuple$1[1];
+				err = _tuple$1[2];
+				n = n + (ninc$1) >> 0;
+				if (!($interfaceIsEqual(err, $ifaceNil))) {
+					_tmp$4 = n;
+					_tmp$5 = err;
+					n = _tmp$4;
+					err = _tmp$5;
+					return [n, err];
+				}
+			}
+		}
+		while (true) {
+			if (!(si < src.$length)) { break; }
+			ninc$2 = 0;
+			_tuple$2 = enc.decodeQuantum($subslice(dst, n), src, si);
+			si = _tuple$2[0];
+			ninc$2 = _tuple$2[1];
+			err = _tuple$2[2];
+			n = n + (ninc$2) >> 0;
+			if (!($interfaceIsEqual(err, $ifaceNil))) {
+				_tmp$6 = n;
+				_tmp$7 = err;
+				n = _tmp$6;
+				err = _tmp$7;
+				return [n, err];
+			}
+		}
+		_tmp$8 = n;
+		_tmp$9 = err;
+		n = _tmp$8;
+		err = _tmp$9;
+		return [n, err];
+	};
+	Encoding.prototype.Decode = function(dst, src) { return this.$val.Decode(dst, src); };
+	Encoding.ptr.prototype.decode32 = function(dst, src) {
+		var _tmp, _tmp$1, dn, dst, enc, n, src, x, x$1, x$2, x$3, x$4, x$5, x$6, x$7;
+		enc = this;
+		_tmp = 0;
+		_tmp$1 = 0;
+		dn = _tmp;
+		n = _tmp$1;
+		n = (((x = enc.decodeMap, x$1 = (0 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 0]), ((x$1 < 0 || x$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[x$1])) >>> 0));
+		if (n === 255) {
+			return false;
+		}
+		dn = (dn | ((n << 26 >>> 0))) >>> 0;
+		n = (((x$2 = enc.decodeMap, x$3 = (1 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 1]), ((x$3 < 0 || x$3 >= x$2.length) ? ($throwRuntimeError("index out of range"), undefined) : x$2[x$3])) >>> 0));
+		if (n === 255) {
+			return false;
+		}
+		dn = (dn | ((n << 20 >>> 0))) >>> 0;
+		n = (((x$4 = enc.decodeMap, x$5 = (2 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 2]), ((x$5 < 0 || x$5 >= x$4.length) ? ($throwRuntimeError("index out of range"), undefined) : x$4[x$5])) >>> 0));
+		if (n === 255) {
+			return false;
+		}
+		dn = (dn | ((n << 14 >>> 0))) >>> 0;
+		n = (((x$6 = enc.decodeMap, x$7 = (3 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 3]), ((x$7 < 0 || x$7 >= x$6.length) ? ($throwRuntimeError("index out of range"), undefined) : x$6[x$7])) >>> 0));
+		if (n === 255) {
+			return false;
+		}
+		dn = (dn | ((n << 8 >>> 0))) >>> 0;
+		$clone(binary.BigEndian, binary.bigEndian).PutUint32(dst, dn);
+		return true;
+	};
+	Encoding.prototype.decode32 = function(dst, src) { return this.$val.decode32(dst, src); };
+	Encoding.ptr.prototype.decode64 = function(dst, src) {
+		var _tmp, _tmp$1, dn, dst, enc, n, src, x, x$1, x$10, x$11, x$12, x$13, x$14, x$15, x$16, x$17, x$18, x$19, x$2, x$20, x$21, x$22, x$23, x$3, x$4, x$5, x$6, x$7, x$8, x$9;
+		enc = this;
+		_tmp = new $Uint64(0, 0);
+		_tmp$1 = new $Uint64(0, 0);
+		dn = _tmp;
+		n = _tmp$1;
+		n = (new $Uint64(0, (x = enc.decodeMap, x$1 = (0 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 0]), ((x$1 < 0 || x$1 >= x.length) ? ($throwRuntimeError("index out of range"), undefined) : x[x$1]))));
+		if ((n.$high === 0 && n.$low === 255)) {
+			return false;
+		}
+		dn = (x$2 = $shiftLeft64(n, 58), new $Uint64(dn.$high | x$2.$high, (dn.$low | x$2.$low) >>> 0));
+		n = (new $Uint64(0, (x$3 = enc.decodeMap, x$4 = (1 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 1]), ((x$4 < 0 || x$4 >= x$3.length) ? ($throwRuntimeError("index out of range"), undefined) : x$3[x$4]))));
+		if ((n.$high === 0 && n.$low === 255)) {
+			return false;
+		}
+		dn = (x$5 = $shiftLeft64(n, 52), new $Uint64(dn.$high | x$5.$high, (dn.$low | x$5.$low) >>> 0));
+		n = (new $Uint64(0, (x$6 = enc.decodeMap, x$7 = (2 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 2]), ((x$7 < 0 || x$7 >= x$6.length) ? ($throwRuntimeError("index out of range"), undefined) : x$6[x$7]))));
+		if ((n.$high === 0 && n.$low === 255)) {
+			return false;
+		}
+		dn = (x$8 = $shiftLeft64(n, 46), new $Uint64(dn.$high | x$8.$high, (dn.$low | x$8.$low) >>> 0));
+		n = (new $Uint64(0, (x$9 = enc.decodeMap, x$10 = (3 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 3]), ((x$10 < 0 || x$10 >= x$9.length) ? ($throwRuntimeError("index out of range"), undefined) : x$9[x$10]))));
+		if ((n.$high === 0 && n.$low === 255)) {
+			return false;
+		}
+		dn = (x$11 = $shiftLeft64(n, 40), new $Uint64(dn.$high | x$11.$high, (dn.$low | x$11.$low) >>> 0));
+		n = (new $Uint64(0, (x$12 = enc.decodeMap, x$13 = (4 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 4]), ((x$13 < 0 || x$13 >= x$12.length) ? ($throwRuntimeError("index out of range"), undefined) : x$12[x$13]))));
+		if ((n.$high === 0 && n.$low === 255)) {
+			return false;
+		}
+		dn = (x$14 = $shiftLeft64(n, 34), new $Uint64(dn.$high | x$14.$high, (dn.$low | x$14.$low) >>> 0));
+		n = (new $Uint64(0, (x$15 = enc.decodeMap, x$16 = (5 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 5]), ((x$16 < 0 || x$16 >= x$15.length) ? ($throwRuntimeError("index out of range"), undefined) : x$15[x$16]))));
+		if ((n.$high === 0 && n.$low === 255)) {
+			return false;
+		}
+		dn = (x$17 = $shiftLeft64(n, 28), new $Uint64(dn.$high | x$17.$high, (dn.$low | x$17.$low) >>> 0));
+		n = (new $Uint64(0, (x$18 = enc.decodeMap, x$19 = (6 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 6]), ((x$19 < 0 || x$19 >= x$18.length) ? ($throwRuntimeError("index out of range"), undefined) : x$18[x$19]))));
+		if ((n.$high === 0 && n.$low === 255)) {
+			return false;
+		}
+		dn = (x$20 = $shiftLeft64(n, 22), new $Uint64(dn.$high | x$20.$high, (dn.$low | x$20.$low) >>> 0));
+		n = (new $Uint64(0, (x$21 = enc.decodeMap, x$22 = (7 >= src.$length ? ($throwRuntimeError("index out of range"), undefined) : src.$array[src.$offset + 7]), ((x$22 < 0 || x$22 >= x$21.length) ? ($throwRuntimeError("index out of range"), undefined) : x$21[x$22]))));
+		if ((n.$high === 0 && n.$low === 255)) {
+			return false;
+		}
+		dn = (x$23 = $shiftLeft64(n, 16), new $Uint64(dn.$high | x$23.$high, (dn.$low | x$23.$low) >>> 0));
+		$clone(binary.BigEndian, binary.bigEndian).PutUint64(dst, dn);
+		return true;
+	};
+	Encoding.prototype.decode64 = function(dst, src) { return this.$val.decode64(dst, src); };
+	Encoding.ptr.prototype.DecodedLen = function(n) {
+		var _q, _q$1, enc, n;
+		enc = this;
+		if (enc.padChar === -1) {
+			return (_q = ($imul(n, 6)) / 8, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
+		}
+		return $imul((_q$1 = n / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero")), 3);
+	};
+	Encoding.prototype.DecodedLen = function(n) { return this.$val.DecodedLen(n); };
+	Encoding.methods = [{prop: "WithPadding", name: "WithPadding", pkg: "", typ: $funcType([$Int32], [ptrType], false)}, {prop: "Strict", name: "Strict", pkg: "", typ: $funcType([], [ptrType], false)}];
+	ptrType.methods = [{prop: "Encode", name: "Encode", pkg: "", typ: $funcType([sliceType, sliceType], [], false)}, {prop: "EncodeToString", name: "EncodeToString", pkg: "", typ: $funcType([sliceType], [$String], false)}, {prop: "EncodedLen", name: "EncodedLen", pkg: "", typ: $funcType([$Int], [$Int], false)}, {prop: "decodeQuantum", name: "decodeQuantum", pkg: "encoding/base64", typ: $funcType([sliceType, sliceType, $Int], [$Int, $Int, $error], false)}, {prop: "DecodeString", name: "DecodeString", pkg: "", typ: $funcType([$String], [sliceType, $error], false)}, {prop: "Decode", name: "Decode", pkg: "", typ: $funcType([sliceType, sliceType], [$Int, $error], false)}, {prop: "decode32", name: "decode32", pkg: "encoding/base64", typ: $funcType([sliceType, sliceType], [$Bool], false)}, {prop: "decode64", name: "decode64", pkg: "encoding/base64", typ: $funcType([sliceType, sliceType], [$Bool], false)}, {prop: "DecodedLen", name: "DecodedLen", pkg: "", typ: $funcType([$Int], [$Int], false)}];
+	ptrType$1.methods = [{prop: "Write", name: "Write", pkg: "", typ: $funcType([sliceType], [$Int, $error], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [$error], false)}];
+	CorruptInputError.methods = [{prop: "Error", name: "Error", pkg: "", typ: $funcType([], [$String], false)}];
+	Encoding.init("encoding/base64", [{prop: "encode", name: "encode", anonymous: false, exported: false, typ: arrayType, tag: ""}, {prop: "decodeMap", name: "decodeMap", anonymous: false, exported: false, typ: arrayType$1, tag: ""}, {prop: "padChar", name: "padChar", anonymous: false, exported: false, typ: $Int32, tag: ""}, {prop: "strict", name: "strict", anonymous: false, exported: false, typ: $Bool, tag: ""}]);
+	encoder.init("encoding/base64", [{prop: "err", name: "err", anonymous: false, exported: false, typ: $error, tag: ""}, {prop: "enc", name: "enc", anonymous: false, exported: false, typ: ptrType, tag: ""}, {prop: "w", name: "w", anonymous: false, exported: false, typ: io.Writer, tag: ""}, {prop: "buf", name: "buf", anonymous: false, exported: false, typ: arrayType$2, tag: ""}, {prop: "nbuf", name: "nbuf", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "out", name: "out", anonymous: false, exported: false, typ: arrayType$3, tag: ""}]);
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = binary.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = io.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = strconv.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$pkg.StdEncoding = NewEncoding("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
+		$pkg.URLEncoding = NewEncoding("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_");
+		$pkg.RawStdEncoding = $clone($pkg.StdEncoding, Encoding).WithPadding(-1);
+		$pkg.RawURLEncoding = $clone($pkg.URLEncoding, Encoding).WithPadding(-1);
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
+$packages["sort"] = (function() {
+	var $pkg = {}, $init, reflect, lessSwap, StringSlice, sliceType$2, funcType, funcType$1, Search, SearchStrings, Slice, insertionSort, siftDown, heapSort, medianOfThree, doPivot, quickSort, Sort, maxDepth, Strings, insertionSort_func, siftDown_func, heapSort_func, medianOfThree_func, doPivot_func, quickSort_func;
+	reflect = $packages["reflect"];
+	lessSwap = $pkg.lessSwap = $newType(0, $kindStruct, "sort.lessSwap", true, "sort", false, function(Less_, Swap_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.Less = $throwNilPointerError;
+			this.Swap = $throwNilPointerError;
+			return;
+		}
+		this.Less = Less_;
+		this.Swap = Swap_;
+	});
+	StringSlice = $pkg.StringSlice = $newType(12, $kindSlice, "sort.StringSlice", true, "sort", true, null);
+	sliceType$2 = $sliceType($String);
+	funcType = $funcType([$Int, $Int], [$Bool], false);
+	funcType$1 = $funcType([$Int, $Int], [], false);
+	Search = function(n, f) {
+		var _r, _tmp, _tmp$1, f, h, i, j, n, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; f = $f.f; h = $f.h; i = $f.i; j = $f.j; n = $f.n; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_tmp = 0;
+		_tmp$1 = n;
+		i = _tmp;
+		j = _tmp$1;
+		/* while (true) { */ case 1:
+			/* if (!(i < j)) { break; } */ if(!(i < j)) { $s = 2; continue; }
+			h = ((((((i + j >> 0) >>> 0)) >>> 1 >>> 0) >> 0));
+			_r = f(h); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			/* */ if (!_r) { $s = 3; continue; }
+			/* */ $s = 4; continue;
+			/* if (!_r) { */ case 3:
+				i = h + 1 >> 0;
+				$s = 5; continue;
+			/* } else { */ case 4:
+				j = h;
+			/* } */ case 5:
+		/* } */ $s = 1; continue; case 2:
+		$s = -1; return i;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Search }; } $f._r = _r; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f.f = f; $f.h = h; $f.i = i; $f.j = j; $f.n = n; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.Search = Search;
+	SearchStrings = function(a, x) {
+		var _r, a, x, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; a = $f.a; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		a = [a];
+		x = [x];
+		_r = Search(a[0].$length, (function(a, x) { return function(i) {
+			var i;
+			return ((i < 0 || i >= a[0].$length) ? ($throwRuntimeError("index out of range"), undefined) : a[0].$array[a[0].$offset + i]) >= x[0];
+		}; })(a, x)); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		$s = -1; return _r;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: SearchStrings }; } $f._r = _r; $f.a = a; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.SearchStrings = SearchStrings;
+	StringSlice.prototype.Search = function(x) {
+		var _r, p, x, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; p = $f.p; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		p = this;
+		_r = SearchStrings($subslice(new sliceType$2(p.$array), p.$offset, p.$offset + p.$length), x); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		$s = -1; return _r;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: StringSlice.prototype.Search }; } $f._r = _r; $f.p = p; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$ptrType(StringSlice).prototype.Search = function(x) { return this.$get().Search(x); };
+	Slice = function(slice, less) {
+		var _r, _r$1, length, less, rv, slice, swap, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; length = $f.length; less = $f.less; rv = $f.rv; slice = $f.slice; swap = $f.swap; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = reflect.ValueOf(slice); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		rv = _r;
+		_r$1 = reflect.Swapper(slice); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		swap = _r$1;
+		length = $clone(rv, reflect.Value).Len();
+		$r = quickSort_func(new lessSwap.ptr(less, swap), 0, length, maxDepth(length)); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Slice }; } $f._r = _r; $f._r$1 = _r$1; $f.length = length; $f.less = less; $f.rv = rv; $f.slice = slice; $f.swap = swap; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.Slice = Slice;
+	insertionSort = function(data, a, b) {
+		var _r, _v, a, b, data, i, j, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _v = $f._v; a = $f.a; b = $f.b; data = $f.data; i = $f.i; j = $f.j; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		i = a + 1 >> 0;
+		/* while (true) { */ case 1:
+			/* if (!(i < b)) { break; } */ if(!(i < b)) { $s = 2; continue; }
+			j = i;
+			/* while (true) { */ case 3:
+				if (!(j > a)) { _v = false; $s = 5; continue s; }
+				_r = data.Less(j, j - 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_v = _r; case 5:
+				/* if (!(_v)) { break; } */ if(!(_v)) { $s = 4; continue; }
+				$r = data.Swap(j, j - 1 >> 0); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				j = j - (1) >> 0;
+			/* } */ $s = 3; continue; case 4:
+			i = i + (1) >> 0;
+		/* } */ $s = 1; continue; case 2:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: insertionSort }; } $f._r = _r; $f._v = _v; $f.a = a; $f.b = b; $f.data = data; $f.i = i; $f.j = j; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	siftDown = function(data, lo, hi, first) {
+		var _r, _r$1, _v, child, data, first, hi, lo, root, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _v = $f._v; child = $f.child; data = $f.data; first = $f.first; hi = $f.hi; lo = $f.lo; root = $f.root; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		root = lo;
+		/* while (true) { */ case 1:
+			child = ($imul(2, root)) + 1 >> 0;
+			if (child >= hi) {
+				/* break; */ $s = 2; continue;
+			}
+			if (!((child + 1 >> 0) < hi)) { _v = false; $s = 5; continue s; }
+			_r = data.Less(first + child >> 0, (first + child >> 0) + 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_v = _r; case 5:
+			/* */ if (_v) { $s = 3; continue; }
+			/* */ $s = 4; continue;
+			/* if (_v) { */ case 3:
+				child = child + (1) >> 0;
+			/* } */ case 4:
+			_r$1 = data.Less(first + root >> 0, first + child >> 0); /* */ $s = 9; case 9: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			/* */ if (!_r$1) { $s = 7; continue; }
+			/* */ $s = 8; continue;
+			/* if (!_r$1) { */ case 7:
+				$s = -1; return;
+			/* } */ case 8:
+			$r = data.Swap(first + root >> 0, first + child >> 0); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			root = child;
+		/* } */ $s = 1; continue; case 2:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: siftDown }; } $f._r = _r; $f._r$1 = _r$1; $f._v = _v; $f.child = child; $f.data = data; $f.first = first; $f.hi = hi; $f.lo = lo; $f.root = root; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	heapSort = function(data, a, b) {
+		var _q, a, b, data, first, hi, i, i$1, lo, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; a = $f.a; b = $f.b; data = $f.data; first = $f.first; hi = $f.hi; i = $f.i; i$1 = $f.i$1; lo = $f.lo; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		first = a;
+		lo = 0;
+		hi = b - a >> 0;
+		i = (_q = ((hi - 1 >> 0)) / 2, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
+		/* while (true) { */ case 1:
+			/* if (!(i >= 0)) { break; } */ if(!(i >= 0)) { $s = 2; continue; }
+			$r = siftDown(data, i, hi, first); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			i = i - (1) >> 0;
+		/* } */ $s = 1; continue; case 2:
+		i$1 = hi - 1 >> 0;
+		/* while (true) { */ case 4:
+			/* if (!(i$1 >= 0)) { break; } */ if(!(i$1 >= 0)) { $s = 5; continue; }
+			$r = data.Swap(first, first + i$1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = siftDown(data, lo, i$1, first); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			i$1 = i$1 - (1) >> 0;
+		/* } */ $s = 4; continue; case 5:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: heapSort }; } $f._q = _q; $f.a = a; $f.b = b; $f.data = data; $f.first = first; $f.hi = hi; $f.i = i; $f.i$1 = i$1; $f.lo = lo; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	medianOfThree = function(data, m1, m0, m2) {
+		var _r, _r$1, _r$2, data, m0, m1, m2, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; data = $f.data; m0 = $f.m0; m1 = $f.m1; m2 = $f.m2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = data.Less(m1, m0); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		/* */ if (_r) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (_r) { */ case 1:
+			$r = data.Swap(m1, m0); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 2:
+		_r$1 = data.Less(m2, m1); /* */ $s = 7; case 7: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		/* */ if (_r$1) { $s = 5; continue; }
+		/* */ $s = 6; continue;
+		/* if (_r$1) { */ case 5:
+			$r = data.Swap(m2, m1); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r$2 = data.Less(m1, m0); /* */ $s = 11; case 11: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			/* */ if (_r$2) { $s = 9; continue; }
+			/* */ $s = 10; continue;
+			/* if (_r$2) { */ case 9:
+				$r = data.Swap(m1, m0); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 10:
+		/* } */ case 6:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: medianOfThree }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f.data = data; $f.m0 = m0; $f.m1 = m1; $f.m2 = m2; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	doPivot = function(data, lo, hi) {
+		var _q, _q$1, _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _tmp, _tmp$1, _tmp$2, _tmp$3, _v, _v$1, _v$2, _v$3, _v$4, a, b, c, data, dups, hi, lo, m, midhi, midlo, pivot, protect, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; _q$1 = $f._q$1; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; _tmp$2 = $f._tmp$2; _tmp$3 = $f._tmp$3; _v = $f._v; _v$1 = $f._v$1; _v$2 = $f._v$2; _v$3 = $f._v$3; _v$4 = $f._v$4; a = $f.a; b = $f.b; c = $f.c; data = $f.data; dups = $f.dups; hi = $f.hi; lo = $f.lo; m = $f.m; midhi = $f.midhi; midlo = $f.midlo; pivot = $f.pivot; protect = $f.protect; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		midlo = 0;
+		midhi = 0;
+		m = ((((((lo + hi >> 0) >>> 0)) >>> 1 >>> 0) >> 0));
+		/* */ if ((hi - lo >> 0) > 40) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if ((hi - lo >> 0) > 40) { */ case 1:
+			s = (_q = ((hi - lo >> 0)) / 8, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
+			$r = medianOfThree(data, lo, lo + s >> 0, lo + ($imul(2, s)) >> 0); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = medianOfThree(data, m, m - s >> 0, m + s >> 0); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = medianOfThree(data, hi - 1 >> 0, (hi - 1 >> 0) - s >> 0, (hi - 1 >> 0) - ($imul(2, s)) >> 0); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 2:
+		$r = medianOfThree(data, lo, m, hi - 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		pivot = lo;
+		_tmp = lo + 1 >> 0;
+		_tmp$1 = hi - 1 >> 0;
+		a = _tmp;
+		c = _tmp$1;
+		/* while (true) { */ case 7:
+			if (!(a < c)) { _v = false; $s = 9; continue s; }
+			_r = data.Less(a, pivot); /* */ $s = 10; case 10: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_v = _r; case 9:
+			/* if (!(_v)) { break; } */ if(!(_v)) { $s = 8; continue; }
+			a = a + (1) >> 0;
+		/* } */ $s = 7; continue; case 8:
+		b = a;
+		/* while (true) { */ case 11:
+			/* while (true) { */ case 13:
+				if (!(b < c)) { _v$1 = false; $s = 15; continue s; }
+				_r$1 = data.Less(pivot, b); /* */ $s = 16; case 16: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				_v$1 = !_r$1; case 15:
+				/* if (!(_v$1)) { break; } */ if(!(_v$1)) { $s = 14; continue; }
+				b = b + (1) >> 0;
+			/* } */ $s = 13; continue; case 14:
+			/* while (true) { */ case 17:
+				if (!(b < c)) { _v$2 = false; $s = 19; continue s; }
+				_r$2 = data.Less(pivot, c - 1 >> 0); /* */ $s = 20; case 20: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+				_v$2 = _r$2; case 19:
+				/* if (!(_v$2)) { break; } */ if(!(_v$2)) { $s = 18; continue; }
+				c = c - (1) >> 0;
+			/* } */ $s = 17; continue; case 18:
+			if (b >= c) {
+				/* break; */ $s = 12; continue;
+			}
+			$r = data.Swap(b, c - 1 >> 0); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			b = b + (1) >> 0;
+			c = c - (1) >> 0;
+		/* } */ $s = 11; continue; case 12:
+		protect = (hi - c >> 0) < 5;
+		/* */ if (!protect && (hi - c >> 0) < (_q$1 = ((hi - lo >> 0)) / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero"))) { $s = 22; continue; }
+		/* */ $s = 23; continue;
+		/* if (!protect && (hi - c >> 0) < (_q$1 = ((hi - lo >> 0)) / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero"))) { */ case 22:
+			dups = 0;
+			_r$3 = data.Less(pivot, hi - 1 >> 0); /* */ $s = 26; case 26: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+			/* */ if (!_r$3) { $s = 24; continue; }
+			/* */ $s = 25; continue;
+			/* if (!_r$3) { */ case 24:
+				$r = data.Swap(c, hi - 1 >> 0); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				c = c + (1) >> 0;
+				dups = dups + (1) >> 0;
+			/* } */ case 25:
+			_r$4 = data.Less(b - 1 >> 0, pivot); /* */ $s = 30; case 30: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+			/* */ if (!_r$4) { $s = 28; continue; }
+			/* */ $s = 29; continue;
+			/* if (!_r$4) { */ case 28:
+				b = b - (1) >> 0;
+				dups = dups + (1) >> 0;
+			/* } */ case 29:
+			_r$5 = data.Less(m, pivot); /* */ $s = 33; case 33: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+			/* */ if (!_r$5) { $s = 31; continue; }
+			/* */ $s = 32; continue;
+			/* if (!_r$5) { */ case 31:
+				$r = data.Swap(m, b - 1 >> 0); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				b = b - (1) >> 0;
+				dups = dups + (1) >> 0;
+			/* } */ case 32:
+			protect = dups > 1;
+		/* } */ case 23:
+		/* */ if (protect) { $s = 35; continue; }
+		/* */ $s = 36; continue;
+		/* if (protect) { */ case 35:
+			/* while (true) { */ case 37:
+				/* while (true) { */ case 39:
+					if (!(a < b)) { _v$3 = false; $s = 41; continue s; }
+					_r$6 = data.Less(b - 1 >> 0, pivot); /* */ $s = 42; case 42: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+					_v$3 = !_r$6; case 41:
+					/* if (!(_v$3)) { break; } */ if(!(_v$3)) { $s = 40; continue; }
+					b = b - (1) >> 0;
+				/* } */ $s = 39; continue; case 40:
+				/* while (true) { */ case 43:
+					if (!(a < b)) { _v$4 = false; $s = 45; continue s; }
+					_r$7 = data.Less(a, pivot); /* */ $s = 46; case 46: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
+					_v$4 = _r$7; case 45:
+					/* if (!(_v$4)) { break; } */ if(!(_v$4)) { $s = 44; continue; }
+					a = a + (1) >> 0;
+				/* } */ $s = 43; continue; case 44:
+				if (a >= b) {
+					/* break; */ $s = 38; continue;
+				}
+				$r = data.Swap(a, b - 1 >> 0); /* */ $s = 47; case 47: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				a = a + (1) >> 0;
+				b = b - (1) >> 0;
+			/* } */ $s = 37; continue; case 38:
+		/* } */ case 36:
+		$r = data.Swap(pivot, b - 1 >> 0); /* */ $s = 48; case 48: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		_tmp$2 = b - 1 >> 0;
+		_tmp$3 = c;
+		midlo = _tmp$2;
+		midhi = _tmp$3;
+		$s = -1; return [midlo, midhi];
+		/* */ } return; } if ($f === undefined) { $f = { $blk: doPivot }; } $f._q = _q; $f._q$1 = _q$1; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f._tmp$2 = _tmp$2; $f._tmp$3 = _tmp$3; $f._v = _v; $f._v$1 = _v$1; $f._v$2 = _v$2; $f._v$3 = _v$3; $f._v$4 = _v$4; $f.a = a; $f.b = b; $f.c = c; $f.data = data; $f.dups = dups; $f.hi = hi; $f.lo = lo; $f.m = m; $f.midhi = midhi; $f.midlo = midlo; $f.pivot = pivot; $f.protect = protect; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	quickSort = function(data, a, b, maxDepth$1) {
+		var _r, _r$1, _tuple, a, b, data, i, maxDepth$1, mhi, mlo, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; a = $f.a; b = $f.b; data = $f.data; i = $f.i; maxDepth$1 = $f.maxDepth$1; mhi = $f.mhi; mlo = $f.mlo; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		/* while (true) { */ case 1:
+			/* if (!((b - a >> 0) > 12)) { break; } */ if(!((b - a >> 0) > 12)) { $s = 2; continue; }
+			/* */ if (maxDepth$1 === 0) { $s = 3; continue; }
+			/* */ $s = 4; continue;
+			/* if (maxDepth$1 === 0) { */ case 3:
+				$r = heapSort(data, a, b); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = -1; return;
+			/* } */ case 4:
+			maxDepth$1 = maxDepth$1 - (1) >> 0;
+			_r = doPivot(data, a, b); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_tuple = _r;
+			mlo = _tuple[0];
+			mhi = _tuple[1];
+			/* */ if ((mlo - a >> 0) < (b - mhi >> 0)) { $s = 7; continue; }
+			/* */ $s = 8; continue;
+			/* if ((mlo - a >> 0) < (b - mhi >> 0)) { */ case 7:
+				$r = quickSort(data, a, mlo, maxDepth$1); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				a = mhi;
+				$s = 9; continue;
+			/* } else { */ case 8:
+				$r = quickSort(data, mhi, b, maxDepth$1); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				b = mlo;
+			/* } */ case 9:
+		/* } */ $s = 1; continue; case 2:
+		/* */ if ((b - a >> 0) > 1) { $s = 12; continue; }
+		/* */ $s = 13; continue;
+		/* if ((b - a >> 0) > 1) { */ case 12:
+			i = a + 6 >> 0;
+			/* while (true) { */ case 14:
+				/* if (!(i < b)) { break; } */ if(!(i < b)) { $s = 15; continue; }
+				_r$1 = data.Less(i, i - 6 >> 0); /* */ $s = 18; case 18: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				/* */ if (_r$1) { $s = 16; continue; }
+				/* */ $s = 17; continue;
+				/* if (_r$1) { */ case 16:
+					$r = data.Swap(i, i - 6 >> 0); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 17:
+				i = i + (1) >> 0;
+			/* } */ $s = 14; continue; case 15:
+			$r = insertionSort(data, a, b); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 13:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: quickSort }; } $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.a = a; $f.b = b; $f.data = data; $f.i = i; $f.maxDepth$1 = maxDepth$1; $f.mhi = mhi; $f.mlo = mlo; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Sort = function(data) {
+		var _r, data, n, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; data = $f.data; n = $f.n; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = data.Len(); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		n = _r;
+		$r = quickSort(data, 0, n, maxDepth(n)); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Sort }; } $f._r = _r; $f.data = data; $f.n = n; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.Sort = Sort;
+	maxDepth = function(n) {
+		var depth, i, n;
+		depth = 0;
+		i = n;
+		while (true) {
+			if (!(i > 0)) { break; }
+			depth = depth + (1) >> 0;
+			i = (i >> $min((1), 31)) >> 0;
+		}
+		return $imul(depth, 2);
+	};
+	StringSlice.prototype.Len = function() {
+		var p;
+		p = this;
+		return p.$length;
+	};
+	$ptrType(StringSlice).prototype.Len = function() { return this.$get().Len(); };
+	StringSlice.prototype.Less = function(i, j) {
+		var i, j, p;
+		p = this;
+		return ((i < 0 || i >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i]) < ((j < 0 || j >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + j]);
+	};
+	$ptrType(StringSlice).prototype.Less = function(i, j) { return this.$get().Less(i, j); };
+	StringSlice.prototype.Swap = function(i, j) {
+		var _tmp, _tmp$1, i, j, p;
+		p = this;
+		_tmp = ((j < 0 || j >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + j]);
+		_tmp$1 = ((i < 0 || i >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i]);
+		((i < 0 || i >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + i] = _tmp);
+		((j < 0 || j >= p.$length) ? ($throwRuntimeError("index out of range"), undefined) : p.$array[p.$offset + j] = _tmp$1);
+	};
+	$ptrType(StringSlice).prototype.Swap = function(i, j) { return this.$get().Swap(i, j); };
+	StringSlice.prototype.Sort = function() {
+		var p, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; p = $f.p; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		p = this;
+		$r = Sort(p); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: StringSlice.prototype.Sort }; } $f.p = p; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$ptrType(StringSlice).prototype.Sort = function() { return this.$get().Sort(); };
+	Strings = function(a) {
+		var a, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; a = $f.a; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = Sort(($subslice(new StringSlice(a.$array), a.$offset, a.$offset + a.$length))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Strings }; } $f.a = a; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.Strings = Strings;
+	insertionSort_func = function(data, a, b) {
+		var _r, _v, a, b, data, i, j, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _v = $f._v; a = $f.a; b = $f.b; data = $f.data; i = $f.i; j = $f.j; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		i = a + 1 >> 0;
+		/* while (true) { */ case 1:
+			/* if (!(i < b)) { break; } */ if(!(i < b)) { $s = 2; continue; }
+			j = i;
+			/* while (true) { */ case 3:
+				if (!(j > a)) { _v = false; $s = 5; continue s; }
+				_r = data.Less(j, j - 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_v = _r; case 5:
+				/* if (!(_v)) { break; } */ if(!(_v)) { $s = 4; continue; }
+				$r = data.Swap(j, j - 1 >> 0); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				j = j - (1) >> 0;
+			/* } */ $s = 3; continue; case 4:
+			i = i + (1) >> 0;
+		/* } */ $s = 1; continue; case 2:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: insertionSort_func }; } $f._r = _r; $f._v = _v; $f.a = a; $f.b = b; $f.data = data; $f.i = i; $f.j = j; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	siftDown_func = function(data, lo, hi, first) {
+		var _r, _r$1, _v, child, data, first, hi, lo, root, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _v = $f._v; child = $f.child; data = $f.data; first = $f.first; hi = $f.hi; lo = $f.lo; root = $f.root; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		root = lo;
+		/* while (true) { */ case 1:
+			child = ($imul(2, root)) + 1 >> 0;
+			if (child >= hi) {
+				/* break; */ $s = 2; continue;
+			}
+			if (!((child + 1 >> 0) < hi)) { _v = false; $s = 5; continue s; }
+			_r = data.Less(first + child >> 0, (first + child >> 0) + 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_v = _r; case 5:
+			/* */ if (_v) { $s = 3; continue; }
+			/* */ $s = 4; continue;
+			/* if (_v) { */ case 3:
+				child = child + (1) >> 0;
+			/* } */ case 4:
+			_r$1 = data.Less(first + root >> 0, first + child >> 0); /* */ $s = 9; case 9: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			/* */ if (!_r$1) { $s = 7; continue; }
+			/* */ $s = 8; continue;
+			/* if (!_r$1) { */ case 7:
+				$s = -1; return;
+			/* } */ case 8:
+			$r = data.Swap(first + root >> 0, first + child >> 0); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			root = child;
+		/* } */ $s = 1; continue; case 2:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: siftDown_func }; } $f._r = _r; $f._r$1 = _r$1; $f._v = _v; $f.child = child; $f.data = data; $f.first = first; $f.hi = hi; $f.lo = lo; $f.root = root; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	heapSort_func = function(data, a, b) {
+		var _q, a, b, data, first, hi, i, i$1, lo, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; a = $f.a; b = $f.b; data = $f.data; first = $f.first; hi = $f.hi; i = $f.i; i$1 = $f.i$1; lo = $f.lo; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		first = a;
+		lo = 0;
+		hi = b - a >> 0;
+		i = (_q = ((hi - 1 >> 0)) / 2, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
+		/* while (true) { */ case 1:
+			/* if (!(i >= 0)) { break; } */ if(!(i >= 0)) { $s = 2; continue; }
+			$r = siftDown_func($clone(data, lessSwap), i, hi, first); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			i = i - (1) >> 0;
+		/* } */ $s = 1; continue; case 2:
+		i$1 = hi - 1 >> 0;
+		/* while (true) { */ case 4:
+			/* if (!(i$1 >= 0)) { break; } */ if(!(i$1 >= 0)) { $s = 5; continue; }
+			$r = data.Swap(first, first + i$1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = siftDown_func($clone(data, lessSwap), lo, i$1, first); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			i$1 = i$1 - (1) >> 0;
+		/* } */ $s = 4; continue; case 5:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: heapSort_func }; } $f._q = _q; $f.a = a; $f.b = b; $f.data = data; $f.first = first; $f.hi = hi; $f.i = i; $f.i$1 = i$1; $f.lo = lo; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	medianOfThree_func = function(data, m1, m0, m2) {
+		var _r, _r$1, _r$2, data, m0, m1, m2, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; data = $f.data; m0 = $f.m0; m1 = $f.m1; m2 = $f.m2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = data.Less(m1, m0); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		/* */ if (_r) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (_r) { */ case 1:
+			$r = data.Swap(m1, m0); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 2:
+		_r$1 = data.Less(m2, m1); /* */ $s = 7; case 7: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		/* */ if (_r$1) { $s = 5; continue; }
+		/* */ $s = 6; continue;
+		/* if (_r$1) { */ case 5:
+			$r = data.Swap(m2, m1); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r$2 = data.Less(m1, m0); /* */ $s = 11; case 11: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			/* */ if (_r$2) { $s = 9; continue; }
+			/* */ $s = 10; continue;
+			/* if (_r$2) { */ case 9:
+				$r = data.Swap(m1, m0); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 10:
+		/* } */ case 6:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: medianOfThree_func }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f.data = data; $f.m0 = m0; $f.m1 = m1; $f.m2 = m2; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	doPivot_func = function(data, lo, hi) {
+		var _q, _q$1, _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _tmp, _tmp$1, _tmp$2, _tmp$3, _v, _v$1, _v$2, _v$3, _v$4, a, b, c, data, dups, hi, lo, m, midhi, midlo, pivot, protect, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; _q$1 = $f._q$1; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; _tmp$2 = $f._tmp$2; _tmp$3 = $f._tmp$3; _v = $f._v; _v$1 = $f._v$1; _v$2 = $f._v$2; _v$3 = $f._v$3; _v$4 = $f._v$4; a = $f.a; b = $f.b; c = $f.c; data = $f.data; dups = $f.dups; hi = $f.hi; lo = $f.lo; m = $f.m; midhi = $f.midhi; midlo = $f.midlo; pivot = $f.pivot; protect = $f.protect; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		midlo = 0;
+		midhi = 0;
+		m = ((((((lo + hi >> 0) >>> 0)) >>> 1 >>> 0) >> 0));
+		/* */ if ((hi - lo >> 0) > 40) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if ((hi - lo >> 0) > 40) { */ case 1:
+			s = (_q = ((hi - lo >> 0)) / 8, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
+			$r = medianOfThree_func($clone(data, lessSwap), lo, lo + s >> 0, lo + ($imul(2, s)) >> 0); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = medianOfThree_func($clone(data, lessSwap), m, m - s >> 0, m + s >> 0); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = medianOfThree_func($clone(data, lessSwap), hi - 1 >> 0, (hi - 1 >> 0) - s >> 0, (hi - 1 >> 0) - ($imul(2, s)) >> 0); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 2:
+		$r = medianOfThree_func($clone(data, lessSwap), lo, m, hi - 1 >> 0); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		pivot = lo;
+		_tmp = lo + 1 >> 0;
+		_tmp$1 = hi - 1 >> 0;
+		a = _tmp;
+		c = _tmp$1;
+		/* while (true) { */ case 7:
+			if (!(a < c)) { _v = false; $s = 9; continue s; }
+			_r = data.Less(a, pivot); /* */ $s = 10; case 10: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_v = _r; case 9:
+			/* if (!(_v)) { break; } */ if(!(_v)) { $s = 8; continue; }
+			a = a + (1) >> 0;
+		/* } */ $s = 7; continue; case 8:
+		b = a;
+		/* while (true) { */ case 11:
+			/* while (true) { */ case 13:
+				if (!(b < c)) { _v$1 = false; $s = 15; continue s; }
+				_r$1 = data.Less(pivot, b); /* */ $s = 16; case 16: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				_v$1 = !_r$1; case 15:
+				/* if (!(_v$1)) { break; } */ if(!(_v$1)) { $s = 14; continue; }
+				b = b + (1) >> 0;
+			/* } */ $s = 13; continue; case 14:
+			/* while (true) { */ case 17:
+				if (!(b < c)) { _v$2 = false; $s = 19; continue s; }
+				_r$2 = data.Less(pivot, c - 1 >> 0); /* */ $s = 20; case 20: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+				_v$2 = _r$2; case 19:
+				/* if (!(_v$2)) { break; } */ if(!(_v$2)) { $s = 18; continue; }
+				c = c - (1) >> 0;
+			/* } */ $s = 17; continue; case 18:
+			if (b >= c) {
+				/* break; */ $s = 12; continue;
+			}
+			$r = data.Swap(b, c - 1 >> 0); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			b = b + (1) >> 0;
+			c = c - (1) >> 0;
+		/* } */ $s = 11; continue; case 12:
+		protect = (hi - c >> 0) < 5;
+		/* */ if (!protect && (hi - c >> 0) < (_q$1 = ((hi - lo >> 0)) / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero"))) { $s = 22; continue; }
+		/* */ $s = 23; continue;
+		/* if (!protect && (hi - c >> 0) < (_q$1 = ((hi - lo >> 0)) / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero"))) { */ case 22:
+			dups = 0;
+			_r$3 = data.Less(pivot, hi - 1 >> 0); /* */ $s = 26; case 26: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+			/* */ if (!_r$3) { $s = 24; continue; }
+			/* */ $s = 25; continue;
+			/* if (!_r$3) { */ case 24:
+				$r = data.Swap(c, hi - 1 >> 0); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				c = c + (1) >> 0;
+				dups = dups + (1) >> 0;
+			/* } */ case 25:
+			_r$4 = data.Less(b - 1 >> 0, pivot); /* */ $s = 30; case 30: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+			/* */ if (!_r$4) { $s = 28; continue; }
+			/* */ $s = 29; continue;
+			/* if (!_r$4) { */ case 28:
+				b = b - (1) >> 0;
+				dups = dups + (1) >> 0;
+			/* } */ case 29:
+			_r$5 = data.Less(m, pivot); /* */ $s = 33; case 33: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+			/* */ if (!_r$5) { $s = 31; continue; }
+			/* */ $s = 32; continue;
+			/* if (!_r$5) { */ case 31:
+				$r = data.Swap(m, b - 1 >> 0); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				b = b - (1) >> 0;
+				dups = dups + (1) >> 0;
+			/* } */ case 32:
+			protect = dups > 1;
+		/* } */ case 23:
+		/* */ if (protect) { $s = 35; continue; }
+		/* */ $s = 36; continue;
+		/* if (protect) { */ case 35:
+			/* while (true) { */ case 37:
+				/* while (true) { */ case 39:
+					if (!(a < b)) { _v$3 = false; $s = 41; continue s; }
+					_r$6 = data.Less(b - 1 >> 0, pivot); /* */ $s = 42; case 42: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+					_v$3 = !_r$6; case 41:
+					/* if (!(_v$3)) { break; } */ if(!(_v$3)) { $s = 40; continue; }
+					b = b - (1) >> 0;
+				/* } */ $s = 39; continue; case 40:
+				/* while (true) { */ case 43:
+					if (!(a < b)) { _v$4 = false; $s = 45; continue s; }
+					_r$7 = data.Less(a, pivot); /* */ $s = 46; case 46: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
+					_v$4 = _r$7; case 45:
+					/* if (!(_v$4)) { break; } */ if(!(_v$4)) { $s = 44; continue; }
+					a = a + (1) >> 0;
+				/* } */ $s = 43; continue; case 44:
+				if (a >= b) {
+					/* break; */ $s = 38; continue;
+				}
+				$r = data.Swap(a, b - 1 >> 0); /* */ $s = 47; case 47: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				a = a + (1) >> 0;
+				b = b - (1) >> 0;
+			/* } */ $s = 37; continue; case 38:
+		/* } */ case 36:
+		$r = data.Swap(pivot, b - 1 >> 0); /* */ $s = 48; case 48: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		_tmp$2 = b - 1 >> 0;
+		_tmp$3 = c;
+		midlo = _tmp$2;
+		midhi = _tmp$3;
+		$s = -1; return [midlo, midhi];
+		/* */ } return; } if ($f === undefined) { $f = { $blk: doPivot_func }; } $f._q = _q; $f._q$1 = _q$1; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f._tmp$2 = _tmp$2; $f._tmp$3 = _tmp$3; $f._v = _v; $f._v$1 = _v$1; $f._v$2 = _v$2; $f._v$3 = _v$3; $f._v$4 = _v$4; $f.a = a; $f.b = b; $f.c = c; $f.data = data; $f.dups = dups; $f.hi = hi; $f.lo = lo; $f.m = m; $f.midhi = midhi; $f.midlo = midlo; $f.pivot = pivot; $f.protect = protect; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	quickSort_func = function(data, a, b, maxDepth$1) {
+		var _r, _r$1, _tuple, a, b, data, i, maxDepth$1, mhi, mlo, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; a = $f.a; b = $f.b; data = $f.data; i = $f.i; maxDepth$1 = $f.maxDepth$1; mhi = $f.mhi; mlo = $f.mlo; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		/* while (true) { */ case 1:
+			/* if (!((b - a >> 0) > 12)) { break; } */ if(!((b - a >> 0) > 12)) { $s = 2; continue; }
+			/* */ if (maxDepth$1 === 0) { $s = 3; continue; }
+			/* */ $s = 4; continue;
+			/* if (maxDepth$1 === 0) { */ case 3:
+				$r = heapSort_func($clone(data, lessSwap), a, b); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = -1; return;
+			/* } */ case 4:
+			maxDepth$1 = maxDepth$1 - (1) >> 0;
+			_r = doPivot_func($clone(data, lessSwap), a, b); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_tuple = _r;
+			mlo = _tuple[0];
+			mhi = _tuple[1];
+			/* */ if ((mlo - a >> 0) < (b - mhi >> 0)) { $s = 7; continue; }
+			/* */ $s = 8; continue;
+			/* if ((mlo - a >> 0) < (b - mhi >> 0)) { */ case 7:
+				$r = quickSort_func($clone(data, lessSwap), a, mlo, maxDepth$1); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				a = mhi;
+				$s = 9; continue;
+			/* } else { */ case 8:
+				$r = quickSort_func($clone(data, lessSwap), mhi, b, maxDepth$1); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				b = mlo;
+			/* } */ case 9:
+		/* } */ $s = 1; continue; case 2:
+		/* */ if ((b - a >> 0) > 1) { $s = 12; continue; }
+		/* */ $s = 13; continue;
+		/* if ((b - a >> 0) > 1) { */ case 12:
+			i = a + 6 >> 0;
+			/* while (true) { */ case 14:
+				/* if (!(i < b)) { break; } */ if(!(i < b)) { $s = 15; continue; }
+				_r$1 = data.Less(i, i - 6 >> 0); /* */ $s = 18; case 18: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				/* */ if (_r$1) { $s = 16; continue; }
+				/* */ $s = 17; continue;
+				/* if (_r$1) { */ case 16:
+					$r = data.Swap(i, i - 6 >> 0); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 17:
+				i = i + (1) >> 0;
+			/* } */ $s = 14; continue; case 15:
+			$r = insertionSort_func($clone(data, lessSwap), a, b); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 13:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: quickSort_func }; } $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.a = a; $f.b = b; $f.data = data; $f.i = i; $f.maxDepth$1 = maxDepth$1; $f.mhi = mhi; $f.mlo = mlo; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	StringSlice.methods = [{prop: "Search", name: "Search", pkg: "", typ: $funcType([$String], [$Int], false)}, {prop: "Len", name: "Len", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Less", name: "Less", pkg: "", typ: $funcType([$Int, $Int], [$Bool], false)}, {prop: "Swap", name: "Swap", pkg: "", typ: $funcType([$Int, $Int], [], false)}, {prop: "Sort", name: "Sort", pkg: "", typ: $funcType([], [], false)}];
+	lessSwap.init("", [{prop: "Less", name: "Less", anonymous: false, exported: true, typ: funcType, tag: ""}, {prop: "Swap", name: "Swap", anonymous: false, exported: true, typ: funcType$1, tag: ""}]);
+	StringSlice.init($String);
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = reflect.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.$init = $init;
@@ -33811,198 +34065,6 @@ $packages["encoding/json"] = (function() {
 		float64Encoder = $methodVal(new floatEncoder(64), "encode");
 		safeSet = $toNativeArray($kindBool, [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]);
 		htmlSafeSet = $toNativeArray($kindBool, [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]);
-		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
-	};
-	$pkg.$init = $init;
-	return $pkg;
-})();
-$packages["html"] = (function() {
-	var $pkg = {}, $init, strings, utf8, sliceType, arrayType, sliceType$1, entity, entity2, replacementTable, htmlEscaper, unescapeEntity, UnescapeString;
-	strings = $packages["strings"];
-	utf8 = $packages["unicode/utf8"];
-	sliceType = $sliceType($String);
-	arrayType = $arrayType($Int32, 2);
-	sliceType$1 = $sliceType($Uint8);
-	unescapeEntity = function(b, dst, src) {
-		var _entry, _entry$1, _entry$2, _tmp, _tmp$1, _tmp$10, _tmp$11, _tmp$12, _tmp$13, _tmp$14, _tmp$15, _tmp$16, _tmp$17, _tmp$18, _tmp$19, _tmp$2, _tmp$3, _tmp$4, _tmp$5, _tmp$6, _tmp$7, _tmp$8, _tmp$9, b, c, c$1, dst, dst1, dst1$1, entityName, hex, i, j, maxLen, s, src, src1, x, x$1, x$2, x$3, x$4, x$5;
-		dst1 = 0;
-		src1 = 0;
-		_tmp = 1;
-		_tmp$1 = $subslice(b, src);
-		i = _tmp;
-		s = _tmp$1;
-		if (s.$length <= 1) {
-			((dst < 0 || dst >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + dst] = ((src < 0 || src >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + src]));
-			_tmp$2 = dst + 1 >> 0;
-			_tmp$3 = src + 1 >> 0;
-			dst1 = _tmp$2;
-			src1 = _tmp$3;
-			return [dst1, src1];
-		}
-		if (((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]) === 35) {
-			if (s.$length <= 3) {
-				((dst < 0 || dst >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + dst] = ((src < 0 || src >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + src]));
-				_tmp$4 = dst + 1 >> 0;
-				_tmp$5 = src + 1 >> 0;
-				dst1 = _tmp$4;
-				src1 = _tmp$5;
-				return [dst1, src1];
-			}
-			i = i + (1) >> 0;
-			c = ((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]);
-			hex = false;
-			if ((c === 120) || (c === 88)) {
-				hex = true;
-				i = i + (1) >> 0;
-			}
-			x = 0;
-			while (true) {
-				if (!(i < s.$length)) { break; }
-				c = ((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]);
-				i = i + (1) >> 0;
-				if (hex) {
-					if (48 <= c && c <= 57) {
-						x = (($imul(16, x)) + ((c >> 0)) >> 0) - 48 >> 0;
-						continue;
-					} else if (97 <= c && c <= 102) {
-						x = ((($imul(16, x)) + ((c >> 0)) >> 0) - 97 >> 0) + 10 >> 0;
-						continue;
-					} else if (65 <= c && c <= 70) {
-						x = ((($imul(16, x)) + ((c >> 0)) >> 0) - 65 >> 0) + 10 >> 0;
-						continue;
-					}
-				} else if (48 <= c && c <= 57) {
-					x = (($imul(10, x)) + ((c >> 0)) >> 0) - 48 >> 0;
-					continue;
-				}
-				if (!((c === 59))) {
-					i = i - (1) >> 0;
-				}
-				break;
-			}
-			if (i <= 3) {
-				((dst < 0 || dst >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + dst] = ((src < 0 || src >= b.$length) ? ($throwRuntimeError("index out of range"), undefined) : b.$array[b.$offset + src]));
-				_tmp$6 = dst + 1 >> 0;
-				_tmp$7 = src + 1 >> 0;
-				dst1 = _tmp$6;
-				src1 = _tmp$7;
-				return [dst1, src1];
-			}
-			if (128 <= x && x <= 159) {
-				x = (x$1 = x - 128 >> 0, ((x$1 < 0 || x$1 >= replacementTable.length) ? ($throwRuntimeError("index out of range"), undefined) : replacementTable[x$1]));
-			} else if ((x === 0) || (55296 <= x && x <= 57343) || x > 1114111) {
-				x = 65533;
-			}
-			_tmp$8 = dst + utf8.EncodeRune($subslice(b, dst), x) >> 0;
-			_tmp$9 = src + i >> 0;
-			dst1 = _tmp$8;
-			src1 = _tmp$9;
-			return [dst1, src1];
-		}
-		while (true) {
-			if (!(i < s.$length)) { break; }
-			c$1 = ((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]);
-			i = i + (1) >> 0;
-			if (97 <= c$1 && c$1 <= 122 || 65 <= c$1 && c$1 <= 90 || 48 <= c$1 && c$1 <= 57) {
-				continue;
-			}
-			if (!((c$1 === 59))) {
-				i = i - (1) >> 0;
-			}
-			break;
-		}
-		entityName = $subslice(s, 1, i);
-		if (entityName.$length === 0) {
-		} else if (false && !(((x$2 = entityName.$length - 1 >> 0, ((x$2 < 0 || x$2 >= entityName.$length) ? ($throwRuntimeError("index out of range"), undefined) : entityName.$array[entityName.$offset + x$2])) === 59)) && s.$length > i && (((i < 0 || i >= s.$length) ? ($throwRuntimeError("index out of range"), undefined) : s.$array[s.$offset + i]) === 61)) {
-		} else {
-			x$3 = (_entry = entity[$String.keyFor(($bytesToString(entityName)))], _entry !== undefined ? _entry.v : 0);
-			if (!((x$3 === 0))) {
-				_tmp$10 = dst + utf8.EncodeRune($subslice(b, dst), x$3) >> 0;
-				_tmp$11 = src + i >> 0;
-				dst1 = _tmp$10;
-				src1 = _tmp$11;
-				return [dst1, src1];
-			} else {
-				x$4 = $clone((_entry$1 = entity2[$String.keyFor(($bytesToString(entityName)))], _entry$1 !== undefined ? _entry$1.v : arrayType.zero()), arrayType);
-				if (!((x$4[0] === 0))) {
-					dst1$1 = dst + utf8.EncodeRune($subslice(b, dst), x$4[0]) >> 0;
-					_tmp$12 = dst1$1 + utf8.EncodeRune($subslice(b, dst1$1), x$4[1]) >> 0;
-					_tmp$13 = src + i >> 0;
-					dst1 = _tmp$12;
-					src1 = _tmp$13;
-					return [dst1, src1];
-				} else if (true) {
-					maxLen = entityName.$length - 1 >> 0;
-					if (maxLen > 6) {
-						maxLen = 6;
-					}
-					j = maxLen;
-					while (true) {
-						if (!(j > 1)) { break; }
-						x$5 = (_entry$2 = entity[$String.keyFor(($bytesToString($subslice(entityName, 0, j))))], _entry$2 !== undefined ? _entry$2.v : 0);
-						if (!((x$5 === 0))) {
-							_tmp$14 = dst + utf8.EncodeRune($subslice(b, dst), x$5) >> 0;
-							_tmp$15 = (src + j >> 0) + 1 >> 0;
-							dst1 = _tmp$14;
-							src1 = _tmp$15;
-							return [dst1, src1];
-						}
-						j = j - (1) >> 0;
-					}
-				}
-			}
-		}
-		_tmp$16 = dst + i >> 0;
-		_tmp$17 = src + i >> 0;
-		dst1 = _tmp$16;
-		src1 = _tmp$17;
-		$copySlice($subslice(b, dst, dst1), $subslice(b, src, src1));
-		_tmp$18 = dst1;
-		_tmp$19 = src1;
-		dst1 = _tmp$18;
-		src1 = _tmp$19;
-		return [dst1, src1];
-	};
-	UnescapeString = function(s) {
-		var _tuple, _tuple$1, b, dst, i, s, src;
-		i = strings.IndexByte(s, 38);
-		if (i < 0) {
-			return s;
-		}
-		b = (new sliceType$1($stringToBytes(s)));
-		_tuple = unescapeEntity(b, i, i);
-		dst = _tuple[0];
-		src = _tuple[1];
-		while (true) {
-			if (!($substring(s, src).length > 0)) { break; }
-			if (s.charCodeAt(src) === 38) {
-				i = 0;
-			} else {
-				i = strings.IndexByte($substring(s, src), 38);
-			}
-			if (i < 0) {
-				dst = dst + ($copyString($subslice(b, dst), $substring(s, src))) >> 0;
-				break;
-			}
-			if (i > 0) {
-				$copyString($subslice(b, dst), $substring(s, src, (src + i >> 0)));
-			}
-			_tuple$1 = unescapeEntity(b, dst + i >> 0, src + i >> 0);
-			dst = _tuple$1[0];
-			src = _tuple$1[1];
-		}
-		return ($bytesToString($subslice(b, 0, dst)));
-	};
-	$pkg.UnescapeString = UnescapeString;
-	$init = function() {
-		$pkg.$init = function() {};
-		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		$r = strings.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = utf8.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		entity = $makeMap($String.keyFor, [{ k: "AElig;", v: 198 }, { k: "AMP;", v: 38 }, { k: "Aacute;", v: 193 }, { k: "Abreve;", v: 258 }, { k: "Acirc;", v: 194 }, { k: "Acy;", v: 1040 }, { k: "Afr;", v: 120068 }, { k: "Agrave;", v: 192 }, { k: "Alpha;", v: 913 }, { k: "Amacr;", v: 256 }, { k: "And;", v: 10835 }, { k: "Aogon;", v: 260 }, { k: "Aopf;", v: 120120 }, { k: "ApplyFunction;", v: 8289 }, { k: "Aring;", v: 197 }, { k: "Ascr;", v: 119964 }, { k: "Assign;", v: 8788 }, { k: "Atilde;", v: 195 }, { k: "Auml;", v: 196 }, { k: "Backslash;", v: 8726 }, { k: "Barv;", v: 10983 }, { k: "Barwed;", v: 8966 }, { k: "Bcy;", v: 1041 }, { k: "Because;", v: 8757 }, { k: "Bernoullis;", v: 8492 }, { k: "Beta;", v: 914 }, { k: "Bfr;", v: 120069 }, { k: "Bopf;", v: 120121 }, { k: "Breve;", v: 728 }, { k: "Bscr;", v: 8492 }, { k: "Bumpeq;", v: 8782 }, { k: "CHcy;", v: 1063 }, { k: "COPY;", v: 169 }, { k: "Cacute;", v: 262 }, { k: "Cap;", v: 8914 }, { k: "CapitalDifferentialD;", v: 8517 }, { k: "Cayleys;", v: 8493 }, { k: "Ccaron;", v: 268 }, { k: "Ccedil;", v: 199 }, { k: "Ccirc;", v: 264 }, { k: "Cconint;", v: 8752 }, { k: "Cdot;", v: 266 }, { k: "Cedilla;", v: 184 }, { k: "CenterDot;", v: 183 }, { k: "Cfr;", v: 8493 }, { k: "Chi;", v: 935 }, { k: "CircleDot;", v: 8857 }, { k: "CircleMinus;", v: 8854 }, { k: "CirclePlus;", v: 8853 }, { k: "CircleTimes;", v: 8855 }, { k: "ClockwiseContourIntegral;", v: 8754 }, { k: "CloseCurlyDoubleQuote;", v: 8221 }, { k: "CloseCurlyQuote;", v: 8217 }, { k: "Colon;", v: 8759 }, { k: "Colone;", v: 10868 }, { k: "Congruent;", v: 8801 }, { k: "Conint;", v: 8751 }, { k: "ContourIntegral;", v: 8750 }, { k: "Copf;", v: 8450 }, { k: "Coproduct;", v: 8720 }, { k: "CounterClockwiseContourIntegral;", v: 8755 }, { k: "Cross;", v: 10799 }, { k: "Cscr;", v: 119966 }, { k: "Cup;", v: 8915 }, { k: "CupCap;", v: 8781 }, { k: "DD;", v: 8517 }, { k: "DDotrahd;", v: 10513 }, { k: "DJcy;", v: 1026 }, { k: "DScy;", v: 1029 }, { k: "DZcy;", v: 1039 }, { k: "Dagger;", v: 8225 }, { k: "Darr;", v: 8609 }, { k: "Dashv;", v: 10980 }, { k: "Dcaron;", v: 270 }, { k: "Dcy;", v: 1044 }, { k: "Del;", v: 8711 }, { k: "Delta;", v: 916 }, { k: "Dfr;", v: 120071 }, { k: "DiacriticalAcute;", v: 180 }, { k: "DiacriticalDot;", v: 729 }, { k: "DiacriticalDoubleAcute;", v: 733 }, { k: "DiacriticalGrave;", v: 96 }, { k: "DiacriticalTilde;", v: 732 }, { k: "Diamond;", v: 8900 }, { k: "DifferentialD;", v: 8518 }, { k: "Dopf;", v: 120123 }, { k: "Dot;", v: 168 }, { k: "DotDot;", v: 8412 }, { k: "DotEqual;", v: 8784 }, { k: "DoubleContourIntegral;", v: 8751 }, { k: "DoubleDot;", v: 168 }, { k: "DoubleDownArrow;", v: 8659 }, { k: "DoubleLeftArrow;", v: 8656 }, { k: "DoubleLeftRightArrow;", v: 8660 }, { k: "DoubleLeftTee;", v: 10980 }, { k: "DoubleLongLeftArrow;", v: 10232 }, { k: "DoubleLongLeftRightArrow;", v: 10234 }, { k: "DoubleLongRightArrow;", v: 10233 }, { k: "DoubleRightArrow;", v: 8658 }, { k: "DoubleRightTee;", v: 8872 }, { k: "DoubleUpArrow;", v: 8657 }, { k: "DoubleUpDownArrow;", v: 8661 }, { k: "DoubleVerticalBar;", v: 8741 }, { k: "DownArrow;", v: 8595 }, { k: "DownArrowBar;", v: 10515 }, { k: "DownArrowUpArrow;", v: 8693 }, { k: "DownBreve;", v: 785 }, { k: "DownLeftRightVector;", v: 10576 }, { k: "DownLeftTeeVector;", v: 10590 }, { k: "DownLeftVector;", v: 8637 }, { k: "DownLeftVectorBar;", v: 10582 }, { k: "DownRightTeeVector;", v: 10591 }, { k: "DownRightVector;", v: 8641 }, { k: "DownRightVectorBar;", v: 10583 }, { k: "DownTee;", v: 8868 }, { k: "DownTeeArrow;", v: 8615 }, { k: "Downarrow;", v: 8659 }, { k: "Dscr;", v: 119967 }, { k: "Dstrok;", v: 272 }, { k: "ENG;", v: 330 }, { k: "ETH;", v: 208 }, { k: "Eacute;", v: 201 }, { k: "Ecaron;", v: 282 }, { k: "Ecirc;", v: 202 }, { k: "Ecy;", v: 1069 }, { k: "Edot;", v: 278 }, { k: "Efr;", v: 120072 }, { k: "Egrave;", v: 200 }, { k: "Element;", v: 8712 }, { k: "Emacr;", v: 274 }, { k: "EmptySmallSquare;", v: 9723 }, { k: "EmptyVerySmallSquare;", v: 9643 }, { k: "Eogon;", v: 280 }, { k: "Eopf;", v: 120124 }, { k: "Epsilon;", v: 917 }, { k: "Equal;", v: 10869 }, { k: "EqualTilde;", v: 8770 }, { k: "Equilibrium;", v: 8652 }, { k: "Escr;", v: 8496 }, { k: "Esim;", v: 10867 }, { k: "Eta;", v: 919 }, { k: "Euml;", v: 203 }, { k: "Exists;", v: 8707 }, { k: "ExponentialE;", v: 8519 }, { k: "Fcy;", v: 1060 }, { k: "Ffr;", v: 120073 }, { k: "FilledSmallSquare;", v: 9724 }, { k: "FilledVerySmallSquare;", v: 9642 }, { k: "Fopf;", v: 120125 }, { k: "ForAll;", v: 8704 }, { k: "Fouriertrf;", v: 8497 }, { k: "Fscr;", v: 8497 }, { k: "GJcy;", v: 1027 }, { k: "GT;", v: 62 }, { k: "Gamma;", v: 915 }, { k: "Gammad;", v: 988 }, { k: "Gbreve;", v: 286 }, { k: "Gcedil;", v: 290 }, { k: "Gcirc;", v: 284 }, { k: "Gcy;", v: 1043 }, { k: "Gdot;", v: 288 }, { k: "Gfr;", v: 120074 }, { k: "Gg;", v: 8921 }, { k: "Gopf;", v: 120126 }, { k: "GreaterEqual;", v: 8805 }, { k: "GreaterEqualLess;", v: 8923 }, { k: "GreaterFullEqual;", v: 8807 }, { k: "GreaterGreater;", v: 10914 }, { k: "GreaterLess;", v: 8823 }, { k: "GreaterSlantEqual;", v: 10878 }, { k: "GreaterTilde;", v: 8819 }, { k: "Gscr;", v: 119970 }, { k: "Gt;", v: 8811 }, { k: "HARDcy;", v: 1066 }, { k: "Hacek;", v: 711 }, { k: "Hat;", v: 94 }, { k: "Hcirc;", v: 292 }, { k: "Hfr;", v: 8460 }, { k: "HilbertSpace;", v: 8459 }, { k: "Hopf;", v: 8461 }, { k: "HorizontalLine;", v: 9472 }, { k: "Hscr;", v: 8459 }, { k: "Hstrok;", v: 294 }, { k: "HumpDownHump;", v: 8782 }, { k: "HumpEqual;", v: 8783 }, { k: "IEcy;", v: 1045 }, { k: "IJlig;", v: 306 }, { k: "IOcy;", v: 1025 }, { k: "Iacute;", v: 205 }, { k: "Icirc;", v: 206 }, { k: "Icy;", v: 1048 }, { k: "Idot;", v: 304 }, { k: "Ifr;", v: 8465 }, { k: "Igrave;", v: 204 }, { k: "Im;", v: 8465 }, { k: "Imacr;", v: 298 }, { k: "ImaginaryI;", v: 8520 }, { k: "Implies;", v: 8658 }, { k: "Int;", v: 8748 }, { k: "Integral;", v: 8747 }, { k: "Intersection;", v: 8898 }, { k: "InvisibleComma;", v: 8291 }, { k: "InvisibleTimes;", v: 8290 }, { k: "Iogon;", v: 302 }, { k: "Iopf;", v: 120128 }, { k: "Iota;", v: 921 }, { k: "Iscr;", v: 8464 }, { k: "Itilde;", v: 296 }, { k: "Iukcy;", v: 1030 }, { k: "Iuml;", v: 207 }, { k: "Jcirc;", v: 308 }, { k: "Jcy;", v: 1049 }, { k: "Jfr;", v: 120077 }, { k: "Jopf;", v: 120129 }, { k: "Jscr;", v: 119973 }, { k: "Jsercy;", v: 1032 }, { k: "Jukcy;", v: 1028 }, { k: "KHcy;", v: 1061 }, { k: "KJcy;", v: 1036 }, { k: "Kappa;", v: 922 }, { k: "Kcedil;", v: 310 }, { k: "Kcy;", v: 1050 }, { k: "Kfr;", v: 120078 }, { k: "Kopf;", v: 120130 }, { k: "Kscr;", v: 119974 }, { k: "LJcy;", v: 1033 }, { k: "LT;", v: 60 }, { k: "Lacute;", v: 313 }, { k: "Lambda;", v: 923 }, { k: "Lang;", v: 10218 }, { k: "Laplacetrf;", v: 8466 }, { k: "Larr;", v: 8606 }, { k: "Lcaron;", v: 317 }, { k: "Lcedil;", v: 315 }, { k: "Lcy;", v: 1051 }, { k: "LeftAngleBracket;", v: 10216 }, { k: "LeftArrow;", v: 8592 }, { k: "LeftArrowBar;", v: 8676 }, { k: "LeftArrowRightArrow;", v: 8646 }, { k: "LeftCeiling;", v: 8968 }, { k: "LeftDoubleBracket;", v: 10214 }, { k: "LeftDownTeeVector;", v: 10593 }, { k: "LeftDownVector;", v: 8643 }, { k: "LeftDownVectorBar;", v: 10585 }, { k: "LeftFloor;", v: 8970 }, { k: "LeftRightArrow;", v: 8596 }, { k: "LeftRightVector;", v: 10574 }, { k: "LeftTee;", v: 8867 }, { k: "LeftTeeArrow;", v: 8612 }, { k: "LeftTeeVector;", v: 10586 }, { k: "LeftTriangle;", v: 8882 }, { k: "LeftTriangleBar;", v: 10703 }, { k: "LeftTriangleEqual;", v: 8884 }, { k: "LeftUpDownVector;", v: 10577 }, { k: "LeftUpTeeVector;", v: 10592 }, { k: "LeftUpVector;", v: 8639 }, { k: "LeftUpVectorBar;", v: 10584 }, { k: "LeftVector;", v: 8636 }, { k: "LeftVectorBar;", v: 10578 }, { k: "Leftarrow;", v: 8656 }, { k: "Leftrightarrow;", v: 8660 }, { k: "LessEqualGreater;", v: 8922 }, { k: "LessFullEqual;", v: 8806 }, { k: "LessGreater;", v: 8822 }, { k: "LessLess;", v: 10913 }, { k: "LessSlantEqual;", v: 10877 }, { k: "LessTilde;", v: 8818 }, { k: "Lfr;", v: 120079 }, { k: "Ll;", v: 8920 }, { k: "Lleftarrow;", v: 8666 }, { k: "Lmidot;", v: 319 }, { k: "LongLeftArrow;", v: 10229 }, { k: "LongLeftRightArrow;", v: 10231 }, { k: "LongRightArrow;", v: 10230 }, { k: "Longleftarrow;", v: 10232 }, { k: "Longleftrightarrow;", v: 10234 }, { k: "Longrightarrow;", v: 10233 }, { k: "Lopf;", v: 120131 }, { k: "LowerLeftArrow;", v: 8601 }, { k: "LowerRightArrow;", v: 8600 }, { k: "Lscr;", v: 8466 }, { k: "Lsh;", v: 8624 }, { k: "Lstrok;", v: 321 }, { k: "Lt;", v: 8810 }, { k: "Map;", v: 10501 }, { k: "Mcy;", v: 1052 }, { k: "MediumSpace;", v: 8287 }, { k: "Mellintrf;", v: 8499 }, { k: "Mfr;", v: 120080 }, { k: "MinusPlus;", v: 8723 }, { k: "Mopf;", v: 120132 }, { k: "Mscr;", v: 8499 }, { k: "Mu;", v: 924 }, { k: "NJcy;", v: 1034 }, { k: "Nacute;", v: 323 }, { k: "Ncaron;", v: 327 }, { k: "Ncedil;", v: 325 }, { k: "Ncy;", v: 1053 }, { k: "NegativeMediumSpace;", v: 8203 }, { k: "NegativeThickSpace;", v: 8203 }, { k: "NegativeThinSpace;", v: 8203 }, { k: "NegativeVeryThinSpace;", v: 8203 }, { k: "NestedGreaterGreater;", v: 8811 }, { k: "NestedLessLess;", v: 8810 }, { k: "NewLine;", v: 10 }, { k: "Nfr;", v: 120081 }, { k: "NoBreak;", v: 8288 }, { k: "NonBreakingSpace;", v: 160 }, { k: "Nopf;", v: 8469 }, { k: "Not;", v: 10988 }, { k: "NotCongruent;", v: 8802 }, { k: "NotCupCap;", v: 8813 }, { k: "NotDoubleVerticalBar;", v: 8742 }, { k: "NotElement;", v: 8713 }, { k: "NotEqual;", v: 8800 }, { k: "NotExists;", v: 8708 }, { k: "NotGreater;", v: 8815 }, { k: "NotGreaterEqual;", v: 8817 }, { k: "NotGreaterLess;", v: 8825 }, { k: "NotGreaterTilde;", v: 8821 }, { k: "NotLeftTriangle;", v: 8938 }, { k: "NotLeftTriangleEqual;", v: 8940 }, { k: "NotLess;", v: 8814 }, { k: "NotLessEqual;", v: 8816 }, { k: "NotLessGreater;", v: 8824 }, { k: "NotLessTilde;", v: 8820 }, { k: "NotPrecedes;", v: 8832 }, { k: "NotPrecedesSlantEqual;", v: 8928 }, { k: "NotReverseElement;", v: 8716 }, { k: "NotRightTriangle;", v: 8939 }, { k: "NotRightTriangleEqual;", v: 8941 }, { k: "NotSquareSubsetEqual;", v: 8930 }, { k: "NotSquareSupersetEqual;", v: 8931 }, { k: "NotSubsetEqual;", v: 8840 }, { k: "NotSucceeds;", v: 8833 }, { k: "NotSucceedsSlantEqual;", v: 8929 }, { k: "NotSupersetEqual;", v: 8841 }, { k: "NotTilde;", v: 8769 }, { k: "NotTildeEqual;", v: 8772 }, { k: "NotTildeFullEqual;", v: 8775 }, { k: "NotTildeTilde;", v: 8777 }, { k: "NotVerticalBar;", v: 8740 }, { k: "Nscr;", v: 119977 }, { k: "Ntilde;", v: 209 }, { k: "Nu;", v: 925 }, { k: "OElig;", v: 338 }, { k: "Oacute;", v: 211 }, { k: "Ocirc;", v: 212 }, { k: "Ocy;", v: 1054 }, { k: "Odblac;", v: 336 }, { k: "Ofr;", v: 120082 }, { k: "Ograve;", v: 210 }, { k: "Omacr;", v: 332 }, { k: "Omega;", v: 937 }, { k: "Omicron;", v: 927 }, { k: "Oopf;", v: 120134 }, { k: "OpenCurlyDoubleQuote;", v: 8220 }, { k: "OpenCurlyQuote;", v: 8216 }, { k: "Or;", v: 10836 }, { k: "Oscr;", v: 119978 }, { k: "Oslash;", v: 216 }, { k: "Otilde;", v: 213 }, { k: "Otimes;", v: 10807 }, { k: "Ouml;", v: 214 }, { k: "OverBar;", v: 8254 }, { k: "OverBrace;", v: 9182 }, { k: "OverBracket;", v: 9140 }, { k: "OverParenthesis;", v: 9180 }, { k: "PartialD;", v: 8706 }, { k: "Pcy;", v: 1055 }, { k: "Pfr;", v: 120083 }, { k: "Phi;", v: 934 }, { k: "Pi;", v: 928 }, { k: "PlusMinus;", v: 177 }, { k: "Poincareplane;", v: 8460 }, { k: "Popf;", v: 8473 }, { k: "Pr;", v: 10939 }, { k: "Precedes;", v: 8826 }, { k: "PrecedesEqual;", v: 10927 }, { k: "PrecedesSlantEqual;", v: 8828 }, { k: "PrecedesTilde;", v: 8830 }, { k: "Prime;", v: 8243 }, { k: "Product;", v: 8719 }, { k: "Proportion;", v: 8759 }, { k: "Proportional;", v: 8733 }, { k: "Pscr;", v: 119979 }, { k: "Psi;", v: 936 }, { k: "QUOT;", v: 34 }, { k: "Qfr;", v: 120084 }, { k: "Qopf;", v: 8474 }, { k: "Qscr;", v: 119980 }, { k: "RBarr;", v: 10512 }, { k: "REG;", v: 174 }, { k: "Racute;", v: 340 }, { k: "Rang;", v: 10219 }, { k: "Rarr;", v: 8608 }, { k: "Rarrtl;", v: 10518 }, { k: "Rcaron;", v: 344 }, { k: "Rcedil;", v: 342 }, { k: "Rcy;", v: 1056 }, { k: "Re;", v: 8476 }, { k: "ReverseElement;", v: 8715 }, { k: "ReverseEquilibrium;", v: 8651 }, { k: "ReverseUpEquilibrium;", v: 10607 }, { k: "Rfr;", v: 8476 }, { k: "Rho;", v: 929 }, { k: "RightAngleBracket;", v: 10217 }, { k: "RightArrow;", v: 8594 }, { k: "RightArrowBar;", v: 8677 }, { k: "RightArrowLeftArrow;", v: 8644 }, { k: "RightCeiling;", v: 8969 }, { k: "RightDoubleBracket;", v: 10215 }, { k: "RightDownTeeVector;", v: 10589 }, { k: "RightDownVector;", v: 8642 }, { k: "RightDownVectorBar;", v: 10581 }, { k: "RightFloor;", v: 8971 }, { k: "RightTee;", v: 8866 }, { k: "RightTeeArrow;", v: 8614 }, { k: "RightTeeVector;", v: 10587 }, { k: "RightTriangle;", v: 8883 }, { k: "RightTriangleBar;", v: 10704 }, { k: "RightTriangleEqual;", v: 8885 }, { k: "RightUpDownVector;", v: 10575 }, { k: "RightUpTeeVector;", v: 10588 }, { k: "RightUpVector;", v: 8638 }, { k: "RightUpVectorBar;", v: 10580 }, { k: "RightVector;", v: 8640 }, { k: "RightVectorBar;", v: 10579 }, { k: "Rightarrow;", v: 8658 }, { k: "Ropf;", v: 8477 }, { k: "RoundImplies;", v: 10608 }, { k: "Rrightarrow;", v: 8667 }, { k: "Rscr;", v: 8475 }, { k: "Rsh;", v: 8625 }, { k: "RuleDelayed;", v: 10740 }, { k: "SHCHcy;", v: 1065 }, { k: "SHcy;", v: 1064 }, { k: "SOFTcy;", v: 1068 }, { k: "Sacute;", v: 346 }, { k: "Sc;", v: 10940 }, { k: "Scaron;", v: 352 }, { k: "Scedil;", v: 350 }, { k: "Scirc;", v: 348 }, { k: "Scy;", v: 1057 }, { k: "Sfr;", v: 120086 }, { k: "ShortDownArrow;", v: 8595 }, { k: "ShortLeftArrow;", v: 8592 }, { k: "ShortRightArrow;", v: 8594 }, { k: "ShortUpArrow;", v: 8593 }, { k: "Sigma;", v: 931 }, { k: "SmallCircle;", v: 8728 }, { k: "Sopf;", v: 120138 }, { k: "Sqrt;", v: 8730 }, { k: "Square;", v: 9633 }, { k: "SquareIntersection;", v: 8851 }, { k: "SquareSubset;", v: 8847 }, { k: "SquareSubsetEqual;", v: 8849 }, { k: "SquareSuperset;", v: 8848 }, { k: "SquareSupersetEqual;", v: 8850 }, { k: "SquareUnion;", v: 8852 }, { k: "Sscr;", v: 119982 }, { k: "Star;", v: 8902 }, { k: "Sub;", v: 8912 }, { k: "Subset;", v: 8912 }, { k: "SubsetEqual;", v: 8838 }, { k: "Succeeds;", v: 8827 }, { k: "SucceedsEqual;", v: 10928 }, { k: "SucceedsSlantEqual;", v: 8829 }, { k: "SucceedsTilde;", v: 8831 }, { k: "SuchThat;", v: 8715 }, { k: "Sum;", v: 8721 }, { k: "Sup;", v: 8913 }, { k: "Superset;", v: 8835 }, { k: "SupersetEqual;", v: 8839 }, { k: "Supset;", v: 8913 }, { k: "THORN;", v: 222 }, { k: "TRADE;", v: 8482 }, { k: "TSHcy;", v: 1035 }, { k: "TScy;", v: 1062 }, { k: "Tab;", v: 9 }, { k: "Tau;", v: 932 }, { k: "Tcaron;", v: 356 }, { k: "Tcedil;", v: 354 }, { k: "Tcy;", v: 1058 }, { k: "Tfr;", v: 120087 }, { k: "Therefore;", v: 8756 }, { k: "Theta;", v: 920 }, { k: "ThinSpace;", v: 8201 }, { k: "Tilde;", v: 8764 }, { k: "TildeEqual;", v: 8771 }, { k: "TildeFullEqual;", v: 8773 }, { k: "TildeTilde;", v: 8776 }, { k: "Topf;", v: 120139 }, { k: "TripleDot;", v: 8411 }, { k: "Tscr;", v: 119983 }, { k: "Tstrok;", v: 358 }, { k: "Uacute;", v: 218 }, { k: "Uarr;", v: 8607 }, { k: "Uarrocir;", v: 10569 }, { k: "Ubrcy;", v: 1038 }, { k: "Ubreve;", v: 364 }, { k: "Ucirc;", v: 219 }, { k: "Ucy;", v: 1059 }, { k: "Udblac;", v: 368 }, { k: "Ufr;", v: 120088 }, { k: "Ugrave;", v: 217 }, { k: "Umacr;", v: 362 }, { k: "UnderBar;", v: 95 }, { k: "UnderBrace;", v: 9183 }, { k: "UnderBracket;", v: 9141 }, { k: "UnderParenthesis;", v: 9181 }, { k: "Union;", v: 8899 }, { k: "UnionPlus;", v: 8846 }, { k: "Uogon;", v: 370 }, { k: "Uopf;", v: 120140 }, { k: "UpArrow;", v: 8593 }, { k: "UpArrowBar;", v: 10514 }, { k: "UpArrowDownArrow;", v: 8645 }, { k: "UpDownArrow;", v: 8597 }, { k: "UpEquilibrium;", v: 10606 }, { k: "UpTee;", v: 8869 }, { k: "UpTeeArrow;", v: 8613 }, { k: "Uparrow;", v: 8657 }, { k: "Updownarrow;", v: 8661 }, { k: "UpperLeftArrow;", v: 8598 }, { k: "UpperRightArrow;", v: 8599 }, { k: "Upsi;", v: 978 }, { k: "Upsilon;", v: 933 }, { k: "Uring;", v: 366 }, { k: "Uscr;", v: 119984 }, { k: "Utilde;", v: 360 }, { k: "Uuml;", v: 220 }, { k: "VDash;", v: 8875 }, { k: "Vbar;", v: 10987 }, { k: "Vcy;", v: 1042 }, { k: "Vdash;", v: 8873 }, { k: "Vdashl;", v: 10982 }, { k: "Vee;", v: 8897 }, { k: "Verbar;", v: 8214 }, { k: "Vert;", v: 8214 }, { k: "VerticalBar;", v: 8739 }, { k: "VerticalLine;", v: 124 }, { k: "VerticalSeparator;", v: 10072 }, { k: "VerticalTilde;", v: 8768 }, { k: "VeryThinSpace;", v: 8202 }, { k: "Vfr;", v: 120089 }, { k: "Vopf;", v: 120141 }, { k: "Vscr;", v: 119985 }, { k: "Vvdash;", v: 8874 }, { k: "Wcirc;", v: 372 }, { k: "Wedge;", v: 8896 }, { k: "Wfr;", v: 120090 }, { k: "Wopf;", v: 120142 }, { k: "Wscr;", v: 119986 }, { k: "Xfr;", v: 120091 }, { k: "Xi;", v: 926 }, { k: "Xopf;", v: 120143 }, { k: "Xscr;", v: 119987 }, { k: "YAcy;", v: 1071 }, { k: "YIcy;", v: 1031 }, { k: "YUcy;", v: 1070 }, { k: "Yacute;", v: 221 }, { k: "Ycirc;", v: 374 }, { k: "Ycy;", v: 1067 }, { k: "Yfr;", v: 120092 }, { k: "Yopf;", v: 120144 }, { k: "Yscr;", v: 119988 }, { k: "Yuml;", v: 376 }, { k: "ZHcy;", v: 1046 }, { k: "Zacute;", v: 377 }, { k: "Zcaron;", v: 381 }, { k: "Zcy;", v: 1047 }, { k: "Zdot;", v: 379 }, { k: "ZeroWidthSpace;", v: 8203 }, { k: "Zeta;", v: 918 }, { k: "Zfr;", v: 8488 }, { k: "Zopf;", v: 8484 }, { k: "Zscr;", v: 119989 }, { k: "aacute;", v: 225 }, { k: "abreve;", v: 259 }, { k: "ac;", v: 8766 }, { k: "acd;", v: 8767 }, { k: "acirc;", v: 226 }, { k: "acute;", v: 180 }, { k: "acy;", v: 1072 }, { k: "aelig;", v: 230 }, { k: "af;", v: 8289 }, { k: "afr;", v: 120094 }, { k: "agrave;", v: 224 }, { k: "alefsym;", v: 8501 }, { k: "aleph;", v: 8501 }, { k: "alpha;", v: 945 }, { k: "amacr;", v: 257 }, { k: "amalg;", v: 10815 }, { k: "amp;", v: 38 }, { k: "and;", v: 8743 }, { k: "andand;", v: 10837 }, { k: "andd;", v: 10844 }, { k: "andslope;", v: 10840 }, { k: "andv;", v: 10842 }, { k: "ang;", v: 8736 }, { k: "ange;", v: 10660 }, { k: "angle;", v: 8736 }, { k: "angmsd;", v: 8737 }, { k: "angmsdaa;", v: 10664 }, { k: "angmsdab;", v: 10665 }, { k: "angmsdac;", v: 10666 }, { k: "angmsdad;", v: 10667 }, { k: "angmsdae;", v: 10668 }, { k: "angmsdaf;", v: 10669 }, { k: "angmsdag;", v: 10670 }, { k: "angmsdah;", v: 10671 }, { k: "angrt;", v: 8735 }, { k: "angrtvb;", v: 8894 }, { k: "angrtvbd;", v: 10653 }, { k: "angsph;", v: 8738 }, { k: "angst;", v: 197 }, { k: "angzarr;", v: 9084 }, { k: "aogon;", v: 261 }, { k: "aopf;", v: 120146 }, { k: "ap;", v: 8776 }, { k: "apE;", v: 10864 }, { k: "apacir;", v: 10863 }, { k: "ape;", v: 8778 }, { k: "apid;", v: 8779 }, { k: "apos;", v: 39 }, { k: "approx;", v: 8776 }, { k: "approxeq;", v: 8778 }, { k: "aring;", v: 229 }, { k: "ascr;", v: 119990 }, { k: "ast;", v: 42 }, { k: "asymp;", v: 8776 }, { k: "asympeq;", v: 8781 }, { k: "atilde;", v: 227 }, { k: "auml;", v: 228 }, { k: "awconint;", v: 8755 }, { k: "awint;", v: 10769 }, { k: "bNot;", v: 10989 }, { k: "backcong;", v: 8780 }, { k: "backepsilon;", v: 1014 }, { k: "backprime;", v: 8245 }, { k: "backsim;", v: 8765 }, { k: "backsimeq;", v: 8909 }, { k: "barvee;", v: 8893 }, { k: "barwed;", v: 8965 }, { k: "barwedge;", v: 8965 }, { k: "bbrk;", v: 9141 }, { k: "bbrktbrk;", v: 9142 }, { k: "bcong;", v: 8780 }, { k: "bcy;", v: 1073 }, { k: "bdquo;", v: 8222 }, { k: "becaus;", v: 8757 }, { k: "because;", v: 8757 }, { k: "bemptyv;", v: 10672 }, { k: "bepsi;", v: 1014 }, { k: "bernou;", v: 8492 }, { k: "beta;", v: 946 }, { k: "beth;", v: 8502 }, { k: "between;", v: 8812 }, { k: "bfr;", v: 120095 }, { k: "bigcap;", v: 8898 }, { k: "bigcirc;", v: 9711 }, { k: "bigcup;", v: 8899 }, { k: "bigodot;", v: 10752 }, { k: "bigoplus;", v: 10753 }, { k: "bigotimes;", v: 10754 }, { k: "bigsqcup;", v: 10758 }, { k: "bigstar;", v: 9733 }, { k: "bigtriangledown;", v: 9661 }, { k: "bigtriangleup;", v: 9651 }, { k: "biguplus;", v: 10756 }, { k: "bigvee;", v: 8897 }, { k: "bigwedge;", v: 8896 }, { k: "bkarow;", v: 10509 }, { k: "blacklozenge;", v: 10731 }, { k: "blacksquare;", v: 9642 }, { k: "blacktriangle;", v: 9652 }, { k: "blacktriangledown;", v: 9662 }, { k: "blacktriangleleft;", v: 9666 }, { k: "blacktriangleright;", v: 9656 }, { k: "blank;", v: 9251 }, { k: "blk12;", v: 9618 }, { k: "blk14;", v: 9617 }, { k: "blk34;", v: 9619 }, { k: "block;", v: 9608 }, { k: "bnot;", v: 8976 }, { k: "bopf;", v: 120147 }, { k: "bot;", v: 8869 }, { k: "bottom;", v: 8869 }, { k: "bowtie;", v: 8904 }, { k: "boxDL;", v: 9559 }, { k: "boxDR;", v: 9556 }, { k: "boxDl;", v: 9558 }, { k: "boxDr;", v: 9555 }, { k: "boxH;", v: 9552 }, { k: "boxHD;", v: 9574 }, { k: "boxHU;", v: 9577 }, { k: "boxHd;", v: 9572 }, { k: "boxHu;", v: 9575 }, { k: "boxUL;", v: 9565 }, { k: "boxUR;", v: 9562 }, { k: "boxUl;", v: 9564 }, { k: "boxUr;", v: 9561 }, { k: "boxV;", v: 9553 }, { k: "boxVH;", v: 9580 }, { k: "boxVL;", v: 9571 }, { k: "boxVR;", v: 9568 }, { k: "boxVh;", v: 9579 }, { k: "boxVl;", v: 9570 }, { k: "boxVr;", v: 9567 }, { k: "boxbox;", v: 10697 }, { k: "boxdL;", v: 9557 }, { k: "boxdR;", v: 9554 }, { k: "boxdl;", v: 9488 }, { k: "boxdr;", v: 9484 }, { k: "boxh;", v: 9472 }, { k: "boxhD;", v: 9573 }, { k: "boxhU;", v: 9576 }, { k: "boxhd;", v: 9516 }, { k: "boxhu;", v: 9524 }, { k: "boxminus;", v: 8863 }, { k: "boxplus;", v: 8862 }, { k: "boxtimes;", v: 8864 }, { k: "boxuL;", v: 9563 }, { k: "boxuR;", v: 9560 }, { k: "boxul;", v: 9496 }, { k: "boxur;", v: 9492 }, { k: "boxv;", v: 9474 }, { k: "boxvH;", v: 9578 }, { k: "boxvL;", v: 9569 }, { k: "boxvR;", v: 9566 }, { k: "boxvh;", v: 9532 }, { k: "boxvl;", v: 9508 }, { k: "boxvr;", v: 9500 }, { k: "bprime;", v: 8245 }, { k: "breve;", v: 728 }, { k: "brvbar;", v: 166 }, { k: "bscr;", v: 119991 }, { k: "bsemi;", v: 8271 }, { k: "bsim;", v: 8765 }, { k: "bsime;", v: 8909 }, { k: "bsol;", v: 92 }, { k: "bsolb;", v: 10693 }, { k: "bsolhsub;", v: 10184 }, { k: "bull;", v: 8226 }, { k: "bullet;", v: 8226 }, { k: "bump;", v: 8782 }, { k: "bumpE;", v: 10926 }, { k: "bumpe;", v: 8783 }, { k: "bumpeq;", v: 8783 }, { k: "cacute;", v: 263 }, { k: "cap;", v: 8745 }, { k: "capand;", v: 10820 }, { k: "capbrcup;", v: 10825 }, { k: "capcap;", v: 10827 }, { k: "capcup;", v: 10823 }, { k: "capdot;", v: 10816 }, { k: "caret;", v: 8257 }, { k: "caron;", v: 711 }, { k: "ccaps;", v: 10829 }, { k: "ccaron;", v: 269 }, { k: "ccedil;", v: 231 }, { k: "ccirc;", v: 265 }, { k: "ccups;", v: 10828 }, { k: "ccupssm;", v: 10832 }, { k: "cdot;", v: 267 }, { k: "cedil;", v: 184 }, { k: "cemptyv;", v: 10674 }, { k: "cent;", v: 162 }, { k: "centerdot;", v: 183 }, { k: "cfr;", v: 120096 }, { k: "chcy;", v: 1095 }, { k: "check;", v: 10003 }, { k: "checkmark;", v: 10003 }, { k: "chi;", v: 967 }, { k: "cir;", v: 9675 }, { k: "cirE;", v: 10691 }, { k: "circ;", v: 710 }, { k: "circeq;", v: 8791 }, { k: "circlearrowleft;", v: 8634 }, { k: "circlearrowright;", v: 8635 }, { k: "circledR;", v: 174 }, { k: "circledS;", v: 9416 }, { k: "circledast;", v: 8859 }, { k: "circledcirc;", v: 8858 }, { k: "circleddash;", v: 8861 }, { k: "cire;", v: 8791 }, { k: "cirfnint;", v: 10768 }, { k: "cirmid;", v: 10991 }, { k: "cirscir;", v: 10690 }, { k: "clubs;", v: 9827 }, { k: "clubsuit;", v: 9827 }, { k: "colon;", v: 58 }, { k: "colone;", v: 8788 }, { k: "coloneq;", v: 8788 }, { k: "comma;", v: 44 }, { k: "commat;", v: 64 }, { k: "comp;", v: 8705 }, { k: "compfn;", v: 8728 }, { k: "complement;", v: 8705 }, { k: "complexes;", v: 8450 }, { k: "cong;", v: 8773 }, { k: "congdot;", v: 10861 }, { k: "conint;", v: 8750 }, { k: "copf;", v: 120148 }, { k: "coprod;", v: 8720 }, { k: "copy;", v: 169 }, { k: "copysr;", v: 8471 }, { k: "crarr;", v: 8629 }, { k: "cross;", v: 10007 }, { k: "cscr;", v: 119992 }, { k: "csub;", v: 10959 }, { k: "csube;", v: 10961 }, { k: "csup;", v: 10960 }, { k: "csupe;", v: 10962 }, { k: "ctdot;", v: 8943 }, { k: "cudarrl;", v: 10552 }, { k: "cudarrr;", v: 10549 }, { k: "cuepr;", v: 8926 }, { k: "cuesc;", v: 8927 }, { k: "cularr;", v: 8630 }, { k: "cularrp;", v: 10557 }, { k: "cup;", v: 8746 }, { k: "cupbrcap;", v: 10824 }, { k: "cupcap;", v: 10822 }, { k: "cupcup;", v: 10826 }, { k: "cupdot;", v: 8845 }, { k: "cupor;", v: 10821 }, { k: "curarr;", v: 8631 }, { k: "curarrm;", v: 10556 }, { k: "curlyeqprec;", v: 8926 }, { k: "curlyeqsucc;", v: 8927 }, { k: "curlyvee;", v: 8910 }, { k: "curlywedge;", v: 8911 }, { k: "curren;", v: 164 }, { k: "curvearrowleft;", v: 8630 }, { k: "curvearrowright;", v: 8631 }, { k: "cuvee;", v: 8910 }, { k: "cuwed;", v: 8911 }, { k: "cwconint;", v: 8754 }, { k: "cwint;", v: 8753 }, { k: "cylcty;", v: 9005 }, { k: "dArr;", v: 8659 }, { k: "dHar;", v: 10597 }, { k: "dagger;", v: 8224 }, { k: "daleth;", v: 8504 }, { k: "darr;", v: 8595 }, { k: "dash;", v: 8208 }, { k: "dashv;", v: 8867 }, { k: "dbkarow;", v: 10511 }, { k: "dblac;", v: 733 }, { k: "dcaron;", v: 271 }, { k: "dcy;", v: 1076 }, { k: "dd;", v: 8518 }, { k: "ddagger;", v: 8225 }, { k: "ddarr;", v: 8650 }, { k: "ddotseq;", v: 10871 }, { k: "deg;", v: 176 }, { k: "delta;", v: 948 }, { k: "demptyv;", v: 10673 }, { k: "dfisht;", v: 10623 }, { k: "dfr;", v: 120097 }, { k: "dharl;", v: 8643 }, { k: "dharr;", v: 8642 }, { k: "diam;", v: 8900 }, { k: "diamond;", v: 8900 }, { k: "diamondsuit;", v: 9830 }, { k: "diams;", v: 9830 }, { k: "die;", v: 168 }, { k: "digamma;", v: 989 }, { k: "disin;", v: 8946 }, { k: "div;", v: 247 }, { k: "divide;", v: 247 }, { k: "divideontimes;", v: 8903 }, { k: "divonx;", v: 8903 }, { k: "djcy;", v: 1106 }, { k: "dlcorn;", v: 8990 }, { k: "dlcrop;", v: 8973 }, { k: "dollar;", v: 36 }, { k: "dopf;", v: 120149 }, { k: "dot;", v: 729 }, { k: "doteq;", v: 8784 }, { k: "doteqdot;", v: 8785 }, { k: "dotminus;", v: 8760 }, { k: "dotplus;", v: 8724 }, { k: "dotsquare;", v: 8865 }, { k: "doublebarwedge;", v: 8966 }, { k: "downarrow;", v: 8595 }, { k: "downdownarrows;", v: 8650 }, { k: "downharpoonleft;", v: 8643 }, { k: "downharpoonright;", v: 8642 }, { k: "drbkarow;", v: 10512 }, { k: "drcorn;", v: 8991 }, { k: "drcrop;", v: 8972 }, { k: "dscr;", v: 119993 }, { k: "dscy;", v: 1109 }, { k: "dsol;", v: 10742 }, { k: "dstrok;", v: 273 }, { k: "dtdot;", v: 8945 }, { k: "dtri;", v: 9663 }, { k: "dtrif;", v: 9662 }, { k: "duarr;", v: 8693 }, { k: "duhar;", v: 10607 }, { k: "dwangle;", v: 10662 }, { k: "dzcy;", v: 1119 }, { k: "dzigrarr;", v: 10239 }, { k: "eDDot;", v: 10871 }, { k: "eDot;", v: 8785 }, { k: "eacute;", v: 233 }, { k: "easter;", v: 10862 }, { k: "ecaron;", v: 283 }, { k: "ecir;", v: 8790 }, { k: "ecirc;", v: 234 }, { k: "ecolon;", v: 8789 }, { k: "ecy;", v: 1101 }, { k: "edot;", v: 279 }, { k: "ee;", v: 8519 }, { k: "efDot;", v: 8786 }, { k: "efr;", v: 120098 }, { k: "eg;", v: 10906 }, { k: "egrave;", v: 232 }, { k: "egs;", v: 10902 }, { k: "egsdot;", v: 10904 }, { k: "el;", v: 10905 }, { k: "elinters;", v: 9191 }, { k: "ell;", v: 8467 }, { k: "els;", v: 10901 }, { k: "elsdot;", v: 10903 }, { k: "emacr;", v: 275 }, { k: "empty;", v: 8709 }, { k: "emptyset;", v: 8709 }, { k: "emptyv;", v: 8709 }, { k: "emsp;", v: 8195 }, { k: "emsp13;", v: 8196 }, { k: "emsp14;", v: 8197 }, { k: "eng;", v: 331 }, { k: "ensp;", v: 8194 }, { k: "eogon;", v: 281 }, { k: "eopf;", v: 120150 }, { k: "epar;", v: 8917 }, { k: "eparsl;", v: 10723 }, { k: "eplus;", v: 10865 }, { k: "epsi;", v: 949 }, { k: "epsilon;", v: 949 }, { k: "epsiv;", v: 1013 }, { k: "eqcirc;", v: 8790 }, { k: "eqcolon;", v: 8789 }, { k: "eqsim;", v: 8770 }, { k: "eqslantgtr;", v: 10902 }, { k: "eqslantless;", v: 10901 }, { k: "equals;", v: 61 }, { k: "equest;", v: 8799 }, { k: "equiv;", v: 8801 }, { k: "equivDD;", v: 10872 }, { k: "eqvparsl;", v: 10725 }, { k: "erDot;", v: 8787 }, { k: "erarr;", v: 10609 }, { k: "escr;", v: 8495 }, { k: "esdot;", v: 8784 }, { k: "esim;", v: 8770 }, { k: "eta;", v: 951 }, { k: "eth;", v: 240 }, { k: "euml;", v: 235 }, { k: "euro;", v: 8364 }, { k: "excl;", v: 33 }, { k: "exist;", v: 8707 }, { k: "expectation;", v: 8496 }, { k: "exponentiale;", v: 8519 }, { k: "fallingdotseq;", v: 8786 }, { k: "fcy;", v: 1092 }, { k: "female;", v: 9792 }, { k: "ffilig;", v: 64259 }, { k: "fflig;", v: 64256 }, { k: "ffllig;", v: 64260 }, { k: "ffr;", v: 120099 }, { k: "filig;", v: 64257 }, { k: "flat;", v: 9837 }, { k: "fllig;", v: 64258 }, { k: "fltns;", v: 9649 }, { k: "fnof;", v: 402 }, { k: "fopf;", v: 120151 }, { k: "forall;", v: 8704 }, { k: "fork;", v: 8916 }, { k: "forkv;", v: 10969 }, { k: "fpartint;", v: 10765 }, { k: "frac12;", v: 189 }, { k: "frac13;", v: 8531 }, { k: "frac14;", v: 188 }, { k: "frac15;", v: 8533 }, { k: "frac16;", v: 8537 }, { k: "frac18;", v: 8539 }, { k: "frac23;", v: 8532 }, { k: "frac25;", v: 8534 }, { k: "frac34;", v: 190 }, { k: "frac35;", v: 8535 }, { k: "frac38;", v: 8540 }, { k: "frac45;", v: 8536 }, { k: "frac56;", v: 8538 }, { k: "frac58;", v: 8541 }, { k: "frac78;", v: 8542 }, { k: "frasl;", v: 8260 }, { k: "frown;", v: 8994 }, { k: "fscr;", v: 119995 }, { k: "gE;", v: 8807 }, { k: "gEl;", v: 10892 }, { k: "gacute;", v: 501 }, { k: "gamma;", v: 947 }, { k: "gammad;", v: 989 }, { k: "gap;", v: 10886 }, { k: "gbreve;", v: 287 }, { k: "gcirc;", v: 285 }, { k: "gcy;", v: 1075 }, { k: "gdot;", v: 289 }, { k: "ge;", v: 8805 }, { k: "gel;", v: 8923 }, { k: "geq;", v: 8805 }, { k: "geqq;", v: 8807 }, { k: "geqslant;", v: 10878 }, { k: "ges;", v: 10878 }, { k: "gescc;", v: 10921 }, { k: "gesdot;", v: 10880 }, { k: "gesdoto;", v: 10882 }, { k: "gesdotol;", v: 10884 }, { k: "gesles;", v: 10900 }, { k: "gfr;", v: 120100 }, { k: "gg;", v: 8811 }, { k: "ggg;", v: 8921 }, { k: "gimel;", v: 8503 }, { k: "gjcy;", v: 1107 }, { k: "gl;", v: 8823 }, { k: "glE;", v: 10898 }, { k: "gla;", v: 10917 }, { k: "glj;", v: 10916 }, { k: "gnE;", v: 8809 }, { k: "gnap;", v: 10890 }, { k: "gnapprox;", v: 10890 }, { k: "gne;", v: 10888 }, { k: "gneq;", v: 10888 }, { k: "gneqq;", v: 8809 }, { k: "gnsim;", v: 8935 }, { k: "gopf;", v: 120152 }, { k: "grave;", v: 96 }, { k: "gscr;", v: 8458 }, { k: "gsim;", v: 8819 }, { k: "gsime;", v: 10894 }, { k: "gsiml;", v: 10896 }, { k: "gt;", v: 62 }, { k: "gtcc;", v: 10919 }, { k: "gtcir;", v: 10874 }, { k: "gtdot;", v: 8919 }, { k: "gtlPar;", v: 10645 }, { k: "gtquest;", v: 10876 }, { k: "gtrapprox;", v: 10886 }, { k: "gtrarr;", v: 10616 }, { k: "gtrdot;", v: 8919 }, { k: "gtreqless;", v: 8923 }, { k: "gtreqqless;", v: 10892 }, { k: "gtrless;", v: 8823 }, { k: "gtrsim;", v: 8819 }, { k: "hArr;", v: 8660 }, { k: "hairsp;", v: 8202 }, { k: "half;", v: 189 }, { k: "hamilt;", v: 8459 }, { k: "hardcy;", v: 1098 }, { k: "harr;", v: 8596 }, { k: "harrcir;", v: 10568 }, { k: "harrw;", v: 8621 }, { k: "hbar;", v: 8463 }, { k: "hcirc;", v: 293 }, { k: "hearts;", v: 9829 }, { k: "heartsuit;", v: 9829 }, { k: "hellip;", v: 8230 }, { k: "hercon;", v: 8889 }, { k: "hfr;", v: 120101 }, { k: "hksearow;", v: 10533 }, { k: "hkswarow;", v: 10534 }, { k: "hoarr;", v: 8703 }, { k: "homtht;", v: 8763 }, { k: "hookleftarrow;", v: 8617 }, { k: "hookrightarrow;", v: 8618 }, { k: "hopf;", v: 120153 }, { k: "horbar;", v: 8213 }, { k: "hscr;", v: 119997 }, { k: "hslash;", v: 8463 }, { k: "hstrok;", v: 295 }, { k: "hybull;", v: 8259 }, { k: "hyphen;", v: 8208 }, { k: "iacute;", v: 237 }, { k: "ic;", v: 8291 }, { k: "icirc;", v: 238 }, { k: "icy;", v: 1080 }, { k: "iecy;", v: 1077 }, { k: "iexcl;", v: 161 }, { k: "iff;", v: 8660 }, { k: "ifr;", v: 120102 }, { k: "igrave;", v: 236 }, { k: "ii;", v: 8520 }, { k: "iiiint;", v: 10764 }, { k: "iiint;", v: 8749 }, { k: "iinfin;", v: 10716 }, { k: "iiota;", v: 8489 }, { k: "ijlig;", v: 307 }, { k: "imacr;", v: 299 }, { k: "image;", v: 8465 }, { k: "imagline;", v: 8464 }, { k: "imagpart;", v: 8465 }, { k: "imath;", v: 305 }, { k: "imof;", v: 8887 }, { k: "imped;", v: 437 }, { k: "in;", v: 8712 }, { k: "incare;", v: 8453 }, { k: "infin;", v: 8734 }, { k: "infintie;", v: 10717 }, { k: "inodot;", v: 305 }, { k: "int;", v: 8747 }, { k: "intcal;", v: 8890 }, { k: "integers;", v: 8484 }, { k: "intercal;", v: 8890 }, { k: "intlarhk;", v: 10775 }, { k: "intprod;", v: 10812 }, { k: "iocy;", v: 1105 }, { k: "iogon;", v: 303 }, { k: "iopf;", v: 120154 }, { k: "iota;", v: 953 }, { k: "iprod;", v: 10812 }, { k: "iquest;", v: 191 }, { k: "iscr;", v: 119998 }, { k: "isin;", v: 8712 }, { k: "isinE;", v: 8953 }, { k: "isindot;", v: 8949 }, { k: "isins;", v: 8948 }, { k: "isinsv;", v: 8947 }, { k: "isinv;", v: 8712 }, { k: "it;", v: 8290 }, { k: "itilde;", v: 297 }, { k: "iukcy;", v: 1110 }, { k: "iuml;", v: 239 }, { k: "jcirc;", v: 309 }, { k: "jcy;", v: 1081 }, { k: "jfr;", v: 120103 }, { k: "jmath;", v: 567 }, { k: "jopf;", v: 120155 }, { k: "jscr;", v: 119999 }, { k: "jsercy;", v: 1112 }, { k: "jukcy;", v: 1108 }, { k: "kappa;", v: 954 }, { k: "kappav;", v: 1008 }, { k: "kcedil;", v: 311 }, { k: "kcy;", v: 1082 }, { k: "kfr;", v: 120104 }, { k: "kgreen;", v: 312 }, { k: "khcy;", v: 1093 }, { k: "kjcy;", v: 1116 }, { k: "kopf;", v: 120156 }, { k: "kscr;", v: 120000 }, { k: "lAarr;", v: 8666 }, { k: "lArr;", v: 8656 }, { k: "lAtail;", v: 10523 }, { k: "lBarr;", v: 10510 }, { k: "lE;", v: 8806 }, { k: "lEg;", v: 10891 }, { k: "lHar;", v: 10594 }, { k: "lacute;", v: 314 }, { k: "laemptyv;", v: 10676 }, { k: "lagran;", v: 8466 }, { k: "lambda;", v: 955 }, { k: "lang;", v: 10216 }, { k: "langd;", v: 10641 }, { k: "langle;", v: 10216 }, { k: "lap;", v: 10885 }, { k: "laquo;", v: 171 }, { k: "larr;", v: 8592 }, { k: "larrb;", v: 8676 }, { k: "larrbfs;", v: 10527 }, { k: "larrfs;", v: 10525 }, { k: "larrhk;", v: 8617 }, { k: "larrlp;", v: 8619 }, { k: "larrpl;", v: 10553 }, { k: "larrsim;", v: 10611 }, { k: "larrtl;", v: 8610 }, { k: "lat;", v: 10923 }, { k: "latail;", v: 10521 }, { k: "late;", v: 10925 }, { k: "lbarr;", v: 10508 }, { k: "lbbrk;", v: 10098 }, { k: "lbrace;", v: 123 }, { k: "lbrack;", v: 91 }, { k: "lbrke;", v: 10635 }, { k: "lbrksld;", v: 10639 }, { k: "lbrkslu;", v: 10637 }, { k: "lcaron;", v: 318 }, { k: "lcedil;", v: 316 }, { k: "lceil;", v: 8968 }, { k: "lcub;", v: 123 }, { k: "lcy;", v: 1083 }, { k: "ldca;", v: 10550 }, { k: "ldquo;", v: 8220 }, { k: "ldquor;", v: 8222 }, { k: "ldrdhar;", v: 10599 }, { k: "ldrushar;", v: 10571 }, { k: "ldsh;", v: 8626 }, { k: "le;", v: 8804 }, { k: "leftarrow;", v: 8592 }, { k: "leftarrowtail;", v: 8610 }, { k: "leftharpoondown;", v: 8637 }, { k: "leftharpoonup;", v: 8636 }, { k: "leftleftarrows;", v: 8647 }, { k: "leftrightarrow;", v: 8596 }, { k: "leftrightarrows;", v: 8646 }, { k: "leftrightharpoons;", v: 8651 }, { k: "leftrightsquigarrow;", v: 8621 }, { k: "leftthreetimes;", v: 8907 }, { k: "leg;", v: 8922 }, { k: "leq;", v: 8804 }, { k: "leqq;", v: 8806 }, { k: "leqslant;", v: 10877 }, { k: "les;", v: 10877 }, { k: "lescc;", v: 10920 }, { k: "lesdot;", v: 10879 }, { k: "lesdoto;", v: 10881 }, { k: "lesdotor;", v: 10883 }, { k: "lesges;", v: 10899 }, { k: "lessapprox;", v: 10885 }, { k: "lessdot;", v: 8918 }, { k: "lesseqgtr;", v: 8922 }, { k: "lesseqqgtr;", v: 10891 }, { k: "lessgtr;", v: 8822 }, { k: "lesssim;", v: 8818 }, { k: "lfisht;", v: 10620 }, { k: "lfloor;", v: 8970 }, { k: "lfr;", v: 120105 }, { k: "lg;", v: 8822 }, { k: "lgE;", v: 10897 }, { k: "lhard;", v: 8637 }, { k: "lharu;", v: 8636 }, { k: "lharul;", v: 10602 }, { k: "lhblk;", v: 9604 }, { k: "ljcy;", v: 1113 }, { k: "ll;", v: 8810 }, { k: "llarr;", v: 8647 }, { k: "llcorner;", v: 8990 }, { k: "llhard;", v: 10603 }, { k: "lltri;", v: 9722 }, { k: "lmidot;", v: 320 }, { k: "lmoust;", v: 9136 }, { k: "lmoustache;", v: 9136 }, { k: "lnE;", v: 8808 }, { k: "lnap;", v: 10889 }, { k: "lnapprox;", v: 10889 }, { k: "lne;", v: 10887 }, { k: "lneq;", v: 10887 }, { k: "lneqq;", v: 8808 }, { k: "lnsim;", v: 8934 }, { k: "loang;", v: 10220 }, { k: "loarr;", v: 8701 }, { k: "lobrk;", v: 10214 }, { k: "longleftarrow;", v: 10229 }, { k: "longleftrightarrow;", v: 10231 }, { k: "longmapsto;", v: 10236 }, { k: "longrightarrow;", v: 10230 }, { k: "looparrowleft;", v: 8619 }, { k: "looparrowright;", v: 8620 }, { k: "lopar;", v: 10629 }, { k: "lopf;", v: 120157 }, { k: "loplus;", v: 10797 }, { k: "lotimes;", v: 10804 }, { k: "lowast;", v: 8727 }, { k: "lowbar;", v: 95 }, { k: "loz;", v: 9674 }, { k: "lozenge;", v: 9674 }, { k: "lozf;", v: 10731 }, { k: "lpar;", v: 40 }, { k: "lparlt;", v: 10643 }, { k: "lrarr;", v: 8646 }, { k: "lrcorner;", v: 8991 }, { k: "lrhar;", v: 8651 }, { k: "lrhard;", v: 10605 }, { k: "lrm;", v: 8206 }, { k: "lrtri;", v: 8895 }, { k: "lsaquo;", v: 8249 }, { k: "lscr;", v: 120001 }, { k: "lsh;", v: 8624 }, { k: "lsim;", v: 8818 }, { k: "lsime;", v: 10893 }, { k: "lsimg;", v: 10895 }, { k: "lsqb;", v: 91 }, { k: "lsquo;", v: 8216 }, { k: "lsquor;", v: 8218 }, { k: "lstrok;", v: 322 }, { k: "lt;", v: 60 }, { k: "ltcc;", v: 10918 }, { k: "ltcir;", v: 10873 }, { k: "ltdot;", v: 8918 }, { k: "lthree;", v: 8907 }, { k: "ltimes;", v: 8905 }, { k: "ltlarr;", v: 10614 }, { k: "ltquest;", v: 10875 }, { k: "ltrPar;", v: 10646 }, { k: "ltri;", v: 9667 }, { k: "ltrie;", v: 8884 }, { k: "ltrif;", v: 9666 }, { k: "lurdshar;", v: 10570 }, { k: "luruhar;", v: 10598 }, { k: "mDDot;", v: 8762 }, { k: "macr;", v: 175 }, { k: "male;", v: 9794 }, { k: "malt;", v: 10016 }, { k: "maltese;", v: 10016 }, { k: "map;", v: 8614 }, { k: "mapsto;", v: 8614 }, { k: "mapstodown;", v: 8615 }, { k: "mapstoleft;", v: 8612 }, { k: "mapstoup;", v: 8613 }, { k: "marker;", v: 9646 }, { k: "mcomma;", v: 10793 }, { k: "mcy;", v: 1084 }, { k: "mdash;", v: 8212 }, { k: "measuredangle;", v: 8737 }, { k: "mfr;", v: 120106 }, { k: "mho;", v: 8487 }, { k: "micro;", v: 181 }, { k: "mid;", v: 8739 }, { k: "midast;", v: 42 }, { k: "midcir;", v: 10992 }, { k: "middot;", v: 183 }, { k: "minus;", v: 8722 }, { k: "minusb;", v: 8863 }, { k: "minusd;", v: 8760 }, { k: "minusdu;", v: 10794 }, { k: "mlcp;", v: 10971 }, { k: "mldr;", v: 8230 }, { k: "mnplus;", v: 8723 }, { k: "models;", v: 8871 }, { k: "mopf;", v: 120158 }, { k: "mp;", v: 8723 }, { k: "mscr;", v: 120002 }, { k: "mstpos;", v: 8766 }, { k: "mu;", v: 956 }, { k: "multimap;", v: 8888 }, { k: "mumap;", v: 8888 }, { k: "nLeftarrow;", v: 8653 }, { k: "nLeftrightarrow;", v: 8654 }, { k: "nRightarrow;", v: 8655 }, { k: "nVDash;", v: 8879 }, { k: "nVdash;", v: 8878 }, { k: "nabla;", v: 8711 }, { k: "nacute;", v: 324 }, { k: "nap;", v: 8777 }, { k: "napos;", v: 329 }, { k: "napprox;", v: 8777 }, { k: "natur;", v: 9838 }, { k: "natural;", v: 9838 }, { k: "naturals;", v: 8469 }, { k: "nbsp;", v: 160 }, { k: "ncap;", v: 10819 }, { k: "ncaron;", v: 328 }, { k: "ncedil;", v: 326 }, { k: "ncong;", v: 8775 }, { k: "ncup;", v: 10818 }, { k: "ncy;", v: 1085 }, { k: "ndash;", v: 8211 }, { k: "ne;", v: 8800 }, { k: "neArr;", v: 8663 }, { k: "nearhk;", v: 10532 }, { k: "nearr;", v: 8599 }, { k: "nearrow;", v: 8599 }, { k: "nequiv;", v: 8802 }, { k: "nesear;", v: 10536 }, { k: "nexist;", v: 8708 }, { k: "nexists;", v: 8708 }, { k: "nfr;", v: 120107 }, { k: "nge;", v: 8817 }, { k: "ngeq;", v: 8817 }, { k: "ngsim;", v: 8821 }, { k: "ngt;", v: 8815 }, { k: "ngtr;", v: 8815 }, { k: "nhArr;", v: 8654 }, { k: "nharr;", v: 8622 }, { k: "nhpar;", v: 10994 }, { k: "ni;", v: 8715 }, { k: "nis;", v: 8956 }, { k: "nisd;", v: 8954 }, { k: "niv;", v: 8715 }, { k: "njcy;", v: 1114 }, { k: "nlArr;", v: 8653 }, { k: "nlarr;", v: 8602 }, { k: "nldr;", v: 8229 }, { k: "nle;", v: 8816 }, { k: "nleftarrow;", v: 8602 }, { k: "nleftrightarrow;", v: 8622 }, { k: "nleq;", v: 8816 }, { k: "nless;", v: 8814 }, { k: "nlsim;", v: 8820 }, { k: "nlt;", v: 8814 }, { k: "nltri;", v: 8938 }, { k: "nltrie;", v: 8940 }, { k: "nmid;", v: 8740 }, { k: "nopf;", v: 120159 }, { k: "not;", v: 172 }, { k: "notin;", v: 8713 }, { k: "notinva;", v: 8713 }, { k: "notinvb;", v: 8951 }, { k: "notinvc;", v: 8950 }, { k: "notni;", v: 8716 }, { k: "notniva;", v: 8716 }, { k: "notnivb;", v: 8958 }, { k: "notnivc;", v: 8957 }, { k: "npar;", v: 8742 }, { k: "nparallel;", v: 8742 }, { k: "npolint;", v: 10772 }, { k: "npr;", v: 8832 }, { k: "nprcue;", v: 8928 }, { k: "nprec;", v: 8832 }, { k: "nrArr;", v: 8655 }, { k: "nrarr;", v: 8603 }, { k: "nrightarrow;", v: 8603 }, { k: "nrtri;", v: 8939 }, { k: "nrtrie;", v: 8941 }, { k: "nsc;", v: 8833 }, { k: "nsccue;", v: 8929 }, { k: "nscr;", v: 120003 }, { k: "nshortmid;", v: 8740 }, { k: "nshortparallel;", v: 8742 }, { k: "nsim;", v: 8769 }, { k: "nsime;", v: 8772 }, { k: "nsimeq;", v: 8772 }, { k: "nsmid;", v: 8740 }, { k: "nspar;", v: 8742 }, { k: "nsqsube;", v: 8930 }, { k: "nsqsupe;", v: 8931 }, { k: "nsub;", v: 8836 }, { k: "nsube;", v: 8840 }, { k: "nsubseteq;", v: 8840 }, { k: "nsucc;", v: 8833 }, { k: "nsup;", v: 8837 }, { k: "nsupe;", v: 8841 }, { k: "nsupseteq;", v: 8841 }, { k: "ntgl;", v: 8825 }, { k: "ntilde;", v: 241 }, { k: "ntlg;", v: 8824 }, { k: "ntriangleleft;", v: 8938 }, { k: "ntrianglelefteq;", v: 8940 }, { k: "ntriangleright;", v: 8939 }, { k: "ntrianglerighteq;", v: 8941 }, { k: "nu;", v: 957 }, { k: "num;", v: 35 }, { k: "numero;", v: 8470 }, { k: "numsp;", v: 8199 }, { k: "nvDash;", v: 8877 }, { k: "nvHarr;", v: 10500 }, { k: "nvdash;", v: 8876 }, { k: "nvinfin;", v: 10718 }, { k: "nvlArr;", v: 10498 }, { k: "nvrArr;", v: 10499 }, { k: "nwArr;", v: 8662 }, { k: "nwarhk;", v: 10531 }, { k: "nwarr;", v: 8598 }, { k: "nwarrow;", v: 8598 }, { k: "nwnear;", v: 10535 }, { k: "oS;", v: 9416 }, { k: "oacute;", v: 243 }, { k: "oast;", v: 8859 }, { k: "ocir;", v: 8858 }, { k: "ocirc;", v: 244 }, { k: "ocy;", v: 1086 }, { k: "odash;", v: 8861 }, { k: "odblac;", v: 337 }, { k: "odiv;", v: 10808 }, { k: "odot;", v: 8857 }, { k: "odsold;", v: 10684 }, { k: "oelig;", v: 339 }, { k: "ofcir;", v: 10687 }, { k: "ofr;", v: 120108 }, { k: "ogon;", v: 731 }, { k: "ograve;", v: 242 }, { k: "ogt;", v: 10689 }, { k: "ohbar;", v: 10677 }, { k: "ohm;", v: 937 }, { k: "oint;", v: 8750 }, { k: "olarr;", v: 8634 }, { k: "olcir;", v: 10686 }, { k: "olcross;", v: 10683 }, { k: "oline;", v: 8254 }, { k: "olt;", v: 10688 }, { k: "omacr;", v: 333 }, { k: "omega;", v: 969 }, { k: "omicron;", v: 959 }, { k: "omid;", v: 10678 }, { k: "ominus;", v: 8854 }, { k: "oopf;", v: 120160 }, { k: "opar;", v: 10679 }, { k: "operp;", v: 10681 }, { k: "oplus;", v: 8853 }, { k: "or;", v: 8744 }, { k: "orarr;", v: 8635 }, { k: "ord;", v: 10845 }, { k: "order;", v: 8500 }, { k: "orderof;", v: 8500 }, { k: "ordf;", v: 170 }, { k: "ordm;", v: 186 }, { k: "origof;", v: 8886 }, { k: "oror;", v: 10838 }, { k: "orslope;", v: 10839 }, { k: "orv;", v: 10843 }, { k: "oscr;", v: 8500 }, { k: "oslash;", v: 248 }, { k: "osol;", v: 8856 }, { k: "otilde;", v: 245 }, { k: "otimes;", v: 8855 }, { k: "otimesas;", v: 10806 }, { k: "ouml;", v: 246 }, { k: "ovbar;", v: 9021 }, { k: "par;", v: 8741 }, { k: "para;", v: 182 }, { k: "parallel;", v: 8741 }, { k: "parsim;", v: 10995 }, { k: "parsl;", v: 11005 }, { k: "part;", v: 8706 }, { k: "pcy;", v: 1087 }, { k: "percnt;", v: 37 }, { k: "period;", v: 46 }, { k: "permil;", v: 8240 }, { k: "perp;", v: 8869 }, { k: "pertenk;", v: 8241 }, { k: "pfr;", v: 120109 }, { k: "phi;", v: 966 }, { k: "phiv;", v: 981 }, { k: "phmmat;", v: 8499 }, { k: "phone;", v: 9742 }, { k: "pi;", v: 960 }, { k: "pitchfork;", v: 8916 }, { k: "piv;", v: 982 }, { k: "planck;", v: 8463 }, { k: "planckh;", v: 8462 }, { k: "plankv;", v: 8463 }, { k: "plus;", v: 43 }, { k: "plusacir;", v: 10787 }, { k: "plusb;", v: 8862 }, { k: "pluscir;", v: 10786 }, { k: "plusdo;", v: 8724 }, { k: "plusdu;", v: 10789 }, { k: "pluse;", v: 10866 }, { k: "plusmn;", v: 177 }, { k: "plussim;", v: 10790 }, { k: "plustwo;", v: 10791 }, { k: "pm;", v: 177 }, { k: "pointint;", v: 10773 }, { k: "popf;", v: 120161 }, { k: "pound;", v: 163 }, { k: "pr;", v: 8826 }, { k: "prE;", v: 10931 }, { k: "prap;", v: 10935 }, { k: "prcue;", v: 8828 }, { k: "pre;", v: 10927 }, { k: "prec;", v: 8826 }, { k: "precapprox;", v: 10935 }, { k: "preccurlyeq;", v: 8828 }, { k: "preceq;", v: 10927 }, { k: "precnapprox;", v: 10937 }, { k: "precneqq;", v: 10933 }, { k: "precnsim;", v: 8936 }, { k: "precsim;", v: 8830 }, { k: "prime;", v: 8242 }, { k: "primes;", v: 8473 }, { k: "prnE;", v: 10933 }, { k: "prnap;", v: 10937 }, { k: "prnsim;", v: 8936 }, { k: "prod;", v: 8719 }, { k: "profalar;", v: 9006 }, { k: "profline;", v: 8978 }, { k: "profsurf;", v: 8979 }, { k: "prop;", v: 8733 }, { k: "propto;", v: 8733 }, { k: "prsim;", v: 8830 }, { k: "prurel;", v: 8880 }, { k: "pscr;", v: 120005 }, { k: "psi;", v: 968 }, { k: "puncsp;", v: 8200 }, { k: "qfr;", v: 120110 }, { k: "qint;", v: 10764 }, { k: "qopf;", v: 120162 }, { k: "qprime;", v: 8279 }, { k: "qscr;", v: 120006 }, { k: "quaternions;", v: 8461 }, { k: "quatint;", v: 10774 }, { k: "quest;", v: 63 }, { k: "questeq;", v: 8799 }, { k: "quot;", v: 34 }, { k: "rAarr;", v: 8667 }, { k: "rArr;", v: 8658 }, { k: "rAtail;", v: 10524 }, { k: "rBarr;", v: 10511 }, { k: "rHar;", v: 10596 }, { k: "racute;", v: 341 }, { k: "radic;", v: 8730 }, { k: "raemptyv;", v: 10675 }, { k: "rang;", v: 10217 }, { k: "rangd;", v: 10642 }, { k: "range;", v: 10661 }, { k: "rangle;", v: 10217 }, { k: "raquo;", v: 187 }, { k: "rarr;", v: 8594 }, { k: "rarrap;", v: 10613 }, { k: "rarrb;", v: 8677 }, { k: "rarrbfs;", v: 10528 }, { k: "rarrc;", v: 10547 }, { k: "rarrfs;", v: 10526 }, { k: "rarrhk;", v: 8618 }, { k: "rarrlp;", v: 8620 }, { k: "rarrpl;", v: 10565 }, { k: "rarrsim;", v: 10612 }, { k: "rarrtl;", v: 8611 }, { k: "rarrw;", v: 8605 }, { k: "ratail;", v: 10522 }, { k: "ratio;", v: 8758 }, { k: "rationals;", v: 8474 }, { k: "rbarr;", v: 10509 }, { k: "rbbrk;", v: 10099 }, { k: "rbrace;", v: 125 }, { k: "rbrack;", v: 93 }, { k: "rbrke;", v: 10636 }, { k: "rbrksld;", v: 10638 }, { k: "rbrkslu;", v: 10640 }, { k: "rcaron;", v: 345 }, { k: "rcedil;", v: 343 }, { k: "rceil;", v: 8969 }, { k: "rcub;", v: 125 }, { k: "rcy;", v: 1088 }, { k: "rdca;", v: 10551 }, { k: "rdldhar;", v: 10601 }, { k: "rdquo;", v: 8221 }, { k: "rdquor;", v: 8221 }, { k: "rdsh;", v: 8627 }, { k: "real;", v: 8476 }, { k: "realine;", v: 8475 }, { k: "realpart;", v: 8476 }, { k: "reals;", v: 8477 }, { k: "rect;", v: 9645 }, { k: "reg;", v: 174 }, { k: "rfisht;", v: 10621 }, { k: "rfloor;", v: 8971 }, { k: "rfr;", v: 120111 }, { k: "rhard;", v: 8641 }, { k: "rharu;", v: 8640 }, { k: "rharul;", v: 10604 }, { k: "rho;", v: 961 }, { k: "rhov;", v: 1009 }, { k: "rightarrow;", v: 8594 }, { k: "rightarrowtail;", v: 8611 }, { k: "rightharpoondown;", v: 8641 }, { k: "rightharpoonup;", v: 8640 }, { k: "rightleftarrows;", v: 8644 }, { k: "rightleftharpoons;", v: 8652 }, { k: "rightrightarrows;", v: 8649 }, { k: "rightsquigarrow;", v: 8605 }, { k: "rightthreetimes;", v: 8908 }, { k: "ring;", v: 730 }, { k: "risingdotseq;", v: 8787 }, { k: "rlarr;", v: 8644 }, { k: "rlhar;", v: 8652 }, { k: "rlm;", v: 8207 }, { k: "rmoust;", v: 9137 }, { k: "rmoustache;", v: 9137 }, { k: "rnmid;", v: 10990 }, { k: "roang;", v: 10221 }, { k: "roarr;", v: 8702 }, { k: "robrk;", v: 10215 }, { k: "ropar;", v: 10630 }, { k: "ropf;", v: 120163 }, { k: "roplus;", v: 10798 }, { k: "rotimes;", v: 10805 }, { k: "rpar;", v: 41 }, { k: "rpargt;", v: 10644 }, { k: "rppolint;", v: 10770 }, { k: "rrarr;", v: 8649 }, { k: "rsaquo;", v: 8250 }, { k: "rscr;", v: 120007 }, { k: "rsh;", v: 8625 }, { k: "rsqb;", v: 93 }, { k: "rsquo;", v: 8217 }, { k: "rsquor;", v: 8217 }, { k: "rthree;", v: 8908 }, { k: "rtimes;", v: 8906 }, { k: "rtri;", v: 9657 }, { k: "rtrie;", v: 8885 }, { k: "rtrif;", v: 9656 }, { k: "rtriltri;", v: 10702 }, { k: "ruluhar;", v: 10600 }, { k: "rx;", v: 8478 }, { k: "sacute;", v: 347 }, { k: "sbquo;", v: 8218 }, { k: "sc;", v: 8827 }, { k: "scE;", v: 10932 }, { k: "scap;", v: 10936 }, { k: "scaron;", v: 353 }, { k: "sccue;", v: 8829 }, { k: "sce;", v: 10928 }, { k: "scedil;", v: 351 }, { k: "scirc;", v: 349 }, { k: "scnE;", v: 10934 }, { k: "scnap;", v: 10938 }, { k: "scnsim;", v: 8937 }, { k: "scpolint;", v: 10771 }, { k: "scsim;", v: 8831 }, { k: "scy;", v: 1089 }, { k: "sdot;", v: 8901 }, { k: "sdotb;", v: 8865 }, { k: "sdote;", v: 10854 }, { k: "seArr;", v: 8664 }, { k: "searhk;", v: 10533 }, { k: "searr;", v: 8600 }, { k: "searrow;", v: 8600 }, { k: "sect;", v: 167 }, { k: "semi;", v: 59 }, { k: "seswar;", v: 10537 }, { k: "setminus;", v: 8726 }, { k: "setmn;", v: 8726 }, { k: "sext;", v: 10038 }, { k: "sfr;", v: 120112 }, { k: "sfrown;", v: 8994 }, { k: "sharp;", v: 9839 }, { k: "shchcy;", v: 1097 }, { k: "shcy;", v: 1096 }, { k: "shortmid;", v: 8739 }, { k: "shortparallel;", v: 8741 }, { k: "shy;", v: 173 }, { k: "sigma;", v: 963 }, { k: "sigmaf;", v: 962 }, { k: "sigmav;", v: 962 }, { k: "sim;", v: 8764 }, { k: "simdot;", v: 10858 }, { k: "sime;", v: 8771 }, { k: "simeq;", v: 8771 }, { k: "simg;", v: 10910 }, { k: "simgE;", v: 10912 }, { k: "siml;", v: 10909 }, { k: "simlE;", v: 10911 }, { k: "simne;", v: 8774 }, { k: "simplus;", v: 10788 }, { k: "simrarr;", v: 10610 }, { k: "slarr;", v: 8592 }, { k: "smallsetminus;", v: 8726 }, { k: "smashp;", v: 10803 }, { k: "smeparsl;", v: 10724 }, { k: "smid;", v: 8739 }, { k: "smile;", v: 8995 }, { k: "smt;", v: 10922 }, { k: "smte;", v: 10924 }, { k: "softcy;", v: 1100 }, { k: "sol;", v: 47 }, { k: "solb;", v: 10692 }, { k: "solbar;", v: 9023 }, { k: "sopf;", v: 120164 }, { k: "spades;", v: 9824 }, { k: "spadesuit;", v: 9824 }, { k: "spar;", v: 8741 }, { k: "sqcap;", v: 8851 }, { k: "sqcup;", v: 8852 }, { k: "sqsub;", v: 8847 }, { k: "sqsube;", v: 8849 }, { k: "sqsubset;", v: 8847 }, { k: "sqsubseteq;", v: 8849 }, { k: "sqsup;", v: 8848 }, { k: "sqsupe;", v: 8850 }, { k: "sqsupset;", v: 8848 }, { k: "sqsupseteq;", v: 8850 }, { k: "squ;", v: 9633 }, { k: "square;", v: 9633 }, { k: "squarf;", v: 9642 }, { k: "squf;", v: 9642 }, { k: "srarr;", v: 8594 }, { k: "sscr;", v: 120008 }, { k: "ssetmn;", v: 8726 }, { k: "ssmile;", v: 8995 }, { k: "sstarf;", v: 8902 }, { k: "star;", v: 9734 }, { k: "starf;", v: 9733 }, { k: "straightepsilon;", v: 1013 }, { k: "straightphi;", v: 981 }, { k: "strns;", v: 175 }, { k: "sub;", v: 8834 }, { k: "subE;", v: 10949 }, { k: "subdot;", v: 10941 }, { k: "sube;", v: 8838 }, { k: "subedot;", v: 10947 }, { k: "submult;", v: 10945 }, { k: "subnE;", v: 10955 }, { k: "subne;", v: 8842 }, { k: "subplus;", v: 10943 }, { k: "subrarr;", v: 10617 }, { k: "subset;", v: 8834 }, { k: "subseteq;", v: 8838 }, { k: "subseteqq;", v: 10949 }, { k: "subsetneq;", v: 8842 }, { k: "subsetneqq;", v: 10955 }, { k: "subsim;", v: 10951 }, { k: "subsub;", v: 10965 }, { k: "subsup;", v: 10963 }, { k: "succ;", v: 8827 }, { k: "succapprox;", v: 10936 }, { k: "succcurlyeq;", v: 8829 }, { k: "succeq;", v: 10928 }, { k: "succnapprox;", v: 10938 }, { k: "succneqq;", v: 10934 }, { k: "succnsim;", v: 8937 }, { k: "succsim;", v: 8831 }, { k: "sum;", v: 8721 }, { k: "sung;", v: 9834 }, { k: "sup;", v: 8835 }, { k: "sup1;", v: 185 }, { k: "sup2;", v: 178 }, { k: "sup3;", v: 179 }, { k: "supE;", v: 10950 }, { k: "supdot;", v: 10942 }, { k: "supdsub;", v: 10968 }, { k: "supe;", v: 8839 }, { k: "supedot;", v: 10948 }, { k: "suphsol;", v: 10185 }, { k: "suphsub;", v: 10967 }, { k: "suplarr;", v: 10619 }, { k: "supmult;", v: 10946 }, { k: "supnE;", v: 10956 }, { k: "supne;", v: 8843 }, { k: "supplus;", v: 10944 }, { k: "supset;", v: 8835 }, { k: "supseteq;", v: 8839 }, { k: "supseteqq;", v: 10950 }, { k: "supsetneq;", v: 8843 }, { k: "supsetneqq;", v: 10956 }, { k: "supsim;", v: 10952 }, { k: "supsub;", v: 10964 }, { k: "supsup;", v: 10966 }, { k: "swArr;", v: 8665 }, { k: "swarhk;", v: 10534 }, { k: "swarr;", v: 8601 }, { k: "swarrow;", v: 8601 }, { k: "swnwar;", v: 10538 }, { k: "szlig;", v: 223 }, { k: "target;", v: 8982 }, { k: "tau;", v: 964 }, { k: "tbrk;", v: 9140 }, { k: "tcaron;", v: 357 }, { k: "tcedil;", v: 355 }, { k: "tcy;", v: 1090 }, { k: "tdot;", v: 8411 }, { k: "telrec;", v: 8981 }, { k: "tfr;", v: 120113 }, { k: "there4;", v: 8756 }, { k: "therefore;", v: 8756 }, { k: "theta;", v: 952 }, { k: "thetasym;", v: 977 }, { k: "thetav;", v: 977 }, { k: "thickapprox;", v: 8776 }, { k: "thicksim;", v: 8764 }, { k: "thinsp;", v: 8201 }, { k: "thkap;", v: 8776 }, { k: "thksim;", v: 8764 }, { k: "thorn;", v: 254 }, { k: "tilde;", v: 732 }, { k: "times;", v: 215 }, { k: "timesb;", v: 8864 }, { k: "timesbar;", v: 10801 }, { k: "timesd;", v: 10800 }, { k: "tint;", v: 8749 }, { k: "toea;", v: 10536 }, { k: "top;", v: 8868 }, { k: "topbot;", v: 9014 }, { k: "topcir;", v: 10993 }, { k: "topf;", v: 120165 }, { k: "topfork;", v: 10970 }, { k: "tosa;", v: 10537 }, { k: "tprime;", v: 8244 }, { k: "trade;", v: 8482 }, { k: "triangle;", v: 9653 }, { k: "triangledown;", v: 9663 }, { k: "triangleleft;", v: 9667 }, { k: "trianglelefteq;", v: 8884 }, { k: "triangleq;", v: 8796 }, { k: "triangleright;", v: 9657 }, { k: "trianglerighteq;", v: 8885 }, { k: "tridot;", v: 9708 }, { k: "trie;", v: 8796 }, { k: "triminus;", v: 10810 }, { k: "triplus;", v: 10809 }, { k: "trisb;", v: 10701 }, { k: "tritime;", v: 10811 }, { k: "trpezium;", v: 9186 }, { k: "tscr;", v: 120009 }, { k: "tscy;", v: 1094 }, { k: "tshcy;", v: 1115 }, { k: "tstrok;", v: 359 }, { k: "twixt;", v: 8812 }, { k: "twoheadleftarrow;", v: 8606 }, { k: "twoheadrightarrow;", v: 8608 }, { k: "uArr;", v: 8657 }, { k: "uHar;", v: 10595 }, { k: "uacute;", v: 250 }, { k: "uarr;", v: 8593 }, { k: "ubrcy;", v: 1118 }, { k: "ubreve;", v: 365 }, { k: "ucirc;", v: 251 }, { k: "ucy;", v: 1091 }, { k: "udarr;", v: 8645 }, { k: "udblac;", v: 369 }, { k: "udhar;", v: 10606 }, { k: "ufisht;", v: 10622 }, { k: "ufr;", v: 120114 }, { k: "ugrave;", v: 249 }, { k: "uharl;", v: 8639 }, { k: "uharr;", v: 8638 }, { k: "uhblk;", v: 9600 }, { k: "ulcorn;", v: 8988 }, { k: "ulcorner;", v: 8988 }, { k: "ulcrop;", v: 8975 }, { k: "ultri;", v: 9720 }, { k: "umacr;", v: 363 }, { k: "uml;", v: 168 }, { k: "uogon;", v: 371 }, { k: "uopf;", v: 120166 }, { k: "uparrow;", v: 8593 }, { k: "updownarrow;", v: 8597 }, { k: "upharpoonleft;", v: 8639 }, { k: "upharpoonright;", v: 8638 }, { k: "uplus;", v: 8846 }, { k: "upsi;", v: 965 }, { k: "upsih;", v: 978 }, { k: "upsilon;", v: 965 }, { k: "upuparrows;", v: 8648 }, { k: "urcorn;", v: 8989 }, { k: "urcorner;", v: 8989 }, { k: "urcrop;", v: 8974 }, { k: "uring;", v: 367 }, { k: "urtri;", v: 9721 }, { k: "uscr;", v: 120010 }, { k: "utdot;", v: 8944 }, { k: "utilde;", v: 361 }, { k: "utri;", v: 9653 }, { k: "utrif;", v: 9652 }, { k: "uuarr;", v: 8648 }, { k: "uuml;", v: 252 }, { k: "uwangle;", v: 10663 }, { k: "vArr;", v: 8661 }, { k: "vBar;", v: 10984 }, { k: "vBarv;", v: 10985 }, { k: "vDash;", v: 8872 }, { k: "vangrt;", v: 10652 }, { k: "varepsilon;", v: 1013 }, { k: "varkappa;", v: 1008 }, { k: "varnothing;", v: 8709 }, { k: "varphi;", v: 981 }, { k: "varpi;", v: 982 }, { k: "varpropto;", v: 8733 }, { k: "varr;", v: 8597 }, { k: "varrho;", v: 1009 }, { k: "varsigma;", v: 962 }, { k: "vartheta;", v: 977 }, { k: "vartriangleleft;", v: 8882 }, { k: "vartriangleright;", v: 8883 }, { k: "vcy;", v: 1074 }, { k: "vdash;", v: 8866 }, { k: "vee;", v: 8744 }, { k: "veebar;", v: 8891 }, { k: "veeeq;", v: 8794 }, { k: "vellip;", v: 8942 }, { k: "verbar;", v: 124 }, { k: "vert;", v: 124 }, { k: "vfr;", v: 120115 }, { k: "vltri;", v: 8882 }, { k: "vopf;", v: 120167 }, { k: "vprop;", v: 8733 }, { k: "vrtri;", v: 8883 }, { k: "vscr;", v: 120011 }, { k: "vzigzag;", v: 10650 }, { k: "wcirc;", v: 373 }, { k: "wedbar;", v: 10847 }, { k: "wedge;", v: 8743 }, { k: "wedgeq;", v: 8793 }, { k: "weierp;", v: 8472 }, { k: "wfr;", v: 120116 }, { k: "wopf;", v: 120168 }, { k: "wp;", v: 8472 }, { k: "wr;", v: 8768 }, { k: "wreath;", v: 8768 }, { k: "wscr;", v: 120012 }, { k: "xcap;", v: 8898 }, { k: "xcirc;", v: 9711 }, { k: "xcup;", v: 8899 }, { k: "xdtri;", v: 9661 }, { k: "xfr;", v: 120117 }, { k: "xhArr;", v: 10234 }, { k: "xharr;", v: 10231 }, { k: "xi;", v: 958 }, { k: "xlArr;", v: 10232 }, { k: "xlarr;", v: 10229 }, { k: "xmap;", v: 10236 }, { k: "xnis;", v: 8955 }, { k: "xodot;", v: 10752 }, { k: "xopf;", v: 120169 }, { k: "xoplus;", v: 10753 }, { k: "xotime;", v: 10754 }, { k: "xrArr;", v: 10233 }, { k: "xrarr;", v: 10230 }, { k: "xscr;", v: 120013 }, { k: "xsqcup;", v: 10758 }, { k: "xuplus;", v: 10756 }, { k: "xutri;", v: 9651 }, { k: "xvee;", v: 8897 }, { k: "xwedge;", v: 8896 }, { k: "yacute;", v: 253 }, { k: "yacy;", v: 1103 }, { k: "ycirc;", v: 375 }, { k: "ycy;", v: 1099 }, { k: "yen;", v: 165 }, { k: "yfr;", v: 120118 }, { k: "yicy;", v: 1111 }, { k: "yopf;", v: 120170 }, { k: "yscr;", v: 120014 }, { k: "yucy;", v: 1102 }, { k: "yuml;", v: 255 }, { k: "zacute;", v: 378 }, { k: "zcaron;", v: 382 }, { k: "zcy;", v: 1079 }, { k: "zdot;", v: 380 }, { k: "zeetrf;", v: 8488 }, { k: "zeta;", v: 950 }, { k: "zfr;", v: 120119 }, { k: "zhcy;", v: 1078 }, { k: "zigrarr;", v: 8669 }, { k: "zopf;", v: 120171 }, { k: "zscr;", v: 120015 }, { k: "zwj;", v: 8205 }, { k: "zwnj;", v: 8204 }, { k: "AElig", v: 198 }, { k: "AMP", v: 38 }, { k: "Aacute", v: 193 }, { k: "Acirc", v: 194 }, { k: "Agrave", v: 192 }, { k: "Aring", v: 197 }, { k: "Atilde", v: 195 }, { k: "Auml", v: 196 }, { k: "COPY", v: 169 }, { k: "Ccedil", v: 199 }, { k: "ETH", v: 208 }, { k: "Eacute", v: 201 }, { k: "Ecirc", v: 202 }, { k: "Egrave", v: 200 }, { k: "Euml", v: 203 }, { k: "GT", v: 62 }, { k: "Iacute", v: 205 }, { k: "Icirc", v: 206 }, { k: "Igrave", v: 204 }, { k: "Iuml", v: 207 }, { k: "LT", v: 60 }, { k: "Ntilde", v: 209 }, { k: "Oacute", v: 211 }, { k: "Ocirc", v: 212 }, { k: "Ograve", v: 210 }, { k: "Oslash", v: 216 }, { k: "Otilde", v: 213 }, { k: "Ouml", v: 214 }, { k: "QUOT", v: 34 }, { k: "REG", v: 174 }, { k: "THORN", v: 222 }, { k: "Uacute", v: 218 }, { k: "Ucirc", v: 219 }, { k: "Ugrave", v: 217 }, { k: "Uuml", v: 220 }, { k: "Yacute", v: 221 }, { k: "aacute", v: 225 }, { k: "acirc", v: 226 }, { k: "acute", v: 180 }, { k: "aelig", v: 230 }, { k: "agrave", v: 224 }, { k: "amp", v: 38 }, { k: "aring", v: 229 }, { k: "atilde", v: 227 }, { k: "auml", v: 228 }, { k: "brvbar", v: 166 }, { k: "ccedil", v: 231 }, { k: "cedil", v: 184 }, { k: "cent", v: 162 }, { k: "copy", v: 169 }, { k: "curren", v: 164 }, { k: "deg", v: 176 }, { k: "divide", v: 247 }, { k: "eacute", v: 233 }, { k: "ecirc", v: 234 }, { k: "egrave", v: 232 }, { k: "eth", v: 240 }, { k: "euml", v: 235 }, { k: "frac12", v: 189 }, { k: "frac14", v: 188 }, { k: "frac34", v: 190 }, { k: "gt", v: 62 }, { k: "iacute", v: 237 }, { k: "icirc", v: 238 }, { k: "iexcl", v: 161 }, { k: "igrave", v: 236 }, { k: "iquest", v: 191 }, { k: "iuml", v: 239 }, { k: "laquo", v: 171 }, { k: "lt", v: 60 }, { k: "macr", v: 175 }, { k: "micro", v: 181 }, { k: "middot", v: 183 }, { k: "nbsp", v: 160 }, { k: "not", v: 172 }, { k: "ntilde", v: 241 }, { k: "oacute", v: 243 }, { k: "ocirc", v: 244 }, { k: "ograve", v: 242 }, { k: "ordf", v: 170 }, { k: "ordm", v: 186 }, { k: "oslash", v: 248 }, { k: "otilde", v: 245 }, { k: "ouml", v: 246 }, { k: "para", v: 182 }, { k: "plusmn", v: 177 }, { k: "pound", v: 163 }, { k: "quot", v: 34 }, { k: "raquo", v: 187 }, { k: "reg", v: 174 }, { k: "sect", v: 167 }, { k: "shy", v: 173 }, { k: "sup1", v: 185 }, { k: "sup2", v: 178 }, { k: "sup3", v: 179 }, { k: "szlig", v: 223 }, { k: "thorn", v: 254 }, { k: "times", v: 215 }, { k: "uacute", v: 250 }, { k: "ucirc", v: 251 }, { k: "ugrave", v: 249 }, { k: "uml", v: 168 }, { k: "uuml", v: 252 }, { k: "yacute", v: 253 }, { k: "yen", v: 165 }, { k: "yuml", v: 255 }]);
-		entity2 = $makeMap($String.keyFor, [{ k: "NotEqualTilde;", v: $toNativeArray($kindInt32, [8770, 824]) }, { k: "NotGreaterFullEqual;", v: $toNativeArray($kindInt32, [8807, 824]) }, { k: "NotGreaterGreater;", v: $toNativeArray($kindInt32, [8811, 824]) }, { k: "NotGreaterSlantEqual;", v: $toNativeArray($kindInt32, [10878, 824]) }, { k: "NotHumpDownHump;", v: $toNativeArray($kindInt32, [8782, 824]) }, { k: "NotHumpEqual;", v: $toNativeArray($kindInt32, [8783, 824]) }, { k: "NotLeftTriangleBar;", v: $toNativeArray($kindInt32, [10703, 824]) }, { k: "NotLessLess;", v: $toNativeArray($kindInt32, [8810, 824]) }, { k: "NotLessSlantEqual;", v: $toNativeArray($kindInt32, [10877, 824]) }, { k: "NotNestedGreaterGreater;", v: $toNativeArray($kindInt32, [10914, 824]) }, { k: "NotNestedLessLess;", v: $toNativeArray($kindInt32, [10913, 824]) }, { k: "NotPrecedesEqual;", v: $toNativeArray($kindInt32, [10927, 824]) }, { k: "NotRightTriangleBar;", v: $toNativeArray($kindInt32, [10704, 824]) }, { k: "NotSquareSubset;", v: $toNativeArray($kindInt32, [8847, 824]) }, { k: "NotSquareSuperset;", v: $toNativeArray($kindInt32, [8848, 824]) }, { k: "NotSubset;", v: $toNativeArray($kindInt32, [8834, 8402]) }, { k: "NotSucceedsEqual;", v: $toNativeArray($kindInt32, [10928, 824]) }, { k: "NotSucceedsTilde;", v: $toNativeArray($kindInt32, [8831, 824]) }, { k: "NotSuperset;", v: $toNativeArray($kindInt32, [8835, 8402]) }, { k: "ThickSpace;", v: $toNativeArray($kindInt32, [8287, 8202]) }, { k: "acE;", v: $toNativeArray($kindInt32, [8766, 819]) }, { k: "bne;", v: $toNativeArray($kindInt32, [61, 8421]) }, { k: "bnequiv;", v: $toNativeArray($kindInt32, [8801, 8421]) }, { k: "caps;", v: $toNativeArray($kindInt32, [8745, 65024]) }, { k: "cups;", v: $toNativeArray($kindInt32, [8746, 65024]) }, { k: "fjlig;", v: $toNativeArray($kindInt32, [102, 106]) }, { k: "gesl;", v: $toNativeArray($kindInt32, [8923, 65024]) }, { k: "gvertneqq;", v: $toNativeArray($kindInt32, [8809, 65024]) }, { k: "gvnE;", v: $toNativeArray($kindInt32, [8809, 65024]) }, { k: "lates;", v: $toNativeArray($kindInt32, [10925, 65024]) }, { k: "lesg;", v: $toNativeArray($kindInt32, [8922, 65024]) }, { k: "lvertneqq;", v: $toNativeArray($kindInt32, [8808, 65024]) }, { k: "lvnE;", v: $toNativeArray($kindInt32, [8808, 65024]) }, { k: "nGg;", v: $toNativeArray($kindInt32, [8921, 824]) }, { k: "nGtv;", v: $toNativeArray($kindInt32, [8811, 824]) }, { k: "nLl;", v: $toNativeArray($kindInt32, [8920, 824]) }, { k: "nLtv;", v: $toNativeArray($kindInt32, [8810, 824]) }, { k: "nang;", v: $toNativeArray($kindInt32, [8736, 8402]) }, { k: "napE;", v: $toNativeArray($kindInt32, [10864, 824]) }, { k: "napid;", v: $toNativeArray($kindInt32, [8779, 824]) }, { k: "nbump;", v: $toNativeArray($kindInt32, [8782, 824]) }, { k: "nbumpe;", v: $toNativeArray($kindInt32, [8783, 824]) }, { k: "ncongdot;", v: $toNativeArray($kindInt32, [10861, 824]) }, { k: "nedot;", v: $toNativeArray($kindInt32, [8784, 824]) }, { k: "nesim;", v: $toNativeArray($kindInt32, [8770, 824]) }, { k: "ngE;", v: $toNativeArray($kindInt32, [8807, 824]) }, { k: "ngeqq;", v: $toNativeArray($kindInt32, [8807, 824]) }, { k: "ngeqslant;", v: $toNativeArray($kindInt32, [10878, 824]) }, { k: "nges;", v: $toNativeArray($kindInt32, [10878, 824]) }, { k: "nlE;", v: $toNativeArray($kindInt32, [8806, 824]) }, { k: "nleqq;", v: $toNativeArray($kindInt32, [8806, 824]) }, { k: "nleqslant;", v: $toNativeArray($kindInt32, [10877, 824]) }, { k: "nles;", v: $toNativeArray($kindInt32, [10877, 824]) }, { k: "notinE;", v: $toNativeArray($kindInt32, [8953, 824]) }, { k: "notindot;", v: $toNativeArray($kindInt32, [8949, 824]) }, { k: "nparsl;", v: $toNativeArray($kindInt32, [11005, 8421]) }, { k: "npart;", v: $toNativeArray($kindInt32, [8706, 824]) }, { k: "npre;", v: $toNativeArray($kindInt32, [10927, 824]) }, { k: "npreceq;", v: $toNativeArray($kindInt32, [10927, 824]) }, { k: "nrarrc;", v: $toNativeArray($kindInt32, [10547, 824]) }, { k: "nrarrw;", v: $toNativeArray($kindInt32, [8605, 824]) }, { k: "nsce;", v: $toNativeArray($kindInt32, [10928, 824]) }, { k: "nsubE;", v: $toNativeArray($kindInt32, [10949, 824]) }, { k: "nsubset;", v: $toNativeArray($kindInt32, [8834, 8402]) }, { k: "nsubseteqq;", v: $toNativeArray($kindInt32, [10949, 824]) }, { k: "nsucceq;", v: $toNativeArray($kindInt32, [10928, 824]) }, { k: "nsupE;", v: $toNativeArray($kindInt32, [10950, 824]) }, { k: "nsupset;", v: $toNativeArray($kindInt32, [8835, 8402]) }, { k: "nsupseteqq;", v: $toNativeArray($kindInt32, [10950, 824]) }, { k: "nvap;", v: $toNativeArray($kindInt32, [8781, 8402]) }, { k: "nvge;", v: $toNativeArray($kindInt32, [8805, 8402]) }, { k: "nvgt;", v: $toNativeArray($kindInt32, [62, 8402]) }, { k: "nvle;", v: $toNativeArray($kindInt32, [8804, 8402]) }, { k: "nvlt;", v: $toNativeArray($kindInt32, [60, 8402]) }, { k: "nvltrie;", v: $toNativeArray($kindInt32, [8884, 8402]) }, { k: "nvrtrie;", v: $toNativeArray($kindInt32, [8885, 8402]) }, { k: "nvsim;", v: $toNativeArray($kindInt32, [8764, 8402]) }, { k: "race;", v: $toNativeArray($kindInt32, [8765, 817]) }, { k: "smtes;", v: $toNativeArray($kindInt32, [10924, 65024]) }, { k: "sqcaps;", v: $toNativeArray($kindInt32, [8851, 65024]) }, { k: "sqcups;", v: $toNativeArray($kindInt32, [8852, 65024]) }, { k: "varsubsetneq;", v: $toNativeArray($kindInt32, [8842, 65024]) }, { k: "varsubsetneqq;", v: $toNativeArray($kindInt32, [10955, 65024]) }, { k: "varsupsetneq;", v: $toNativeArray($kindInt32, [8843, 65024]) }, { k: "varsupsetneqq;", v: $toNativeArray($kindInt32, [10956, 65024]) }, { k: "vnsub;", v: $toNativeArray($kindInt32, [8834, 8402]) }, { k: "vnsup;", v: $toNativeArray($kindInt32, [8835, 8402]) }, { k: "vsubnE;", v: $toNativeArray($kindInt32, [10955, 65024]) }, { k: "vsubne;", v: $toNativeArray($kindInt32, [8842, 65024]) }, { k: "vsupnE;", v: $toNativeArray($kindInt32, [10956, 65024]) }, { k: "vsupne;", v: $toNativeArray($kindInt32, [8843, 65024]) }]);
-		replacementTable = $toNativeArray($kindInt32, [8364, 129, 8218, 402, 8222, 8230, 8224, 8225, 710, 8240, 352, 8249, 338, 141, 381, 143, 144, 8216, 8217, 8220, 8221, 8226, 8211, 8212, 732, 8482, 353, 8250, 339, 157, 382, 376]);
-		htmlEscaper = strings.NewReplacer(new sliceType(["&", "&amp;", "'", "&#39;", "<", "&lt;", ">", "&gt;", "\"", "&#34;"]));
 		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.$init = $init;
@@ -45877,16 +45939,365 @@ $packages["html/template"] = (function() {
 	$pkg.$init = $init;
 	return $pkg;
 })();
+$packages["log"] = (function() {
+	var $pkg = {}, $init, fmt, nosync, io, os, runtime, time, Logger, sliceType, arrayType, ptrType, sliceType$1, ptrType$1, std, New, itoa, Println;
+	fmt = $packages["fmt"];
+	nosync = $packages["github.com/gopherjs/gopherjs/nosync"];
+	io = $packages["io"];
+	os = $packages["os"];
+	runtime = $packages["runtime"];
+	time = $packages["time"];
+	Logger = $pkg.Logger = $newType(0, $kindStruct, "log.Logger", true, "log", true, function(mu_, prefix_, flag_, out_, buf_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.mu = new nosync.Mutex.ptr(false);
+			this.prefix = "";
+			this.flag = 0;
+			this.out = $ifaceNil;
+			this.buf = sliceType.nil;
+			return;
+		}
+		this.mu = mu_;
+		this.prefix = prefix_;
+		this.flag = flag_;
+		this.out = out_;
+		this.buf = buf_;
+	});
+	sliceType = $sliceType($Uint8);
+	arrayType = $arrayType($Uint8, 20);
+	ptrType = $ptrType(sliceType);
+	sliceType$1 = $sliceType($emptyInterface);
+	ptrType$1 = $ptrType(Logger);
+	New = function(out, prefix, flag) {
+		var flag, out, prefix;
+		return new Logger.ptr(new nosync.Mutex.ptr(false), prefix, flag, out, sliceType.nil);
+	};
+	$pkg.New = New;
+	Logger.ptr.prototype.SetOutput = function(w) {
+		var l, w, $deferred;
+		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		l = this;
+		l.mu.Lock();
+		$deferred.push([$methodVal(l.mu, "Unlock"), []]);
+		l.out = w;
+		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); }
+	};
+	Logger.prototype.SetOutput = function(w) { return this.$val.SetOutput(w); };
+	itoa = function(buf, i, wid) {
+		var _q, b, bp, buf, i, q, wid;
+		b = arrayType.zero();
+		bp = 19;
+		while (true) {
+			if (!(i >= 10 || wid > 1)) { break; }
+			wid = wid - (1) >> 0;
+			q = (_q = i / 10, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero"));
+			((bp < 0 || bp >= b.length) ? ($throwRuntimeError("index out of range"), undefined) : b[bp] = ((((48 + i >> 0) - ($imul(q, 10)) >> 0) << 24 >>> 24)));
+			bp = bp - (1) >> 0;
+			i = q;
+		}
+		((bp < 0 || bp >= b.length) ? ($throwRuntimeError("index out of range"), undefined) : b[bp] = (((48 + i >> 0) << 24 >>> 24)));
+		buf.$set($appendSlice(buf.$get(), $subslice(new sliceType(b), bp)));
+	};
+	Logger.ptr.prototype.formatHeader = function(buf, t, file, line) {
+		var _q, _r, _r$1, _tuple, _tuple$1, buf, day, file, hour, i, l, line, min, month, sec, short$1, t, year, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _q = $f._q; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; buf = $f.buf; day = $f.day; file = $f.file; hour = $f.hour; i = $f.i; l = $f.l; line = $f.line; min = $f.min; month = $f.month; sec = $f.sec; short$1 = $f.short$1; t = $f.t; year = $f.year; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		buf.$set($appendSlice(buf.$get(), l.prefix));
+		/* */ if (!(((l.flag & 7) === 0))) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (!(((l.flag & 7) === 0))) { */ case 1:
+			if (!(((l.flag & 32) === 0))) {
+				time.Time.copy(t, $clone(t, time.Time).UTC());
+			}
+			/* */ if (!(((l.flag & 1) === 0))) { $s = 3; continue; }
+			/* */ $s = 4; continue;
+			/* if (!(((l.flag & 1) === 0))) { */ case 3:
+				_r = $clone(t, time.Time).Date(); /* */ $s = 5; case 5: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_tuple = _r;
+				year = _tuple[0];
+				month = _tuple[1];
+				day = _tuple[2];
+				itoa(buf, year, 4);
+				buf.$set($append(buf.$get(), 47));
+				itoa(buf, ((month >> 0)), 2);
+				buf.$set($append(buf.$get(), 47));
+				itoa(buf, day, 2);
+				buf.$set($append(buf.$get(), 32));
+			/* } */ case 4:
+			/* */ if (!(((l.flag & 6) === 0))) { $s = 6; continue; }
+			/* */ $s = 7; continue;
+			/* if (!(((l.flag & 6) === 0))) { */ case 6:
+				_r$1 = $clone(t, time.Time).Clock(); /* */ $s = 8; case 8: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				_tuple$1 = _r$1;
+				hour = _tuple$1[0];
+				min = _tuple$1[1];
+				sec = _tuple$1[2];
+				itoa(buf, hour, 2);
+				buf.$set($append(buf.$get(), 58));
+				itoa(buf, min, 2);
+				buf.$set($append(buf.$get(), 58));
+				itoa(buf, sec, 2);
+				if (!(((l.flag & 4) === 0))) {
+					buf.$set($append(buf.$get(), 46));
+					itoa(buf, (_q = $clone(t, time.Time).Nanosecond() / 1000, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero")), 6);
+				}
+				buf.$set($append(buf.$get(), 32));
+			/* } */ case 7:
+		/* } */ case 2:
+		if (!(((l.flag & 24) === 0))) {
+			if (!(((l.flag & 16) === 0))) {
+				short$1 = file;
+				i = file.length - 1 >> 0;
+				while (true) {
+					if (!(i > 0)) { break; }
+					if (file.charCodeAt(i) === 47) {
+						short$1 = $substring(file, (i + 1 >> 0));
+						break;
+					}
+					i = i - (1) >> 0;
+				}
+				file = short$1;
+			}
+			buf.$set($appendSlice(buf.$get(), file));
+			buf.$set($append(buf.$get(), 58));
+			itoa(buf, line, -1);
+			buf.$set($appendSlice(buf.$get(), ": "));
+		}
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.formatHeader }; } $f._q = _q; $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.buf = buf; $f.day = day; $f.file = file; $f.hour = hour; $f.i = i; $f.l = l; $f.line = line; $f.min = min; $f.month = month; $f.sec = sec; $f.short$1 = short$1; $f.t = t; $f.year = year; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.formatHeader = function(buf, t, file, line) { return this.$val.formatHeader(buf, t, file, line); };
+	Logger.ptr.prototype.Output = function(calldepth, s) {
+		var _r, _tuple, _tuple$1, calldepth, err, file, l, line, now, ok, s, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; calldepth = $f.calldepth; err = $f.err; file = $f.file; l = $f.l; line = $f.line; now = $f.now; ok = $f.ok; s = $f.s; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		l = this;
+		now = $clone(time.Now(), time.Time);
+		file = "";
+		line = 0;
+		l.mu.Lock();
+		$deferred.push([$methodVal(l.mu, "Unlock"), []]);
+		if (!(((l.flag & 24) === 0))) {
+			l.mu.Unlock();
+			ok = false;
+			_tuple = runtime.Caller(calldepth);
+			file = _tuple[1];
+			line = _tuple[2];
+			ok = _tuple[3];
+			if (!ok) {
+				file = "???";
+				line = 0;
+			}
+			l.mu.Lock();
+		}
+		l.buf = $subslice(l.buf, 0, 0);
+		$r = l.formatHeader((l.$ptr_buf || (l.$ptr_buf = new ptrType(function() { return this.$target.buf; }, function($v) { this.$target.buf = $v; }, l))), $clone(now, time.Time), file, line); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		l.buf = $appendSlice(l.buf, s);
+		if ((s.length === 0) || !((s.charCodeAt((s.length - 1 >> 0)) === 10))) {
+			l.buf = $append(l.buf, 10);
+		}
+		_r = l.out.Write(l.buf); /* */ $s = 2; case 2: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_tuple$1 = _r;
+		err = _tuple$1[1];
+		$s = -1; return err;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; return $ifaceNil; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Output }; } $f._r = _r; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.calldepth = calldepth; $f.err = err; $f.file = file; $f.l = l; $f.line = line; $f.now = now; $f.ok = ok; $f.s = s; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+	};
+	Logger.prototype.Output = function(calldepth, s) { return this.$val.Output(calldepth, s); };
+	Logger.ptr.prototype.Printf = function(format, v) {
+		var _arg, _r, _r$1, format, l, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; format = $f.format; l = $f.l; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		_r = fmt.Sprintf(format, v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_arg = _r;
+		_r$1 = l.Output(2, _arg); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Printf }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f.format = format; $f.l = l; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.Printf = function(format, v) { return this.$val.Printf(format, v); };
+	Logger.ptr.prototype.Print = function(v) {
+		var _arg, _r, _r$1, l, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; l = $f.l; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		_r = fmt.Sprint(v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_arg = _r;
+		_r$1 = l.Output(2, _arg); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Print }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f.l = l; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.Print = function(v) { return this.$val.Print(v); };
+	Logger.ptr.prototype.Println = function(v) {
+		var _arg, _r, _r$1, l, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; l = $f.l; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		_r = fmt.Sprintln(v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_arg = _r;
+		_r$1 = l.Output(2, _arg); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Println }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f.l = l; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.Println = function(v) { return this.$val.Println(v); };
+	Logger.ptr.prototype.Fatal = function(v) {
+		var _arg, _r, _r$1, l, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; l = $f.l; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		_r = fmt.Sprint(v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_arg = _r;
+		_r$1 = l.Output(2, _arg); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		os.Exit(1);
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Fatal }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f.l = l; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.Fatal = function(v) { return this.$val.Fatal(v); };
+	Logger.ptr.prototype.Fatalf = function(format, v) {
+		var _arg, _r, _r$1, format, l, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; format = $f.format; l = $f.l; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		_r = fmt.Sprintf(format, v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_arg = _r;
+		_r$1 = l.Output(2, _arg); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		os.Exit(1);
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Fatalf }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f.format = format; $f.l = l; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.Fatalf = function(format, v) { return this.$val.Fatalf(format, v); };
+	Logger.ptr.prototype.Fatalln = function(v) {
+		var _arg, _r, _r$1, l, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; l = $f.l; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		_r = fmt.Sprintln(v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_arg = _r;
+		_r$1 = l.Output(2, _arg); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		os.Exit(1);
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Fatalln }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f.l = l; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.Fatalln = function(v) { return this.$val.Fatalln(v); };
+	Logger.ptr.prototype.Panic = function(v) {
+		var _r, _r$1, l, s, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; l = $f.l; s = $f.s; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		_r = fmt.Sprint(v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		s = _r;
+		_r$1 = l.Output(2, s); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		$panic(new $String(s));
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Panic }; } $f._r = _r; $f._r$1 = _r$1; $f.l = l; $f.s = s; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.Panic = function(v) { return this.$val.Panic(v); };
+	Logger.ptr.prototype.Panicf = function(format, v) {
+		var _r, _r$1, format, l, s, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; format = $f.format; l = $f.l; s = $f.s; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		_r = fmt.Sprintf(format, v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		s = _r;
+		_r$1 = l.Output(2, s); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		$panic(new $String(s));
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Panicf }; } $f._r = _r; $f._r$1 = _r$1; $f.format = format; $f.l = l; $f.s = s; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.Panicf = function(format, v) { return this.$val.Panicf(format, v); };
+	Logger.ptr.prototype.Panicln = function(v) {
+		var _r, _r$1, l, s, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; l = $f.l; s = $f.s; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		l = this;
+		_r = fmt.Sprintln(v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		s = _r;
+		_r$1 = l.Output(2, s); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		$panic(new $String(s));
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Logger.ptr.prototype.Panicln }; } $f._r = _r; $f._r$1 = _r$1; $f.l = l; $f.s = s; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Logger.prototype.Panicln = function(v) { return this.$val.Panicln(v); };
+	Logger.ptr.prototype.Flags = function() {
+		var l, $deferred;
+		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		l = this;
+		l.mu.Lock();
+		$deferred.push([$methodVal(l.mu, "Unlock"), []]);
+		return l.flag;
+		/* */ } catch(err) { $err = err; return 0; } finally { $callDeferred($deferred, $err); }
+	};
+	Logger.prototype.Flags = function() { return this.$val.Flags(); };
+	Logger.ptr.prototype.SetFlags = function(flag) {
+		var flag, l, $deferred;
+		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		l = this;
+		l.mu.Lock();
+		$deferred.push([$methodVal(l.mu, "Unlock"), []]);
+		l.flag = flag;
+		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); }
+	};
+	Logger.prototype.SetFlags = function(flag) { return this.$val.SetFlags(flag); };
+	Logger.ptr.prototype.Prefix = function() {
+		var l, $deferred;
+		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		l = this;
+		l.mu.Lock();
+		$deferred.push([$methodVal(l.mu, "Unlock"), []]);
+		return l.prefix;
+		/* */ } catch(err) { $err = err; return ""; } finally { $callDeferred($deferred, $err); }
+	};
+	Logger.prototype.Prefix = function() { return this.$val.Prefix(); };
+	Logger.ptr.prototype.SetPrefix = function(prefix) {
+		var l, prefix, $deferred;
+		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		l = this;
+		l.mu.Lock();
+		$deferred.push([$methodVal(l.mu, "Unlock"), []]);
+		l.prefix = prefix;
+		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); }
+	};
+	Logger.prototype.SetPrefix = function(prefix) { return this.$val.SetPrefix(prefix); };
+	Println = function(v) {
+		var _arg, _r, _r$1, v, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = fmt.Sprintln(v); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_arg = _r;
+		_r$1 = std.Output(2, _arg); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1;
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Println }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.Println = Println;
+	ptrType$1.methods = [{prop: "SetOutput", name: "SetOutput", pkg: "", typ: $funcType([io.Writer], [], false)}, {prop: "formatHeader", name: "formatHeader", pkg: "log", typ: $funcType([ptrType, time.Time, $String, $Int], [], false)}, {prop: "Output", name: "Output", pkg: "", typ: $funcType([$Int, $String], [$error], false)}, {prop: "Printf", name: "Printf", pkg: "", typ: $funcType([$String, sliceType$1], [], true)}, {prop: "Print", name: "Print", pkg: "", typ: $funcType([sliceType$1], [], true)}, {prop: "Println", name: "Println", pkg: "", typ: $funcType([sliceType$1], [], true)}, {prop: "Fatal", name: "Fatal", pkg: "", typ: $funcType([sliceType$1], [], true)}, {prop: "Fatalf", name: "Fatalf", pkg: "", typ: $funcType([$String, sliceType$1], [], true)}, {prop: "Fatalln", name: "Fatalln", pkg: "", typ: $funcType([sliceType$1], [], true)}, {prop: "Panic", name: "Panic", pkg: "", typ: $funcType([sliceType$1], [], true)}, {prop: "Panicf", name: "Panicf", pkg: "", typ: $funcType([$String, sliceType$1], [], true)}, {prop: "Panicln", name: "Panicln", pkg: "", typ: $funcType([sliceType$1], [], true)}, {prop: "Flags", name: "Flags", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "SetFlags", name: "SetFlags", pkg: "", typ: $funcType([$Int], [], false)}, {prop: "Prefix", name: "Prefix", pkg: "", typ: $funcType([], [$String], false)}, {prop: "SetPrefix", name: "SetPrefix", pkg: "", typ: $funcType([$String], [], false)}];
+	Logger.init("log", [{prop: "mu", name: "mu", anonymous: false, exported: false, typ: nosync.Mutex, tag: ""}, {prop: "prefix", name: "prefix", anonymous: false, exported: false, typ: $String, tag: ""}, {prop: "flag", name: "flag", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "out", name: "out", anonymous: false, exported: false, typ: io.Writer, tag: ""}, {prop: "buf", name: "buf", anonymous: false, exported: false, typ: sliceType, tag: ""}]);
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = fmt.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = nosync.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = io.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = os.$init(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = runtime.$init(); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = time.$init(); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		std = New(os.Stderr, "", 3);
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
 $packages["github.com/gernest/CatAcademy/present/models"] = (function() {
-	var $pkg = {}, $init, bytes, gob, fmt, template, io, url, strings, time, Caption, Code, Image, Link, Doc, Author, Section, Elem, Text, List, sliceType, sliceType$1, ptrType, ptrType$1, structType, sliceType$2, ptrType$2, structType$1, sliceType$3, sliceType$4, arrayType, ptrType$3, ptrType$4, sliceType$5, ptrType$5, sliceType$6, init, Decode;
+	var $pkg = {}, $init, bytes, gob, fmt, html, template, io, log, url, strings, time, unicode, utf8, Caption, Code, Image, Link, Doc, Author, Section, Elem, Text, List, sliceType, sliceType$1, ptrType, ptrType$1, structType, sliceType$2, ptrType$2, structType$1, sliceType$3, sliceType$4, arrayType, ptrType$3, ptrType$4, sliceType$5, ptrType$5, sliceType$6, init, Decode, Style, font, split, parseInlineLink, renderLink;
 	bytes = $packages["bytes"];
 	gob = $packages["encoding/gob"];
 	fmt = $packages["fmt"];
+	html = $packages["html"];
 	template = $packages["html/template"];
 	io = $packages["io"];
+	log = $packages["log"];
 	url = $packages["net/url"];
 	strings = $packages["strings"];
 	time = $packages["time"];
+	unicode = $packages["unicode"];
+	utf8 = $packages["unicode/utf8"];
 	Caption = $pkg.Caption = $newType(0, $kindStruct, "models.Caption", true, "github.com/gernest/CatAcademy/present/models", true, function(Text_) {
 		this.$val = this;
 		if (arguments.length === 0) {
@@ -46184,6 +46595,259 @@ $packages["github.com/gernest/CatAcademy/present/models"] = (function() {
 		return "list";
 	};
 	List.prototype.TemplateName = function() { return this.$val.TemplateName(); };
+	Style = function(s) {
+		var _r, _r$1, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = html.EscapeString(s); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r$1 = font(_r); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		$s = -1; return (_r$1);
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Style }; } $f._r = _r; $f._r$1 = _r$1; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.Style = Style;
+	font = function(s) {
+		var _1, _i, _r, _r$1, _ref, _tmp, _tmp$1, _tmp$2, _tmp$3, _tuple, _tuple$1, _tuple$2, _tuple$3, b, char$1, close, first, head, i, last, link, open, r, r$1, r$2, s, tail, w, wid, word, word$1, words, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _1 = $f._1; _i = $f._i; _r = $f._r; _r$1 = $f._r$1; _ref = $f._ref; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; _tmp$2 = $f._tmp$2; _tmp$3 = $f._tmp$3; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; _tuple$3 = $f._tuple$3; b = $f.b; char$1 = $f.char$1; close = $f.close; first = $f.first; head = $f.head; i = $f.i; last = $f.last; link = $f.link; open = $f.open; r = $f.r; r$1 = $f.r$1; r$2 = $f.r$2; s = $f.s; tail = $f.tail; w = $f.w; wid = $f.wid; word = $f.word; word$1 = $f.word$1; words = $f.words; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		if (!strings.ContainsAny(s, "[`_*")) {
+			$s = -1; return s;
+		}
+		_r = split(s); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		words = _r;
+		b = new bytes.Buffer.ptr(sliceType$1.nil, 0, arrayType.zero(), 0);
+		_ref = words;
+		_i = 0;
+		/* while (true) { */ case 2:
+			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 3; continue; }
+			w = _i;
+			word = ((_i < 0 || _i >= _ref.$length) ? ($throwRuntimeError("index out of range"), undefined) : _ref.$array[_ref.$offset + _i]);
+			/* */ if (word.length < 2) { $s = 4; continue; }
+			/* */ $s = 5; continue;
+			/* if (word.length < 2) { */ case 4:
+				_i++;
+				/* continue Word; */ $s = 2; continue s;
+			/* } */ case 5:
+			_r$1 = parseInlineLink(word); /* */ $s = 6; case 6: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_tuple = _r$1;
+			link = _tuple[0];
+			if (!(link === "")) {
+				((w < 0 || w >= words.$length) ? ($throwRuntimeError("index out of range"), undefined) : words.$array[words.$offset + w] = link);
+				_i++;
+				/* continue Word; */ $s = 2; continue s;
+			}
+			first = strings.IndexAny(word, "_*`");
+			if (first === -1) {
+				_i++;
+				/* continue Word; */ $s = 2; continue s;
+			}
+			if (!((first === 0))) {
+				_tuple$1 = utf8.DecodeLastRuneInString($substring(word, 0, first));
+				r = _tuple$1[0];
+				if (!unicode.IsPunct(r)) {
+					_i++;
+					/* continue Word; */ $s = 2; continue s;
+				}
+			}
+			_tmp = $substring(word, 0, first);
+			_tmp$1 = $substring(word, first);
+			open = _tmp;
+			word$1 = _tmp$1;
+			char$1 = word$1.charCodeAt(0);
+			close = "";
+			_1 = char$1;
+			if (_1 === (95)) {
+				open = open + ("<i>");
+				close = "</i>";
+			} else if (_1 === (42)) {
+				open = open + ("<b>");
+				close = "</b>";
+			} else if (_1 === (96)) {
+				open = open + ("<code>");
+				close = "</code>";
+			} else {
+				_i++;
+				/* continue Word; */ $s = 2; continue s;
+			}
+			last = strings.LastIndex(word$1, $substring(word$1, 0, 1));
+			if (last === 0) {
+				_i++;
+				/* continue Word; */ $s = 2; continue s;
+			}
+			if (!(((last + 1 >> 0) === word$1.length))) {
+				_tuple$2 = utf8.DecodeRuneInString($substring(word$1, (last + 1 >> 0)));
+				r$1 = _tuple$2[0];
+				if (!unicode.IsPunct(r$1)) {
+					_i++;
+					/* continue Word; */ $s = 2; continue s;
+				}
+			}
+			_tmp$2 = $substring(word$1, 0, (last + 1 >> 0));
+			_tmp$3 = $substring(word$1, (last + 1 >> 0));
+			head = _tmp$2;
+			tail = _tmp$3;
+			b.Reset();
+			b.WriteString(open);
+			wid = 0;
+			i = 1;
+			while (true) {
+				if (!(i < (head.length - 1 >> 0))) { break; }
+				r$2 = 0;
+				_tuple$3 = utf8.DecodeRuneInString($substring(head, i));
+				r$2 = _tuple$3[0];
+				wid = _tuple$3[1];
+				if (!((r$2 === ((char$1 >> 0))))) {
+					b.WriteRune(r$2);
+					i = i + (wid) >> 0;
+					continue;
+				}
+				if (!((head.charCodeAt((i + 1 >> 0)) === char$1))) {
+					b.WriteRune(32);
+					i = i + (wid) >> 0;
+					continue;
+				}
+				b.WriteByte(char$1);
+				wid = wid + (1) >> 0;
+				i = i + (wid) >> 0;
+			}
+			b.WriteString(close);
+			b.WriteString(tail);
+			((w < 0 || w >= words.$length) ? ($throwRuntimeError("index out of range"), undefined) : words.$array[words.$offset + w] = b.String());
+			_i++;
+		/* } */ $s = 2; continue; case 3:
+		$s = -1; return strings.Join(words, "");
+		/* */ } return; } if ($f === undefined) { $f = { $blk: font }; } $f._1 = _1; $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._ref = _ref; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f._tmp$2 = _tmp$2; $f._tmp$3 = _tmp$3; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f._tuple$3 = _tuple$3; $f.b = b; $f.char$1 = char$1; $f.close = close; $f.first = first; $f.head = head; $f.i = i; $f.last = last; $f.link = link; $f.open = open; $f.r = r; $f.r$1 = r$1; $f.r$2 = r$2; $f.s = s; $f.tail = tail; $f.w = w; $f.wid = wid; $f.word = word; $f.word$1 = word$1; $f.words = words; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	split = function(s) {
+		var _i, _ref, _rune, appendWord, i, isSpace, r, s, start, wasSpace, words, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _i = $f._i; _ref = $f._ref; _rune = $f._rune; appendWord = $f.appendWord; i = $f.i; isSpace = $f.isSpace; r = $f.r; s = $f.s; start = $f.start; wasSpace = $f.wasSpace; words = $f.words; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		s = [s];
+		start = [start];
+		words = [words];
+		words[0] = $makeSlice(sliceType, 0, 10);
+		start[0] = 0;
+		appendWord = (function(s, start, words) { return function $b(end) {
+			var _r, _tuple, end, j, l, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _tuple = $f._tuple; end = $f.end; j = $f.j; l = $f.l; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			j = strings.Index($substring(s[0], start[0], end), "[[");
+			/* */ if (j > -1) { $s = 1; continue; }
+			/* */ $s = 2; continue;
+			/* if (j > -1) { */ case 1:
+				_r = parseInlineLink($substring(s[0], (start[0] + j >> 0))); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_tuple = _r;
+				l = _tuple[1];
+				if (l > 0) {
+					if (j > 0) {
+						words[0] = $append(words[0], $substring(s[0], start[0], (start[0] + j >> 0)));
+					}
+					words[0] = $append(words[0], $substring(s[0], (start[0] + j >> 0), ((start[0] + j >> 0) + l >> 0)));
+					start[0] = (start[0] + j >> 0) + l >> 0;
+					$s = -1; return;
+				}
+			/* } */ case 2:
+			words[0] = $append(words[0], $substring(s[0], start[0], end));
+			start[0] = end;
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._tuple = _tuple; $f.end = end; $f.j = j; $f.l = l; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(s, start, words);
+		wasSpace = false;
+		_ref = s[0];
+		_i = 0;
+		/* while (true) { */ case 1:
+			/* if (!(_i < _ref.length)) { break; } */ if(!(_i < _ref.length)) { $s = 2; continue; }
+			_rune = $decodeRune(_ref, _i);
+			i = _i;
+			r = _rune[0];
+			isSpace = unicode.IsSpace(r);
+			/* */ if (i > start[0] && !(isSpace === wasSpace)) { $s = 3; continue; }
+			/* */ $s = 4; continue;
+			/* if (i > start[0] && !(isSpace === wasSpace)) { */ case 3:
+				$r = appendWord(i); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 4:
+			wasSpace = isSpace;
+			_i += _rune[1];
+		/* } */ $s = 1; continue; case 2:
+		/* while (true) { */ case 6:
+			/* if (!(start[0] < s[0].length)) { break; } */ if(!(start[0] < s[0].length)) { $s = 7; continue; }
+			$r = appendWord(s[0].length); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ $s = 6; continue; case 7:
+		$s = -1; return words[0];
+		/* */ } return; } if ($f === undefined) { $f = { $blk: split }; } $f._i = _i; $f._ref = _ref; $f._rune = _rune; $f.appendWord = appendWord; $f.i = i; $f.isSpace = isSpace; $f.r = r; $f.s = s; $f.start = start; $f.wasSpace = wasSpace; $f.words = words; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	parseInlineLink = function(s) {
+		var _r, _r$1, _r$2, _tmp, _tmp$1, _tmp$2, _tmp$3, _tuple, end, err, length, link, rawURL, s, simpleUrl, text, url$1, urlEnd, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _tmp = $f._tmp; _tmp$1 = $f._tmp$1; _tmp$2 = $f._tmp$2; _tmp$3 = $f._tmp$3; _tuple = $f._tuple; end = $f.end; err = $f.err; length = $f.length; link = $f.link; rawURL = $f.rawURL; s = $f.s; simpleUrl = $f.simpleUrl; text = $f.text; url$1 = $f.url$1; urlEnd = $f.urlEnd; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		link = "";
+		length = 0;
+		if (!strings.HasPrefix(s, "[[")) {
+			$s = -1; return [link, length];
+		}
+		end = strings.Index(s, "]]");
+		if (end === -1) {
+			$s = -1; return [link, length];
+		}
+		urlEnd = strings.Index(s, "]");
+		rawURL = $substring(s, 2, urlEnd);
+		if (strings.ContainsAny(rawURL, "<>\"{}|\\^[] `")) {
+			$s = -1; return [link, length];
+		}
+		/* */ if (urlEnd === end) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (urlEnd === end) { */ case 1:
+			simpleUrl = "";
+			_r = url.Parse(rawURL); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_tuple = _r;
+			url$1 = _tuple[0];
+			err = _tuple[1];
+			if ($interfaceIsEqual(err, $ifaceNil)) {
+				if (strings.HasPrefix(rawURL, url$1.Scheme + "://")) {
+					simpleUrl = strings.TrimPrefix(rawURL, url$1.Scheme + "://");
+				} else if (strings.HasPrefix(rawURL, url$1.Scheme + ":")) {
+					simpleUrl = strings.TrimPrefix(rawURL, url$1.Scheme + ":");
+				}
+			}
+			_r$1 = renderLink(rawURL, simpleUrl); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_tmp = _r$1;
+			_tmp$1 = end + 2 >> 0;
+			link = _tmp;
+			length = _tmp$1;
+			$s = -1; return [link, length];
+		/* } */ case 2:
+		if (!($substring(s, urlEnd, (urlEnd + 2 >> 0)) === "][")) {
+			$s = -1; return [link, length];
+		}
+		text = $substring(s, (urlEnd + 2 >> 0), end);
+		_r$2 = renderLink(rawURL, text); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		_tmp$2 = _r$2;
+		_tmp$3 = end + 2 >> 0;
+		link = _tmp$2;
+		length = _tmp$3;
+		$s = -1; return [link, length];
+		/* */ } return; } if ($f === undefined) { $f = { $blk: parseInlineLink }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._tmp = _tmp; $f._tmp$1 = _tmp$1; $f._tmp$2 = _tmp$2; $f._tmp$3 = _tmp$3; $f._tuple = _tuple; $f.end = end; $f.err = err; $f.length = length; $f.link = link; $f.rawURL = rawURL; $f.s = s; $f.simpleUrl = simpleUrl; $f.text = text; $f.url$1 = url$1; $f.urlEnd = urlEnd; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	renderLink = function(href, text) {
+		var _r, _r$1, _r$2, _tuple, err, href, target, text, u, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _tuple = $f._tuple; err = $f.err; href = $f.href; target = $f.target; text = $f.text; u = $f.u; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = font(text); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		text = _r;
+		if (text === "") {
+			text = href;
+		}
+		target = "_blank";
+		_r$1 = url.Parse(href); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_tuple = _r$1;
+		u = _tuple[0];
+		err = _tuple[1];
+		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 3; continue; }
+		/* */ if (!u.IsAbs() || u.Scheme === "javascript") { $s = 4; continue; }
+		/* */ $s = 5; continue;
+		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 3:
+			$r = log.Println(new sliceType$3([new $String("renderLink parsing url:"), err])); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = 5; continue;
+		/* } else if (!u.IsAbs() || u.Scheme === "javascript") { */ case 4:
+			target = "_self";
+		/* } */ case 5:
+		_r$2 = fmt.Sprintf("<a href=\"%s\" target=\"%s\">%s</a>", new sliceType$3([new $String(href), new $String(target), new $String(text)])); /* */ $s = 7; case 7: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		$s = -1; return _r$2;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: renderLink }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._tuple = _tuple; $f.err = err; $f.href = href; $f.target = target; $f.text = text; $f.u = u; $f.$s = $s; $f.$r = $r; return $f;
+	};
 	Caption.methods = [{prop: "TemplateName", name: "TemplateName", pkg: "", typ: $funcType([], [$String], false)}];
 	Code.methods = [{prop: "TemplateName", name: "TemplateName", pkg: "", typ: $funcType([], [$String], false)}];
 	Image.methods = [{prop: "TemplateName", name: "TemplateName", pkg: "", typ: $funcType([], [$String], false)}];
@@ -46210,14 +46874,18 @@ $packages["github.com/gernest/CatAcademy/present/models"] = (function() {
 		$r = bytes.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = gob.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = fmt.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = template.$init(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = io.$init(); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = url.$init(); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = strings.$init(); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = time.$init(); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = html.$init(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = template.$init(); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = io.$init(); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = log.$init(); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = url.$init(); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = strings.$init(); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = time.$init(); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = unicode.$init(); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = utf8.$init(); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$pkg.NotesEnabled = false;
 		$pkg.PlayEnabled = false;
-		$r = init(); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = init(); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.$init = $init;
@@ -49528,8 +50196,8 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 	};
 	Section.prototype.Render = function() { return this.$val.Render(); };
 	List.ptr.prototype.Render = function() {
-		var _i, _r, _r$1, _r$2, _ref, bullet, items, l, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _i = $f._i; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _ref = $f._ref; bullet = $f.bullet; items = $f.items; l = $f.l; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _i, _r, _r$1, _r$2, _r$3, _r$4, _ref, bullet, items, l, x, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _i = $f._i; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _ref = $f._ref; bullet = $f.bullet; items = $f.items; l = $f.l; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		l = this;
 		items = vecty.List.nil;
 		_ref = l.list.Bullet;
@@ -49537,14 +50205,16 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		/* while (true) { */ case 1:
 			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
 			bullet = ((_i < 0 || _i >= _ref.$length) ? ($throwRuntimeError("index out of range"), undefined) : _ref.$array[_ref.$offset + _i]);
-			_r = vecty.Text(bullet, new sliceType$5([])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r$1 = elem.ListItem(new sliceType$5([_r])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			items = $append(items, _r$1);
+			_r = models.Style(bullet); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r$1 = vecty.UnsafeHTML((_r)); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_r$2 = vecty.Markup(new sliceType$8([_r$1])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			_r$3 = elem.ListItem(new sliceType$5([(x = _r$2, new x.constructor.elem(x))])); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+			items = $append(items, _r$3);
 			_i++;
 		/* } */ $s = 1; continue; case 2:
-		_r$2 = elem.UnorderedList(new sliceType$5([items])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-		$s = -1; return _r$2;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: List.ptr.prototype.Render }; } $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._ref = _ref; $f.bullet = bullet; $f.items = items; $f.l = l; $f.$s = $s; $f.$r = $r; return $f;
+		_r$4 = elem.UnorderedList(new sliceType$5([items])); /* */ $s = 7; case 7: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+		$s = -1; return _r$4;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: List.ptr.prototype.Render }; } $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._ref = _ref; $f.bullet = bullet; $f.items = items; $f.l = l; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	List.prototype.Render = function() { return this.$val.Render(); };
 	Code.ptr.prototype.Render = function() {
