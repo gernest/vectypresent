@@ -7718,12 +7718,32 @@ $packages["github.com/gopherjs/gopherjs/nosync"] = (function() {
 	return $pkg;
 })();
 $packages["time"] = (function() {
-	var $pkg = {}, $init, errors, js, nosync, runtime, syscall, ParseError, Time, Month, Weekday, Duration, Location, zone, zoneTrans, sliceType, sliceType$1, ptrType, sliceType$2, arrayType, sliceType$3, arrayType$1, arrayType$2, ptrType$2, arrayType$3, ptrType$4, ptrType$7, zoneSources, std0x, longDayNames, shortDayNames, shortMonthNames, longMonthNames, atoiError, errBad, errLeadingInt, months, days, daysBefore, utcLoc, utcLoc$24ptr, localLoc, localLoc$24ptr, localOnce, errLocation, badData, init, initLocal, indexByte, startsWithLowerCase, nextStdChunk, match, lookup, appendInt, atoi, formatNano, quote, isDigit, getnum, cutspace, skip, Parse, parse, parseTimeZone, parseGMT, parseNanoseconds, leadingInt, absWeekday, absClock, fmtFrac, fmtInt, lessThanHalf, absDate, daysIn, unixTime, Unix, isLeap, norm, Date, div, FixedZone;
+	var $pkg = {}, $init, errors, js, nosync, runtime, syscall, runtimeTimer, ParseError, Ticker, Time, Month, Weekday, Duration, Location, zone, zoneTrans, sliceType, sliceType$1, ptrType, sliceType$2, arrayType, sliceType$3, arrayType$1, arrayType$2, ptrType$2, chanType, arrayType$3, funcType$1, ptrType$3, ptrType$4, chanType$1, ptrType$6, ptrType$7, zoneSources, std0x, longDayNames, shortDayNames, shortMonthNames, longMonthNames, atoiError, errBad, errLeadingInt, months, days, daysBefore, utcLoc, utcLoc$24ptr, localLoc, localLoc$24ptr, localOnce, errLocation, badData, init, initLocal, runtimeNano, now, startTimer, stopTimer, indexByte, startsWithLowerCase, nextStdChunk, match, lookup, appendInt, atoi, formatNano, quote, isDigit, getnum, cutspace, skip, Parse, parse, parseTimeZone, parseGMT, parseNanoseconds, leadingInt, when, sendTime, NewTicker, absWeekday, absClock, fmtFrac, fmtInt, lessThanHalf, absDate, daysIn, Now, unixTime, Unix, isLeap, norm, Date, div, FixedZone;
 	errors = $packages["errors"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	nosync = $packages["github.com/gopherjs/gopherjs/nosync"];
 	runtime = $packages["runtime"];
 	syscall = $packages["syscall"];
+	runtimeTimer = $pkg.runtimeTimer = $newType(0, $kindStruct, "time.runtimeTimer", true, "time", false, function(i_, when_, period_, f_, arg_, timeout_, active_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.i = 0;
+			this.when = new $Int64(0, 0);
+			this.period = new $Int64(0, 0);
+			this.f = $throwNilPointerError;
+			this.arg = $ifaceNil;
+			this.timeout = null;
+			this.active = false;
+			return;
+		}
+		this.i = i_;
+		this.when = when_;
+		this.period = period_;
+		this.f = f_;
+		this.arg = arg_;
+		this.timeout = timeout_;
+		this.active = active_;
+	});
 	ParseError = $pkg.ParseError = $newType(0, $kindStruct, "time.ParseError", true, "time", true, function(Layout_, Value_, LayoutElem_, ValueElem_, Message_) {
 		this.$val = this;
 		if (arguments.length === 0) {
@@ -7739,6 +7759,16 @@ $packages["time"] = (function() {
 		this.LayoutElem = LayoutElem_;
 		this.ValueElem = ValueElem_;
 		this.Message = Message_;
+	});
+	Ticker = $pkg.Ticker = $newType(0, $kindStruct, "time.Ticker", true, "time", true, function(C_, r_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.C = $chanNil;
+			this.r = new runtimeTimer.ptr(0, new $Int64(0, 0), new $Int64(0, 0), $throwNilPointerError, $ifaceNil, null, false);
+			return;
+		}
+		this.C = C_;
+		this.r = r_;
 	});
 	Time = $pkg.Time = $newType(0, $kindStruct, "time.Time", true, "time", true, function(wall_, ext_, loc_) {
 		this.$val = this;
@@ -7808,8 +7838,13 @@ $packages["time"] = (function() {
 	arrayType$1 = $arrayType($Uint8, 9);
 	arrayType$2 = $arrayType($Uint8, 64);
 	ptrType$2 = $ptrType(Location);
+	chanType = $chanType(Time, false, false);
 	arrayType$3 = $arrayType($Uint8, 32);
+	funcType$1 = $funcType([$emptyInterface, $Uintptr], [], false);
+	ptrType$3 = $ptrType(js.Object);
 	ptrType$4 = $ptrType(ParseError);
+	chanType$1 = $chanType(Time, false, true);
+	ptrType$6 = $ptrType(Ticker);
 	ptrType$7 = $ptrType(Time);
 	init = function() {
 		$unused(Unix(new $Int64(0, 0), new $Int64(0, 0)));
@@ -7826,6 +7861,50 @@ $packages["time"] = (function() {
 		}
 		localLoc.name = $substring(s, (i + 1 >> 0), j);
 		localLoc.zone = new sliceType([new zone.ptr(localLoc.name, $imul(($parseInt(d.getTimezoneOffset()) >> 0), -60), false)]);
+	};
+	runtimeNano = function() {
+		return $mul64($internalize(new ($global.Date)().getTime(), $Int64), new $Int64(0, 1000000));
+	};
+	now = function() {
+		var _tmp, _tmp$1, _tmp$2, mono, n, nsec, sec, x;
+		sec = new $Int64(0, 0);
+		nsec = 0;
+		mono = new $Int64(0, 0);
+		n = runtimeNano();
+		_tmp = $div64(n, new $Int64(0, 1000000000), false);
+		_tmp$1 = (((x = $div64(n, new $Int64(0, 1000000000), true), x.$low + ((x.$high >> 31) * 4294967296)) >> 0));
+		_tmp$2 = n;
+		sec = _tmp;
+		nsec = _tmp$1;
+		mono = _tmp$2;
+		return [sec, nsec, mono];
+	};
+	startTimer = function(t) {
+		var diff, t, x, x$1;
+		t.active = true;
+		diff = $div64(((x = t.when, x$1 = runtimeNano(), new $Int64(x.$high - x$1.$high, x.$low - x$1.$low))), new $Int64(0, 1000000), false);
+		if ((diff.$high > 0 || (diff.$high === 0 && diff.$low > 2147483647))) {
+			return;
+		}
+		if ((diff.$high < 0 || (diff.$high === 0 && diff.$low < 0))) {
+			diff = new $Int64(0, 0);
+		}
+		t.timeout = $setTimeout((function() {
+			var x$2, x$3, x$4;
+			t.active = false;
+			if (!((x$2 = t.period, (x$2.$high === 0 && x$2.$low === 0)))) {
+				t.when = (x$3 = t.when, x$4 = t.period, new $Int64(x$3.$high + x$4.$high, x$3.$low + x$4.$low));
+				startTimer(t);
+			}
+			$go(t.f, [t.arg, 0]);
+		}), $externalize(new $Int64(diff.$high + 0, diff.$low + 1), $Int64));
+	};
+	stopTimer = function(t) {
+		var t, wasActive;
+		$global.clearTimeout(t.timeout);
+		wasActive = t.active;
+		t.active = false;
+		return wasActive;
 	};
 	indexByte = function(s, c) {
 		var c, s;
@@ -9131,6 +9210,43 @@ $packages["time"] = (function() {
 		err = _tmp$8;
 		return [x, rem, err];
 	};
+	when = function(d) {
+		var d, t, x, x$1;
+		if ((d.$high < 0 || (d.$high === 0 && d.$low <= 0))) {
+			return runtimeNano();
+		}
+		t = (x = runtimeNano(), x$1 = (new $Int64(d.$high, d.$low)), new $Int64(x.$high + x$1.$high, x.$low + x$1.$low));
+		if ((t.$high < 0 || (t.$high === 0 && t.$low < 0))) {
+			t = new $Int64(2147483647, 4294967295);
+		}
+		return t;
+	};
+	sendTime = function(c, seq) {
+		var _selection, c, seq, $r;
+		/* */ var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _selection = $f._selection; c = $f.c; seq = $f.seq; $r = $f.$r; }
+		_selection = $select([[$assertType(c, chanType), $clone(Now(), Time)], []]);
+		if (_selection[0] === 0) {
+		} else if (_selection[0] === 1) {
+		}
+		/* */ if ($f === undefined) { $f = { $blk: sendTime }; } $f._selection = _selection; $f.c = c; $f.seq = seq; $f.$r = $r; return $f;
+	};
+	NewTicker = function(d) {
+		var c, d, t;
+		if ((d.$high < 0 || (d.$high === 0 && d.$low <= 0))) {
+			$panic(errors.New("non-positive interval for NewTicker"));
+		}
+		c = new $Chan(Time, 1);
+		t = new Ticker.ptr(c, new runtimeTimer.ptr(0, when(d), (new $Int64(d.$high, d.$low)), sendTime, new chanType(c), null, false));
+		startTimer(t.r);
+		return t;
+	};
+	$pkg.NewTicker = NewTicker;
+	Ticker.ptr.prototype.Stop = function() {
+		var t;
+		t = this;
+		stopTimer(t.r);
+	};
+	Ticker.prototype.Stop = function() { return this.$val.Stop(); };
 	Time.ptr.prototype.nsec = function() {
 		var t, x;
 		t = this;
@@ -9801,6 +9917,19 @@ $packages["time"] = (function() {
 		}
 		return (((((m < 0 || m >= daysBefore.length) ? ($throwRuntimeError("index out of range"), undefined) : daysBefore[m]) - (x = m - 1 >> 0, ((x < 0 || x >= daysBefore.length) ? ($throwRuntimeError("index out of range"), undefined) : daysBefore[x])) >> 0) >> 0));
 	};
+	Now = function() {
+		var _tuple, mono, nsec, sec, x, x$1, x$2, x$3, x$4;
+		_tuple = now();
+		sec = _tuple[0];
+		nsec = _tuple[1];
+		mono = _tuple[2];
+		sec = (x = new $Int64(0, 2682288000), new $Int64(sec.$high + x.$high, sec.$low + x.$low));
+		if (!((x$1 = $shiftRightUint64((new $Uint64(sec.$high, sec.$low)), 33), (x$1.$high === 0 && x$1.$low === 0)))) {
+			return new Time.ptr((new $Uint64(0, nsec)), new $Int64(sec.$high + 13, sec.$low + 3618733952), $pkg.Local);
+		}
+		return new Time.ptr((x$2 = (x$3 = $shiftLeft64((new $Uint64(sec.$high, sec.$low)), 30), new $Uint64(2147483648 | x$3.$high, (0 | x$3.$low) >>> 0)), x$4 = (new $Uint64(0, nsec)), new $Uint64(x$2.$high | x$4.$high, (x$2.$low | x$4.$low) >>> 0)), mono, $pkg.Local);
+	};
+	$pkg.Now = Now;
 	unixTime = function(sec, nsec) {
 		var nsec, sec;
 		return new Time.ptr((new $Uint64(0, nsec)), new $Int64(sec.$high + 14, sec.$low + 2006054656), $pkg.Local);
@@ -10426,13 +10555,16 @@ $packages["time"] = (function() {
 	};
 	Location.prototype.lookupName = function(name, unix) { return this.$val.lookupName(name, unix); };
 	ptrType$4.methods = [{prop: "Error", name: "Error", pkg: "", typ: $funcType([], [$String], false)}];
+	ptrType$6.methods = [{prop: "Stop", name: "Stop", pkg: "", typ: $funcType([], [], false)}];
 	Time.methods = [{prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "Format", name: "Format", pkg: "", typ: $funcType([$String], [$String], false)}, {prop: "AppendFormat", name: "AppendFormat", pkg: "", typ: $funcType([sliceType$3, $String], [sliceType$3], false)}, {prop: "After", name: "After", pkg: "", typ: $funcType([Time], [$Bool], false)}, {prop: "Before", name: "Before", pkg: "", typ: $funcType([Time], [$Bool], false)}, {prop: "Equal", name: "Equal", pkg: "", typ: $funcType([Time], [$Bool], false)}, {prop: "IsZero", name: "IsZero", pkg: "", typ: $funcType([], [$Bool], false)}, {prop: "abs", name: "abs", pkg: "time", typ: $funcType([], [$Uint64], false)}, {prop: "locabs", name: "locabs", pkg: "time", typ: $funcType([], [$String, $Int, $Uint64], false)}, {prop: "Date", name: "Date", pkg: "", typ: $funcType([], [$Int, Month, $Int], false)}, {prop: "Year", name: "Year", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Month", name: "Month", pkg: "", typ: $funcType([], [Month], false)}, {prop: "Day", name: "Day", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Weekday", name: "Weekday", pkg: "", typ: $funcType([], [Weekday], false)}, {prop: "ISOWeek", name: "ISOWeek", pkg: "", typ: $funcType([], [$Int, $Int], false)}, {prop: "Clock", name: "Clock", pkg: "", typ: $funcType([], [$Int, $Int, $Int], false)}, {prop: "Hour", name: "Hour", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Minute", name: "Minute", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Second", name: "Second", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Nanosecond", name: "Nanosecond", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "YearDay", name: "YearDay", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Add", name: "Add", pkg: "", typ: $funcType([Duration], [Time], false)}, {prop: "Sub", name: "Sub", pkg: "", typ: $funcType([Time], [Duration], false)}, {prop: "AddDate", name: "AddDate", pkg: "", typ: $funcType([$Int, $Int, $Int], [Time], false)}, {prop: "date", name: "date", pkg: "time", typ: $funcType([$Bool], [$Int, Month, $Int, $Int], false)}, {prop: "UTC", name: "UTC", pkg: "", typ: $funcType([], [Time], false)}, {prop: "Local", name: "Local", pkg: "", typ: $funcType([], [Time], false)}, {prop: "In", name: "In", pkg: "", typ: $funcType([ptrType$2], [Time], false)}, {prop: "Location", name: "Location", pkg: "", typ: $funcType([], [ptrType$2], false)}, {prop: "Zone", name: "Zone", pkg: "", typ: $funcType([], [$String, $Int], false)}, {prop: "Unix", name: "Unix", pkg: "", typ: $funcType([], [$Int64], false)}, {prop: "UnixNano", name: "UnixNano", pkg: "", typ: $funcType([], [$Int64], false)}, {prop: "MarshalBinary", name: "MarshalBinary", pkg: "", typ: $funcType([], [sliceType$3, $error], false)}, {prop: "GobEncode", name: "GobEncode", pkg: "", typ: $funcType([], [sliceType$3, $error], false)}, {prop: "MarshalJSON", name: "MarshalJSON", pkg: "", typ: $funcType([], [sliceType$3, $error], false)}, {prop: "MarshalText", name: "MarshalText", pkg: "", typ: $funcType([], [sliceType$3, $error], false)}, {prop: "Truncate", name: "Truncate", pkg: "", typ: $funcType([Duration], [Time], false)}, {prop: "Round", name: "Round", pkg: "", typ: $funcType([Duration], [Time], false)}];
 	ptrType$7.methods = [{prop: "nsec", name: "nsec", pkg: "time", typ: $funcType([], [$Int32], false)}, {prop: "sec", name: "sec", pkg: "time", typ: $funcType([], [$Int64], false)}, {prop: "unixSec", name: "unixSec", pkg: "time", typ: $funcType([], [$Int64], false)}, {prop: "addSec", name: "addSec", pkg: "time", typ: $funcType([$Int64], [], false)}, {prop: "setLoc", name: "setLoc", pkg: "time", typ: $funcType([ptrType$2], [], false)}, {prop: "stripMono", name: "stripMono", pkg: "time", typ: $funcType([], [], false)}, {prop: "setMono", name: "setMono", pkg: "time", typ: $funcType([$Int64], [], false)}, {prop: "mono", name: "mono", pkg: "time", typ: $funcType([], [$Int64], false)}, {prop: "UnmarshalBinary", name: "UnmarshalBinary", pkg: "", typ: $funcType([sliceType$3], [$error], false)}, {prop: "GobDecode", name: "GobDecode", pkg: "", typ: $funcType([sliceType$3], [$error], false)}, {prop: "UnmarshalJSON", name: "UnmarshalJSON", pkg: "", typ: $funcType([sliceType$3], [$error], false)}, {prop: "UnmarshalText", name: "UnmarshalText", pkg: "", typ: $funcType([sliceType$3], [$error], false)}];
 	Month.methods = [{prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}];
 	Weekday.methods = [{prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}];
 	Duration.methods = [{prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "Nanoseconds", name: "Nanoseconds", pkg: "", typ: $funcType([], [$Int64], false)}, {prop: "Seconds", name: "Seconds", pkg: "", typ: $funcType([], [$Float64], false)}, {prop: "Minutes", name: "Minutes", pkg: "", typ: $funcType([], [$Float64], false)}, {prop: "Hours", name: "Hours", pkg: "", typ: $funcType([], [$Float64], false)}, {prop: "Truncate", name: "Truncate", pkg: "", typ: $funcType([Duration], [Duration], false)}, {prop: "Round", name: "Round", pkg: "", typ: $funcType([Duration], [Duration], false)}];
 	ptrType$2.methods = [{prop: "get", name: "get", pkg: "time", typ: $funcType([], [ptrType$2], false)}, {prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "lookup", name: "lookup", pkg: "time", typ: $funcType([$Int64], [$String, $Int, $Bool, $Int64, $Int64], false)}, {prop: "lookupFirstZone", name: "lookupFirstZone", pkg: "time", typ: $funcType([], [$Int], false)}, {prop: "firstZoneUsed", name: "firstZoneUsed", pkg: "time", typ: $funcType([], [$Bool], false)}, {prop: "lookupName", name: "lookupName", pkg: "time", typ: $funcType([$String, $Int64], [$Int, $Bool], false)}];
+	runtimeTimer.init("time", [{prop: "i", name: "i", anonymous: false, exported: false, typ: $Int32, tag: ""}, {prop: "when", name: "when", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "period", name: "period", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "f", name: "f", anonymous: false, exported: false, typ: funcType$1, tag: ""}, {prop: "arg", name: "arg", anonymous: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "timeout", name: "timeout", anonymous: false, exported: false, typ: ptrType$3, tag: ""}, {prop: "active", name: "active", anonymous: false, exported: false, typ: $Bool, tag: ""}]);
 	ParseError.init("", [{prop: "Layout", name: "Layout", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "Value", name: "Value", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "LayoutElem", name: "LayoutElem", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "ValueElem", name: "ValueElem", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "Message", name: "Message", anonymous: false, exported: true, typ: $String, tag: ""}]);
+	Ticker.init("time", [{prop: "C", name: "C", anonymous: false, exported: true, typ: chanType$1, tag: ""}, {prop: "r", name: "r", anonymous: false, exported: false, typ: runtimeTimer, tag: ""}]);
 	Time.init("time", [{prop: "wall", name: "wall", anonymous: false, exported: false, typ: $Uint64, tag: ""}, {prop: "ext", name: "ext", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "loc", name: "loc", anonymous: false, exported: false, typ: ptrType$2, tag: ""}]);
 	Location.init("time", [{prop: "name", name: "name", anonymous: false, exported: false, typ: $String, tag: ""}, {prop: "zone", name: "zone", anonymous: false, exported: false, typ: sliceType, tag: ""}, {prop: "tx", name: "tx", anonymous: false, exported: false, typ: sliceType$1, tag: ""}, {prop: "cacheStart", name: "cacheStart", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "cacheEnd", name: "cacheEnd", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "cacheZone", name: "cacheZone", anonymous: false, exported: false, typ: ptrType, tag: ""}]);
 	zone.init("time", [{prop: "name", name: "name", anonymous: false, exported: false, typ: $String, tag: ""}, {prop: "offset", name: "offset", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "isDST", name: "isDST", anonymous: false, exported: false, typ: $Bool, tag: ""}]);
@@ -48757,7 +48889,7 @@ $packages["github.com/gopherjs/vecty/prop"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
-	var $pkg = {}, $init, bytes, fmt, models, socrates, xhr, vecty, elem, event, prop, Position, Slide, Section, List, Code, Text, Image, Link, Caption, ptrType, ptrType$1, sliceType, ptrType$2, sliceType$1, sliceType$2, sliceType$3, ptrType$3, sliceType$4, sliceType$5, sliceType$6, sliceType$7, sliceType$8, ptrType$4, sliceType$9, ptrType$5, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$13, ptrType$14, main, renderElems, renderElem, join;
+	var $pkg = {}, $init, bytes, fmt, models, socrates, xhr, vecty, elem, event, prop, time, position, slide, Section, List, Code, Text, Image, Link, Caption, RemoteControl, TickEvent, ptrType, ptrType$1, ptrType$2, ptrType$3, sliceType, sliceType$1, sliceType$2, sliceType$3, ptrType$4, sliceType$4, sliceType$5, sliceType$6, sliceType$7, sliceType$8, ptrType$5, sliceType$9, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$11, ptrType$14, ptrType$15, mapType, main, renderElems, renderElem, join;
 	bytes = $packages["bytes"];
 	fmt = $packages["fmt"];
 	models = $packages["github.com/gernest/CatAcademy/present/models"];
@@ -48767,20 +48899,29 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 	elem = $packages["github.com/gopherjs/vecty/elem"];
 	event = $packages["github.com/gopherjs/vecty/event"];
 	prop = $packages["github.com/gopherjs/vecty/prop"];
-	Position = $pkg.Position = $newType(4, $kindInt, "main.Position", true, "github.com/gernest/CatAcademy/ui/slide", true, null);
-	Slide = $pkg.Slide = $newType(0, $kindStruct, "main.Slide", true, "github.com/gernest/CatAcademy/ui/slide", true, function(Core_, Doc_, socket_, activeSlide_) {
+	time = $packages["time"];
+	position = $pkg.position = $newType(4, $kindInt, "main.position", true, "github.com/gernest/CatAcademy/ui/slide", false, null);
+	slide = $pkg.slide = $newType(0, $kindStruct, "main.slide", true, "github.com/gernest/CatAcademy/ui/slide", false, function(Core_, doc_, socket_, activeSlide_, remote_, recording_, auto_, startTime_) {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.Core = new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false);
-			this.Doc = ptrType.nil;
+			this.doc = ptrType.nil;
 			this.socket = ptrType$1.nil;
 			this.activeSlide = 0;
+			this.remote = ptrType$2.nil;
+			this.recording = false;
+			this.auto = false;
+			this.startTime = new time.Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$3.nil);
 			return;
 		}
 		this.Core = Core_;
-		this.Doc = Doc_;
+		this.doc = doc_;
 		this.socket = socket_;
 		this.activeSlide = activeSlide_;
+		this.remote = remote_;
+		this.recording = recording_;
+		this.auto = auto_;
+		this.startTime = startTime_;
 	});
 	Section = $pkg.Section = $newType(0, $kindStruct, "main.Section", true, "github.com/gernest/CatAcademy/ui/slide", true, function(Core_, Pos_, s_) {
 		this.$val = this;
@@ -48838,7 +48979,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.Core = new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false);
-			this.link = new models.Link.ptr(ptrType$4.nil, "");
+			this.link = new models.Link.ptr(ptrType$5.nil, "");
 			return;
 		}
 		this.Core = Core_;
@@ -48854,37 +48995,59 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		this.Core = Core_;
 		this.c = c_;
 	});
+	RemoteControl = $pkg.RemoteControl = $newType(0, $kindStruct, "main.RemoteControl", true, "github.com/gernest/CatAcademy/ui/slide", true, function(length_, events_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.length = new time.Duration(0, 0);
+			this.events = false;
+			return;
+		}
+		this.length = length_;
+		this.events = events_;
+	});
+	TickEvent = $pkg.TickEvent = $newType(0, $kindStruct, "main.TickEvent", true, "github.com/gernest/CatAcademy/ui/slide", true, function(Time_, Slide_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.Time = new time.Duration(0, 0);
+			this.Slide = 0;
+			return;
+		}
+		this.Time = Time_;
+		this.Slide = Slide_;
+	});
 	ptrType = $ptrType(models.Doc);
 	ptrType$1 = $ptrType(socrates.Socket);
+	ptrType$2 = $ptrType(RemoteControl);
+	ptrType$3 = $ptrType(time.Location);
 	sliceType = $sliceType($Uint8);
-	ptrType$2 = $ptrType($packages["time"].Location);
 	sliceType$1 = $sliceType(models.Author);
 	sliceType$2 = $sliceType($String);
 	sliceType$3 = $sliceType(models.Section);
-	ptrType$3 = $ptrType(ptrType);
+	ptrType$4 = $ptrType(ptrType);
 	sliceType$4 = $sliceType(vecty.MarkupOrChild);
 	sliceType$5 = $sliceType($Int);
 	sliceType$6 = $sliceType(models.Elem);
 	sliceType$7 = $sliceType(vecty.Applyer);
 	sliceType$8 = $sliceType(vecty.ComponentOrHTML);
-	ptrType$4 = $ptrType($packages["net/url"].URL);
+	ptrType$5 = $ptrType($packages["net/url"].URL);
 	sliceType$9 = $sliceType($emptyInterface);
-	ptrType$5 = $ptrType(Slide);
-	ptrType$6 = $ptrType(Section);
-	ptrType$7 = $ptrType(List);
-	ptrType$8 = $ptrType(Code);
-	ptrType$9 = $ptrType(Text);
-	ptrType$10 = $ptrType(Image);
-	ptrType$13 = $ptrType(Link);
-	ptrType$14 = $ptrType(Caption);
+	ptrType$6 = $ptrType(slide);
+	ptrType$7 = $ptrType(Section);
+	ptrType$8 = $ptrType(List);
+	ptrType$9 = $ptrType(Code);
+	ptrType$10 = $ptrType(Text);
+	ptrType$11 = $ptrType(Image);
+	ptrType$14 = $ptrType(Link);
+	ptrType$15 = $ptrType(Caption);
+	mapType = $mapType($Int, TickEvent);
 	main = function() {
 		var $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		$r = vecty.RenderBody(new Slide.ptr(new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false), ptrType.nil, ptrType$1.nil, 0)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = vecty.RenderBody(new slide.ptr(new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false), ptrType.nil, ptrType$1.nil, 0, ptrType$2.nil, false, false, new time.Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$3.nil))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: main }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
-	Position.prototype.Class = function() {
+	position.prototype.Class = function() {
 		var _1, p;
 		p = this.$val;
 		_1 = p;
@@ -48904,10 +49067,11 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 			return "";
 		}
 	};
-	$ptrType(Position).prototype.Class = function() { return new Position(this.$get()).Class(); };
-	Slide.ptr.prototype.Mount = function() {
+	$ptrType(position).prototype.Class = function() { return new position(this.$get()).Class(); };
+	slide.ptr.prototype.Mount = function() {
 		var s;
 		s = this;
+		s.remote = new RemoteControl.ptr(new time.Duration(0, 0), {});
 		$go((function $b() {
 			var _r, _r$1, _tuple, data, doc, err, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; data = $f.data; doc = $f.doc; err = $f.err; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -48919,45 +49083,43 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 			if (!($interfaceIsEqual(err, $ifaceNil))) {
 				$panic(err);
 			}
-			doc[0] = new models.Doc.ptr("", "", new $packages["time"].Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$2.nil), sliceType$1.nil, sliceType$2.nil, sliceType$3.nil, sliceType$2.nil);
-			_r$1 = models.Decode(bytes.NewReader(data), (doc.$ptr || (doc.$ptr = new ptrType$3(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, doc)))); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			doc[0] = new models.Doc.ptr("", "", new time.Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$3.nil), sliceType$1.nil, sliceType$2.nil, sliceType$3.nil, sliceType$2.nil);
+			_r$1 = models.Decode(bytes.NewReader(data), (doc.$ptr || (doc.$ptr = new ptrType$4(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, doc)))); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			err = _r$1;
 			if (!($interfaceIsEqual(err, $ifaceNil))) {
 				$panic(err);
 			}
-			console.log(doc[0].Title);
-			s.Doc = doc[0];
+			s.doc = doc[0];
 			$r = vecty.Rerender(s); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.data = data; $f.doc = doc; $f.err = err; $f.$s = $s; $f.$r = $r; return $f;
 		}), []);
 	};
-	Slide.prototype.Mount = function() { return this.$val.Mount(); };
-	Slide.ptr.prototype.UnMount = function() {
+	slide.prototype.Mount = function() { return this.$val.Mount(); };
+	slide.ptr.prototype.UnMount = function() {
 		var s;
 		s = this;
 		s.socket.Close();
 	};
-	Slide.prototype.UnMount = function() { return this.$val.UnMount(); };
-	Slide.ptr.prototype.OnMessage = function(data) {
+	slide.prototype.UnMount = function() { return this.$val.UnMount(); };
+	slide.ptr.prototype.OnMessage = function(data) {
 		var data, s;
 		s = this;
 	};
-	Slide.prototype.OnMessage = function(data) { return this.$val.OnMessage(data); };
-	Slide.ptr.prototype.Render = function() {
+	slide.prototype.OnMessage = function(data) { return this.$val.OnMessage(data); };
+	slide.ptr.prototype.Render = function() {
 		var _1, _arg, _arg$1, _arg$10, _arg$11, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _arg$7, _arg$8, _arg$9, _i, _r, _r$1, _r$10, _r$11, _r$12, _r$13, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, _r$9, _ref, i, pos, s, section, sections, x, x$1, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _1 = $f._1; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$10 = $f._arg$10; _arg$11 = $f._arg$11; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _arg$7 = $f._arg$7; _arg$8 = $f._arg$8; _arg$9 = $f._arg$9; _i = $f._i; _r = $f._r; _r$1 = $f._r$1; _r$10 = $f._r$10; _r$11 = $f._r$11; _r$12 = $f._r$12; _r$13 = $f._r$13; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _r$9 = $f._r$9; _ref = $f._ref; i = $f.i; pos = $f.pos; s = $f.s; section = $f.section; sections = $f.sections; x = $f.x; x$1 = $f.x$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		s = [s];
 		s[0] = this;
-		/* */ if (s[0].Doc === ptrType.nil) { $s = 1; continue; }
+		/* */ if (s[0].doc === ptrType.nil) { $s = 1; continue; }
 		/* */ $s = 2; continue;
-		/* if (s[0].Doc === ptrType.nil) { */ case 1:
+		/* if (s[0].doc === ptrType.nil) { */ case 1:
 			_r = elem.Body(new sliceType$4([])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			$s = -1; return _r;
 		/* } */ case 2:
 		sections = vecty.List.nil;
-		console.log(s[0].activeSlide);
-		_ref = s[0].Doc.Sections;
+		_ref = s[0].doc.Sections;
 		_i = 0;
 		while (true) {
 			if (!(_i < _ref.$length)) { break; }
@@ -48982,23 +49144,23 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		_r$1 = vecty.Markup(new sliceType$7([vecty.Style("display", "none"), event.KeyDown((function(s) { return function $b(e) {
 			var e, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; e = $f.e; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			$r = s[0].UpdatePosition($internalize(e.Object.code, $String)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = s[0].KeyPress($internalize(e.Object.code, $String)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.e = e; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(s))])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		}; })(s)), vecty.MarkupIf(s[0].recording, new sliceType$7([vecty.Style("background", "red")]))])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 		_arg = (x = _r$1, new x.constructor.elem(x));
 		_arg$1 = (x$1 = vecty.Markup(new sliceType$7([vecty.Class(new sliceType$2(["slides", "layout-widescreen"]))])), new x$1.constructor.elem(x$1));
-		_r$2 = vecty.Text(s[0].Doc.Title, new sliceType$4([])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		_r$2 = vecty.Text(s[0].doc.Title, new sliceType$4([])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 		_r$3 = elem.Heading1(new sliceType$4([_r$2])); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
 		_arg$2 = _r$3;
-		_arg$3 = !(s[0].Doc.Subtitle === "");
-		_r$4 = vecty.Text(s[0].Doc.Subtitle, new sliceType$4([])); /* */ $s = 7; case 7: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+		_arg$3 = !(s[0].doc.Subtitle === "");
+		_r$4 = vecty.Text(s[0].doc.Subtitle, new sliceType$4([])); /* */ $s = 7; case 7: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
 		_r$5 = elem.Heading3(new sliceType$4([_r$4])); /* */ $s = 8; case 8: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
 		_arg$4 = _r$5;
 		_r$6 = vecty.If(_arg$3, new sliceType$8([_arg$4])); /* */ $s = 9; case 9: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
 		_arg$5 = _r$6;
-		_arg$6 = !$clone(s[0].Doc.Time, $packages["time"].Time).IsZero();
-		_r$7 = $clone(s[0].Doc.Time, $packages["time"].Time).Format("2 January 2006"); /* */ $s = 10; case 10: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
+		_arg$6 = !$clone(s[0].doc.Time, time.Time).IsZero();
+		_r$7 = $clone(s[0].doc.Time, time.Time).Format("2 January 2006"); /* */ $s = 10; case 10: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
 		_r$8 = vecty.Text(_r$7, new sliceType$4([])); /* */ $s = 11; case 11: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
 		_r$9 = elem.Heading3(new sliceType$4([_r$8])); /* */ $s = 12; case 12: if($c) { $c = false; _r$9 = _r$9.$blk(); } if (_r$9 && _r$9.$blk !== undefined) { break s; }
 		_arg$7 = _r$9;
@@ -49011,17 +49173,27 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		_arg$11 = _r$12;
 		_r$13 = elem.Body(new sliceType$4([_arg, _arg$11])); /* */ $s = 16; case 16: if($c) { $c = false; _r$13 = _r$13.$blk(); } if (_r$13 && _r$13.$blk !== undefined) { break s; }
 		$s = -1; return _r$13;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Slide.ptr.prototype.Render }; } $f._1 = _1; $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$11 = _arg$11; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._r$10 = _r$10; $f._r$11 = _r$11; $f._r$12 = _r$12; $f._r$13 = _r$13; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._r$9 = _r$9; $f._ref = _ref; $f.i = i; $f.pos = pos; $f.s = s; $f.section = section; $f.sections = sections; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: slide.ptr.prototype.Render }; } $f._1 = _1; $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$11 = _arg$11; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._r$10 = _r$10; $f._r$11 = _r$11; $f._r$12 = _r$12; $f._r$13 = _r$13; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._r$9 = _r$9; $f._ref = _ref; $f.i = i; $f.pos = pos; $f.s = s; $f.section = section; $f.sections = sections; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	Slide.prototype.Render = function() { return this.$val.Render(); };
-	Slide.ptr.prototype.UpdatePosition = function(key) {
+	slide.prototype.Render = function() { return this.$val.Render(); };
+	slide.ptr.prototype.showSlide = function(n) {
+		var n, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; n = $f.n; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		s = this;
+		s.activeSlide = n;
+		$r = vecty.Rerender(s); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: slide.ptr.prototype.showSlide }; } $f.n = n; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	slide.prototype.showSlide = function(n) { return this.$val.showSlide(n); };
+	slide.ptr.prototype.KeyPress = function(key) {
 		var _1, key, s, up, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _1 = $f._1; key = $f.key; s = $f.s; up = $f.up; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		s = this;
 		up = false;
 		_1 = key;
 		if (_1 === ("ArrowRight") || _1 === ("ArrowUp")) {
-			if (s.activeSlide < s.Doc.Sections.$length) {
+			if (s.activeSlide < s.doc.Sections.$length) {
 				s.activeSlide = s.activeSlide + (1) >> 0;
 				up = true;
 			}
@@ -49030,6 +49202,30 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 				s.activeSlide = s.activeSlide - (1) >> 0;
 				up = true;
 			}
+		} else if (_1 === ("KeyR")) {
+			if (!s.recording) {
+				s.recording = true;
+				time.Time.copy(s.startTime, time.Now());
+			} else {
+				s.remote.length = $clone(time.Now(), time.Time).Sub($clone(s.startTime, time.Time));
+				s.recording = false;
+			}
+			up = true;
+		} else if (_1 === ("Space")) {
+			if (s.recording) {
+				s.remote.Add(s.activeSlide + 1 >> 0, $clone(time.Now(), time.Time).Sub($clone(s.startTime, time.Time)));
+			}
+			if (s.activeSlide < s.doc.Sections.$length) {
+				s.activeSlide = s.activeSlide + (1) >> 0;
+				up = true;
+			}
+		} else if (_1 === ("KeyP")) {
+			if (!s.auto) {
+				s.auto = true;
+				s.play();
+			}
+		} else {
+			console.log(key);
 		}
 		/* */ if (up) { $s = 1; continue; }
 		/* */ $s = 2; continue;
@@ -49037,9 +49233,47 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 			$r = vecty.Rerender(s); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 2:
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Slide.ptr.prototype.UpdatePosition }; } $f._1 = _1; $f.key = key; $f.s = s; $f.up = up; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: slide.ptr.prototype.KeyPress }; } $f._1 = _1; $f.key = key; $f.s = s; $f.up = up; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	Slide.prototype.UpdatePosition = function(key) { return this.$val.UpdatePosition(key); };
+	slide.prototype.KeyPress = function(key) { return this.$val.KeyPress(key); };
+	slide.ptr.prototype.play = function() {
+		var s;
+		s = this;
+		$go((function $b() {
+			var _entry, _r, _selection, _tuple, dur, e, next, ok, sec, start, tick, x, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _r = $f._r; _selection = $f._selection; _tuple = $f._tuple; dur = $f.dur; e = $f.e; next = $f.next; ok = $f.ok; sec = $f.sec; start = $f.start; tick = $f.tick; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			start = $clone(time.Now(), time.Time);
+			tick = time.NewTicker(new time.Duration(0, 1000000000));
+			$r = s.showSlide(0); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* while (true) { */ case 2:
+				_r = $select([[tick.C]]); /* */ $s = 4; case 4: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_selection = _r;
+				/* */ if (_selection[0] === 0) { $s = 5; continue; }
+				/* */ $s = 6; continue;
+				/* if (_selection[0] === 0) { */ case 5:
+					next = $clone(_selection[1][0], time.Time);
+					dur = $clone(next, time.Time).Sub($clone(start, time.Time));
+					if ((x = s.remote.length, (dur.$high > x.$high || (dur.$high === x.$high && dur.$low > x.$low)))) {
+						tick.Stop();
+						s.auto = false;
+						$s = -1; return;
+					}
+					sec = ((dur.Seconds() >> 0));
+					_tuple = (_entry = s.remote.events[$Int.keyFor(sec)], _entry !== undefined ? [_entry.v, true] : [new TickEvent.ptr(new time.Duration(0, 0), 0), false]);
+					e = $clone(_tuple[0], TickEvent);
+					ok = _tuple[1];
+					/* */ if (ok) { $s = 7; continue; }
+					/* */ $s = 8; continue;
+					/* if (ok) { */ case 7:
+						$r = s.showSlide(e.Slide); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* } */ case 8:
+				/* } */ case 6:
+			/* } */ $s = 2; continue; case 3:
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._entry = _entry; $f._r = _r; $f._selection = _selection; $f._tuple = _tuple; $f.dur = dur; $f.e = e; $f.next = next; $f.ok = ok; $f.sec = sec; $f.start = start; $f.tick = tick; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+		}), []);
+	};
+	slide.prototype.play = function() { return this.$val.play(); };
 	renderElems = function(e) {
 		var _i, _ref, e, o, v;
 		o = vecty.List.nil;
@@ -49104,7 +49338,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		var _arg, _arg$1, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, s, x, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; s = $f.s; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		s = this;
-		_arg = (x = vecty.Markup(new sliceType$7([vecty.MarkupIf(!(new Position(s.Pos).Class() === ""), new sliceType$7([vecty.Class(new sliceType$2([new Position(s.Pos).Class()]))])), vecty.MarkupIf(!(s.s.Classes === sliceType$2.nil), new sliceType$7([vecty.Class(s.s.Classes)])), vecty.MarkupIf(!(s.s.Styles === sliceType$2.nil), new sliceType$7([vecty.Attribute("style", new $String(join(s.s.Styles, " ")))]))])), new x.constructor.elem(x));
+		_arg = (x = vecty.Markup(new sliceType$7([vecty.MarkupIf(!(new position(s.Pos).Class() === ""), new sliceType$7([vecty.Class(new sliceType$2([new position(s.Pos).Class()]))])), vecty.MarkupIf(!(s.s.Classes === sliceType$2.nil), new sliceType$7([vecty.Class(s.s.Classes)])), vecty.MarkupIf(!(s.s.Styles === sliceType$2.nil), new sliceType$7([vecty.Attribute("style", new $String(join(s.s.Styles, " ")))]))])), new x.constructor.elem(x));
 		_arg$1 = !(s.s.Elem === sliceType$6.nil);
 		_r = vecty.Text(s.s.Title, new sliceType$4([])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r$1 = elem.Heading3(new sliceType$4([_r])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
@@ -49255,23 +49489,43 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Caption.ptr.prototype.Render }; } $f._r = _r; $f._r$1 = _r$1; $f.c = c; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Caption.prototype.Render = function() { return this.$val.Render(); };
-	Position.methods = [{prop: "Class", name: "Class", pkg: "", typ: $funcType([], [$String], false)}];
-	ptrType$5.methods = [{prop: "Mount", name: "Mount", pkg: "", typ: $funcType([], [], false)}, {prop: "UnMount", name: "UnMount", pkg: "", typ: $funcType([], [], false)}, {prop: "OnMessage", name: "OnMessage", pkg: "", typ: $funcType([sliceType], [], false)}, {prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}, {prop: "UpdatePosition", name: "UpdatePosition", pkg: "", typ: $funcType([$String], [], false)}, {prop: "renderSections", name: "renderSections", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([], [vecty.List], false)}];
-	ptrType$6.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
+	RemoteControl.ptr.prototype.Add = function(n, duration) {
+		var _key, duration, e, n, r;
+		r = this;
+		e = new TickEvent.ptr(duration, n);
+		_key = ((duration.Seconds() >> 0)); (r.events || $throwRuntimeError("assignment to entry in nil map"))[$Int.keyFor(_key)] = { k: _key, v: $clone(e, TickEvent) };
+	};
+	RemoteControl.prototype.Add = function(n, duration) { return this.$val.Add(n, duration); };
+	TickEvent.ptr.prototype.String = function() {
+		var _r, t, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; t = $f.t; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		t = this;
+		_r = fmt.Sprintf("%d|%v", new sliceType$9([new $Int(t.Slide), new $Int(((t.Time.Seconds() >> 0)))])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		$s = -1; return _r;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: TickEvent.ptr.prototype.String }; } $f._r = _r; $f.t = t; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	TickEvent.prototype.String = function() { return this.$val.String(); };
+	position.methods = [{prop: "Class", name: "Class", pkg: "", typ: $funcType([], [$String], false)}];
+	ptrType$6.methods = [{prop: "Mount", name: "Mount", pkg: "", typ: $funcType([], [], false)}, {prop: "UnMount", name: "UnMount", pkg: "", typ: $funcType([], [], false)}, {prop: "OnMessage", name: "OnMessage", pkg: "", typ: $funcType([sliceType], [], false)}, {prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}, {prop: "showSlide", name: "showSlide", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([$Int], [], false)}, {prop: "KeyPress", name: "KeyPress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "play", name: "play", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([], [], false)}];
 	ptrType$7.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
 	ptrType$8.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
 	ptrType$9.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
 	ptrType$10.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
-	ptrType$13.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
+	ptrType$11.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
 	ptrType$14.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
-	Slide.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "Doc", name: "Doc", anonymous: false, exported: true, typ: ptrType, tag: ""}, {prop: "socket", name: "socket", anonymous: false, exported: false, typ: ptrType$1, tag: ""}, {prop: "activeSlide", name: "activeSlide", anonymous: false, exported: false, typ: $Int, tag: ""}]);
-	Section.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "Pos", name: "Pos", anonymous: false, exported: true, typ: Position, tag: "vecty:\"prop\""}, {prop: "s", name: "s", anonymous: false, exported: false, typ: models.Section, tag: ""}]);
+	ptrType$15.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
+	ptrType$2.methods = [{prop: "Add", name: "Add", pkg: "", typ: $funcType([$Int, time.Duration], [], false)}];
+	TickEvent.methods = [{prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}];
+	slide.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "doc", name: "doc", anonymous: false, exported: false, typ: ptrType, tag: ""}, {prop: "socket", name: "socket", anonymous: false, exported: false, typ: ptrType$1, tag: ""}, {prop: "activeSlide", name: "activeSlide", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "remote", name: "remote", anonymous: false, exported: false, typ: ptrType$2, tag: ""}, {prop: "recording", name: "recording", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "auto", name: "auto", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "startTime", name: "startTime", anonymous: false, exported: false, typ: time.Time, tag: ""}]);
+	Section.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "Pos", name: "Pos", anonymous: false, exported: true, typ: position, tag: "vecty:\"prop\""}, {prop: "s", name: "s", anonymous: false, exported: false, typ: models.Section, tag: ""}]);
 	List.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "list", name: "list", anonymous: false, exported: false, typ: models.List, tag: ""}]);
 	Code.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "code", name: "code", anonymous: false, exported: false, typ: models.Code, tag: ""}]);
 	Text.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "txt", name: "txt", anonymous: false, exported: false, typ: models.Text, tag: ""}]);
 	Image.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "img", name: "img", anonymous: false, exported: false, typ: models.Image, tag: ""}]);
 	Link.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "link", name: "link", anonymous: false, exported: false, typ: models.Link, tag: ""}]);
 	Caption.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "Core", name: "Core", anonymous: true, exported: true, typ: vecty.Core, tag: ""}, {prop: "c", name: "c", anonymous: false, exported: false, typ: models.Caption, tag: ""}]);
+	RemoteControl.init("github.com/gernest/CatAcademy/ui/slide", [{prop: "length", name: "length", anonymous: false, exported: false, typ: time.Duration, tag: ""}, {prop: "events", name: "events", anonymous: false, exported: false, typ: mapType, tag: ""}]);
+	TickEvent.init("", [{prop: "Time", name: "Time", anonymous: false, exported: true, typ: time.Duration, tag: ""}, {prop: "Slide", name: "Slide", anonymous: false, exported: true, typ: $Int, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -49284,12 +49538,13 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		$r = elem.$init(); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = event.$init(); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = prop.$init(); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* */ if ($pkg === $mainPkg) { $s = 10; continue; }
-		/* */ $s = 11; continue;
-		/* if ($pkg === $mainPkg) { */ case 10:
-			$r = main(); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = time.$init(); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ if ($pkg === $mainPkg) { $s = 11; continue; }
+		/* */ $s = 12; continue;
+		/* if ($pkg === $mainPkg) { */ case 11:
+			$r = main(); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$mainFinished = true;
-		/* } */ case 11:
+		/* } */ case 12:
 		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.$init = $init;

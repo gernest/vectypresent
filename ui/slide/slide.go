@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"time"
 
 	"github.com/gopherjs/vecty/event"
 
@@ -55,6 +56,10 @@ type slide struct {
 	doc         *models.Doc
 	socket      *socrates.Socket
 	activeSlide int
+	remote      *RemoteControl
+	recording   bool
+	auto        bool
+	startTime   time.Time
 }
 
 // Mount implements vecty.Mount interface.
@@ -75,6 +80,9 @@ func (s *slide) Mount() {
 	// 	panic(err)
 	// }
 	// s.socket = sock
+	s.remote = &RemoteControl{
+		events: make(map[int]TickEvent),
+	}
 	go func() {
 		data, err := xhr.Send("GET", "/data/", nil)
 		if err != nil {
@@ -124,8 +132,9 @@ func (s *slide) Render() vecty.ComponentOrHTML {
 		vecty.Markup(
 			vecty.Style("display", "none"),
 			event.KeyDown(func(e *vecty.Event) {
-				s.UpdatePosition(e.Get("code").String())
+				s.KeyPress(e.Get("code").String())
 			}),
+			vecty.MarkupIf(s.recording, vecty.Style("background", "red")),
 		),
 		elem.Section(
 			vecty.Markup(
@@ -146,8 +155,12 @@ func (s *slide) Render() vecty.ComponentOrHTML {
 		),
 	)
 }
+func (s *slide) showSlide(n int) {
+	s.activeSlide = n
+	vecty.Rerender(s)
+}
 
-func (s *slide) UpdatePosition(key string) {
+func (s *slide) KeyPress(key string) {
 	up := false
 	switch key {
 	case "ArrowRight", "ArrowUp":
@@ -160,10 +173,57 @@ func (s *slide) UpdatePosition(key string) {
 			s.activeSlide--
 			up = true
 		}
+	case "KeyR":
+		if !s.recording {
+			s.recording = true
+			s.startTime = time.Now()
+		} else {
+			s.remote.length = time.Now().Sub(s.startTime)
+			s.recording = false
+		}
+		up = true
+	case "Space":
+		if s.recording {
+			s.remote.Add(s.activeSlide+1, time.Now().Sub(s.startTime))
+		}
+		if s.activeSlide < len(s.doc.Sections) {
+			s.activeSlide++
+			up = true
+		}
+	case "KeyP":
+		if !s.auto {
+			s.auto = true
+			s.play()
+		}
+	default:
+		println(key)
 	}
 	if up {
 		vecty.Rerender(s)
 	}
+}
+
+func (s *slide) play() {
+	go func() {
+		start := time.Now()
+		tick := time.NewTicker(time.Second)
+		s.showSlide(0)
+		for {
+			select {
+			case next := <-tick.C:
+				dur := next.Sub(start)
+				if dur > s.remote.length {
+					tick.Stop()
+					s.auto = false
+					return
+				}
+				sec := int(dur.Seconds())
+				if e, ok := s.remote.events[sec]; ok {
+					s.showSlide(e.Slide)
+				}
+			}
+		}
+	}()
 }
 
 func renderElems(e []models.Elem) vecty.List {
@@ -414,4 +474,26 @@ func (c *Caption) Render() vecty.ComponentOrHTML {
 	return elem.FigureCaption(
 		vecty.Text(c.c.Text),
 	)
+}
+
+type RemoteControl struct {
+	length time.Duration
+	events map[int]TickEvent
+}
+
+func (r *RemoteControl) Add(n int, duration time.Duration) {
+	e := TickEvent{
+		Time:  duration,
+		Slide: n,
+	}
+	r.events[int(duration.Seconds())] = e
+}
+
+type TickEvent struct {
+	Time  time.Duration
+	Slide int
+}
+
+func (t TickEvent) String() string {
+	return fmt.Sprintf("%d|%v", t.Slide, int(t.Time.Seconds()))
 }
