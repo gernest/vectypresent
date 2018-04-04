@@ -49700,7 +49700,7 @@ $packages["github.com/gopherjs/vecty/prop"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
-	var $pkg = {}, $init, bytes, fmt, models, socrates, xhr, js, vecty, elem, event, prop, url, time, position, slide, Section, List, Code, Text, Image, Link, Caption, RemoteControl, TickEvent, ptrType, ptrType$1, ptrType$2, ptrType$3, sliceType, sliceType$1, sliceType$2, sliceType$3, sliceType$4, ptrType$4, sliceType$5, sliceType$6, sliceType$7, sliceType$8, sliceType$9, ptrType$5, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$11, ptrType$14, ptrType$15, mapType, main, renderElems, renderElem, join;
+	var $pkg = {}, $init, bytes, fmt, models, socrates, xhr, js, vecty, elem, event, prop, url, time, position, slide, Section, List, Code, Text, Image, Link, Caption, RemoteControl, TickEvent, ptrType, ptrType$1, ptrType$2, ptrType$3, sliceType, sliceType$1, sliceType$2, sliceType$3, sliceType$4, ptrType$4, sliceType$5, sliceType$6, sliceType$7, sliceType$8, sliceType$9, ptrType$5, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$11, ptrType$14, ptrType$15, mapType, main, getPos, renderElems, renderElem, join;
 	bytes = $packages["bytes"];
 	fmt = $packages["fmt"];
 	models = $packages["github.com/gernest/CatAcademy/present/models"];
@@ -49946,9 +49946,26 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 		s = this;
 	};
 	slide.prototype.OnMessage = function(data) { return this.$val.OnMessage(data); };
+	getPos = function(active, n) {
+		var _1, active, n;
+		_1 = n;
+		if (_1 === ((active - 2 >> 0))) {
+			return 0;
+		} else if (_1 === ((active - 1 >> 0))) {
+			return 2;
+		} else if (_1 === (active)) {
+			return 4;
+		} else if (_1 === ((active + 1 >> 0))) {
+			return 6;
+		} else if (_1 === ((active + 2 >> 0))) {
+			return 8;
+		} else {
+			return 10;
+		}
+	};
 	slide.ptr.prototype.Render = function() {
-		var _1, _arg, _arg$1, _arg$10, _arg$11, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _arg$7, _arg$8, _arg$9, _i, _r, _r$1, _r$10, _r$11, _r$12, _r$13, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, _r$9, _ref, i, pos, s, section, sections, x, x$1, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _1 = $f._1; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$10 = $f._arg$10; _arg$11 = $f._arg$11; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _arg$7 = $f._arg$7; _arg$8 = $f._arg$8; _arg$9 = $f._arg$9; _i = $f._i; _r = $f._r; _r$1 = $f._r$1; _r$10 = $f._r$10; _r$11 = $f._r$11; _r$12 = $f._r$12; _r$13 = $f._r$13; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _r$9 = $f._r$9; _ref = $f._ref; i = $f.i; pos = $f.pos; s = $f.s; section = $f.section; sections = $f.sections; x = $f.x; x$1 = $f.x$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _arg, _arg$1, _arg$10, _arg$11, _arg$12, _arg$13, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _arg$7, _arg$8, _arg$9, _i, _i$1, _r, _r$1, _r$10, _r$11, _r$12, _r$13, _r$14, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, _r$9, _ref, _ref$1, author, authors, i, initPos, pos, s, section, sections, x, x$1, x$2, x$3, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$10 = $f._arg$10; _arg$11 = $f._arg$11; _arg$12 = $f._arg$12; _arg$13 = $f._arg$13; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _arg$7 = $f._arg$7; _arg$8 = $f._arg$8; _arg$9 = $f._arg$9; _i = $f._i; _i$1 = $f._i$1; _r = $f._r; _r$1 = $f._r$1; _r$10 = $f._r$10; _r$11 = $f._r$11; _r$12 = $f._r$12; _r$13 = $f._r$13; _r$14 = $f._r$14; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _r$9 = $f._r$9; _ref = $f._ref; _ref$1 = $f._ref$1; author = $f.author; authors = $f.authors; i = $f.i; initPos = $f.initPos; pos = $f.pos; s = $f.s; section = $f.section; sections = $f.sections; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		s = [s];
 		s[0] = this;
 		/* */ if (s[0].doc === ptrType.nil) { $s = 1; continue; }
@@ -49957,6 +49974,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 			_r = elem.Body(new sliceType$5([])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			$s = -1; return _r;
 		/* } */ case 2:
+		console.log(s[0].activeSlide);
 		sections = vecty.List.nil;
 		_ref = s[0].doc.Sections;
 		_i = 0;
@@ -49964,55 +49982,57 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 			if (!(_i < _ref.$length)) { break; }
 			i = _i;
 			section = $clone(((_i < 0 || _i >= _ref.$length) ? ($throwRuntimeError("index out of range"), undefined) : _ref.$array[_ref.$offset + _i]), models.Section);
-			pos = 10;
-			_1 = i;
-			if (_1 === ((s[0].activeSlide - 2 >> 0))) {
-				pos = 0;
-			} else if (_1 === ((s[0].activeSlide - 1 >> 0))) {
-				pos = 2;
-			} else if (_1 === (s[0].activeSlide)) {
-				pos = 4;
-			} else if (_1 === ((s[0].activeSlide + 1 >> 0))) {
-				pos = 6;
-			} else if (_1 === ((s[0].activeSlide + 2 >> 0))) {
-				pos = 8;
-			}
+			pos = getPos(s[0].activeSlide, i + 1 >> 0);
 			sections = $append(sections, new Section.ptr(new vecty.Core.ptr($ifaceNil, $ifaceNil, false, false), pos, $clone(section, models.Section)));
 			_i++;
 		}
-		_r$1 = vecty.Markup(new sliceType$8([vecty.Style("display", "none"), event.KeyDown((function(s) { return function $b(e) {
+		authors = vecty.List.nil;
+		_ref$1 = s[0].doc.Authors;
+		_i$1 = 0;
+		/* while (true) { */ case 4:
+			/* if (!(_i$1 < _ref$1.$length)) { break; } */ if(!(_i$1 < _ref$1.$length)) { $s = 5; continue; }
+			author = $clone(((_i$1 < 0 || _i$1 >= _ref$1.$length) ? ($throwRuntimeError("index out of range"), undefined) : _ref$1.$array[_ref$1.$offset + _i$1]), models.Author);
+			_r$1 = elem.Div(new sliceType$5([(x = vecty.Markup(new sliceType$8([vecty.Class(new sliceType$3(["presenter"]))])), new x.constructor.elem(x)), renderElems(author.Elem)])); /* */ $s = 6; case 6: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			authors = $append(authors, _r$1);
+			_i$1++;
+		/* } */ $s = 4; continue; case 5:
+		initPos = getPos(s[0].activeSlide, 0);
+		console.log(new position(initPos).Class());
+		_r$2 = vecty.Markup(new sliceType$8([vecty.Style("display", "none"), event.KeyDown((function(s) { return function $b(e) {
 			var e, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; e = $f.e; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			$r = s[0].KeyPress($internalize(e.Object.code, $String)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.e = e; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(s)), vecty.MarkupIf(s[0].recording, new sliceType$8([vecty.Style("background", "red")]))])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		_arg = (x = _r$1, new x.constructor.elem(x));
-		_arg$1 = (x$1 = vecty.Markup(new sliceType$8([vecty.Class(new sliceType$3(["slides", "layout-widescreen"]))])), new x$1.constructor.elem(x$1));
-		_r$2 = vecty.Text(s[0].doc.Title, new sliceType$5([])); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-		_r$3 = elem.Heading1(new sliceType$5([_r$2])); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-		_arg$2 = _r$3;
-		_arg$3 = !(s[0].doc.Subtitle === "");
-		_r$4 = vecty.Text(s[0].doc.Subtitle, new sliceType$5([])); /* */ $s = 7; case 7: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-		_r$5 = elem.Heading3(new sliceType$5([_r$4])); /* */ $s = 8; case 8: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-		_arg$4 = _r$5;
-		_r$6 = vecty.If(_arg$3, new sliceType$9([_arg$4])); /* */ $s = 9; case 9: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+		}; })(s)), vecty.MarkupIf(s[0].recording, new sliceType$8([vecty.Style("background", "red")]))])); /* */ $s = 7; case 7: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		_arg = (x$1 = _r$2, new x$1.constructor.elem(x$1));
+		_arg$1 = (x$2 = vecty.Markup(new sliceType$8([vecty.Class(new sliceType$3(["slides", "layout-widescreen"]))])), new x$2.constructor.elem(x$2));
+		_arg$2 = (x$3 = vecty.Markup(new sliceType$8([vecty.MarkupIf(!(new position(initPos).Class() === ""), new sliceType$8([vecty.Class(new sliceType$3([new position(initPos).Class()]))]))])), new x$3.constructor.elem(x$3));
+		_r$3 = vecty.Text(s[0].doc.Title, new sliceType$5([])); /* */ $s = 8; case 8: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+		_r$4 = elem.Heading1(new sliceType$5([_r$3])); /* */ $s = 9; case 9: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+		_arg$3 = _r$4;
+		_arg$4 = !(s[0].doc.Subtitle === "");
+		_r$5 = vecty.Text(s[0].doc.Subtitle, new sliceType$5([])); /* */ $s = 10; case 10: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+		_r$6 = elem.Heading3(new sliceType$5([_r$5])); /* */ $s = 11; case 11: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
 		_arg$5 = _r$6;
-		_arg$6 = !$clone(s[0].doc.Time, time.Time).IsZero();
-		_r$7 = $clone(s[0].doc.Time, time.Time).Format("2 January 2006"); /* */ $s = 10; case 10: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
-		_r$8 = vecty.Text(_r$7, new sliceType$5([])); /* */ $s = 11; case 11: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
-		_r$9 = elem.Heading3(new sliceType$5([_r$8])); /* */ $s = 12; case 12: if($c) { $c = false; _r$9 = _r$9.$blk(); } if (_r$9 && _r$9.$blk !== undefined) { break s; }
-		_arg$7 = _r$9;
-		_r$10 = vecty.If(_arg$6, new sliceType$9([_arg$7])); /* */ $s = 13; case 13: if($c) { $c = false; _r$10 = _r$10.$blk(); } if (_r$10 && _r$10.$blk !== undefined) { break s; }
+		_r$7 = vecty.If(_arg$4, new sliceType$9([_arg$5])); /* */ $s = 12; case 12: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
+		_arg$6 = _r$7;
+		_arg$7 = !$clone(s[0].doc.Time, time.Time).IsZero();
+		_r$8 = $clone(s[0].doc.Time, time.Time).Format("2 January 2006"); /* */ $s = 13; case 13: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
+		_r$9 = vecty.Text(_r$8, new sliceType$5([])); /* */ $s = 14; case 14: if($c) { $c = false; _r$9 = _r$9.$blk(); } if (_r$9 && _r$9.$blk !== undefined) { break s; }
+		_r$10 = elem.Heading3(new sliceType$5([_r$9])); /* */ $s = 15; case 15: if($c) { $c = false; _r$10 = _r$10.$blk(); } if (_r$10 && _r$10.$blk !== undefined) { break s; }
 		_arg$8 = _r$10;
-		_r$11 = elem.Article(new sliceType$5([_arg$2, _arg$5, _arg$8])); /* */ $s = 14; case 14: if($c) { $c = false; _r$11 = _r$11.$blk(); } if (_r$11 && _r$11.$blk !== undefined) { break s; }
+		_r$11 = vecty.If(_arg$7, new sliceType$9([_arg$8])); /* */ $s = 16; case 16: if($c) { $c = false; _r$11 = _r$11.$blk(); } if (_r$11 && _r$11.$blk !== undefined) { break s; }
 		_arg$9 = _r$11;
-		_arg$10 = sections;
-		_r$12 = elem.Section(new sliceType$5([_arg$1, _arg$9, _arg$10])); /* */ $s = 15; case 15: if($c) { $c = false; _r$12 = _r$12.$blk(); } if (_r$12 && _r$12.$blk !== undefined) { break s; }
+		_arg$10 = authors;
+		_r$12 = elem.Article(new sliceType$5([_arg$2, _arg$3, _arg$6, _arg$9, _arg$10])); /* */ $s = 17; case 17: if($c) { $c = false; _r$12 = _r$12.$blk(); } if (_r$12 && _r$12.$blk !== undefined) { break s; }
 		_arg$11 = _r$12;
-		_r$13 = elem.Body(new sliceType$5([_arg, _arg$11])); /* */ $s = 16; case 16: if($c) { $c = false; _r$13 = _r$13.$blk(); } if (_r$13 && _r$13.$blk !== undefined) { break s; }
-		$s = -1; return _r$13;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: slide.ptr.prototype.Render }; } $f._1 = _1; $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$11 = _arg$11; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._r$10 = _r$10; $f._r$11 = _r$11; $f._r$12 = _r$12; $f._r$13 = _r$13; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._r$9 = _r$9; $f._ref = _ref; $f.i = i; $f.pos = pos; $f.s = s; $f.section = section; $f.sections = sections; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$r = $r; return $f;
+		_arg$12 = sections;
+		_r$13 = elem.Section(new sliceType$5([_arg$1, _arg$11, _arg$12])); /* */ $s = 18; case 18: if($c) { $c = false; _r$13 = _r$13.$blk(); } if (_r$13 && _r$13.$blk !== undefined) { break s; }
+		_arg$13 = _r$13;
+		_r$14 = elem.Body(new sliceType$5([_arg, _arg$13])); /* */ $s = 19; case 19: if($c) { $c = false; _r$14 = _r$14.$blk(); } if (_r$14 && _r$14.$blk !== undefined) { break s; }
+		$s = -1; return _r$14;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: slide.ptr.prototype.Render }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$11 = _arg$11; $f._arg$12 = _arg$12; $f._arg$13 = _arg$13; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._i = _i; $f._i$1 = _i$1; $f._r = _r; $f._r$1 = _r$1; $f._r$10 = _r$10; $f._r$11 = _r$11; $f._r$12 = _r$12; $f._r$13 = _r$13; $f._r$14 = _r$14; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._r$9 = _r$9; $f._ref = _ref; $f._ref$1 = _ref$1; $f.author = author; $f.authors = authors; $f.i = i; $f.initPos = initPos; $f.pos = pos; $f.s = s; $f.section = section; $f.sections = sections; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	slide.prototype.Render = function() { return this.$val.Render(); };
 	slide.ptr.prototype.showSlide = function(n) {

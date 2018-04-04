@@ -110,27 +110,39 @@ func (s *slide) OnMessage(data []byte) {
 
 }
 
+func getPos(active, n int) position {
+	switch n {
+	case active - 2:
+		return farPast
+	case active - 1:
+		return past
+	case active:
+		return current
+	case active + 1:
+		return next
+	case active + 2:
+		return farNext
+	default:
+		return silent
+	}
+}
 func (s *slide) Render() vecty.ComponentOrHTML {
 	if s.doc == nil {
 		return elem.Body()
 	}
 	var sections vecty.List
 	for i, section := range s.doc.Sections {
-		pos := silent
-		switch i {
-		case s.activeSlide - 2:
-			pos = farPast
-		case s.activeSlide - 1:
-			pos = past
-		case s.activeSlide:
-			pos = current
-		case s.activeSlide + 1:
-			pos = next
-		case s.activeSlide + 2:
-			pos = farNext
-		}
+		pos := getPos(s.activeSlide, i+1)
 		sections = append(sections, &Section{s: section, Pos: pos})
 	}
+	var authors vecty.List
+	for _, author := range s.doc.Authors {
+		authors = append(authors, elem.Div(
+			vecty.Markup(vecty.Class("presenter")),
+			renderElems(author.Elem),
+		))
+	}
+	initPos := getPos(s.activeSlide, 0)
 	return elem.Body(
 		vecty.Markup(
 			vecty.Style("display", "none"),
@@ -144,6 +156,10 @@ func (s *slide) Render() vecty.ComponentOrHTML {
 				vecty.Class("slides", "layout-widescreen"),
 			),
 			elem.Article(
+				vecty.Markup(
+					vecty.MarkupIf(initPos.Class() != "",
+						vecty.Class(initPos.Class())),
+				),
 				elem.Heading1(
 					vecty.Text(s.doc.Title),
 				),
@@ -153,6 +169,7 @@ func (s *slide) Render() vecty.ComponentOrHTML {
 				vecty.If(!s.doc.Time.IsZero(), elem.Heading3(
 					vecty.Text(s.doc.Time.Format(models.TimeFormat)),
 				)),
+				authors,
 			),
 			sections,
 		),
