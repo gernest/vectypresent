@@ -28,7 +28,7 @@ func Build() error {
 const pkg = "github.com/gernest/CatAcademy"
 
 func Ui() error {
-	return sh.RunV("gopherjs", "build", "-o", "static/goslide.js", pkg+"/ui/slide")
+	return sh.RunV("gopherjs", "build", "-o", "static/ui.js", pkg+"/ui")
 }
 
 func Serve() error {

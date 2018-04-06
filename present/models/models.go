@@ -7,7 +7,9 @@ import (
 	"html/template"
 	"io"
 	"net/url"
+	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -260,4 +262,35 @@ func (l *Lines) NextNonEmpty() (text string, ok bool) {
 		}
 	}
 	return
+}
+
+type File struct {
+	IsDir    bool
+	Children []*File
+	Name     string
+	Context  *Doc `json:"-"`
+}
+
+func (d *File) Path() string {
+	return d.Name
+}
+func (d *File) BaseName() string {
+	return filepath.Base(d.Name)
+}
+
+func (d *File) URL() string {
+	s := "/" + filepath.ToSlash(d.Path())
+	return s
+}
+
+func (d *File) Cache(c *sync.Map) {
+	c.Store(d.URL(), d)
+	for _, child := range d.Children {
+		child.Cache(c)
+	}
+}
+
+func base(path string) string {
+	parts := strings.Split(path, string(filepath.Separator))
+	return fmt.Sprintf("/%s/", parts[0])
 }
