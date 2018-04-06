@@ -7,6 +7,7 @@ import (
 	"github.com/gernest/CatAcademy/present/models"
 	"github.com/gernest/CatAcademy/ui/dir"
 	"github.com/gernest/CatAcademy/ui/router"
+	"github.com/gernest/CatAcademy/ui/slide"
 	"github.com/gernest/xhr"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"
@@ -26,7 +27,12 @@ func main() {
 			if key, ok := ctx[0].(string); ok {
 				if vk, ok := cache.Load(key); ok {
 					val := vk.(*models.File)
-					return &dir.Dir{Dir: val, Router: r}
+					if val.IsDir {
+						return &dir.Dir{Dir: val, Router: r}
+					}
+					if val.IsSlide() {
+						return &slide.Slide{}
+					}
 				}
 			}
 		}

@@ -1,9 +1,10 @@
-package main
+package slide
 
 import (
 	"bytes"
 	"fmt"
 	"net/url"
+	"path/filepath"
 	"time"
 
 	"github.com/gopherjs/gopherjs/js"
@@ -12,15 +13,10 @@ import (
 	"github.com/gopherjs/vecty/prop"
 
 	"github.com/gernest/CatAcademy/present/models"
-	"github.com/gernest/socrates"
 	"github.com/gernest/xhr"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"
 )
-
-func main() {
-	vecty.RenderBody(&slide{})
-}
 
 type position int
 
@@ -52,11 +48,10 @@ func (p position) Class() string {
 	}
 }
 
-type slide struct {
+type Slide struct {
 	vecty.Core
 
 	doc         *models.Doc
-	socket      *socrates.Socket
 	activeSlide int
 	remote      *RemoteControl
 	recording   bool
@@ -67,27 +62,18 @@ type slide struct {
 // Mount implements vecty.Mount interface.
 //
 // This opens a websocket connection which allows to remotely control the slides.
-func (s *slide) Mount() {
+func (s *Slide) Mount() {
 	location := js.Global.Get("location").Get("href").String()
 	u, err := url.Parse(location)
 	if err != nil {
-		fmt.Printf("can't open websocket %v\n", err)
-	} else {
-		u.Scheme = "ws"
-		u.Path = "/ws/" + u.Path
-		sock, err := socrates.NewSocket(u.String(), &socrates.Options{
-			OnMessage: s.OnMessage,
-		})
-		if err != nil {
-			panic(err)
-		}
-		s.socket = sock
+		panic(err)
 	}
 	s.remote = &RemoteControl{
 		events: make(map[int]TickEvent),
 	}
+	u.Path = filepath.Join("/slide", u.Path)
 	go func() {
-		data, err := xhr.Send("GET", "/data/", nil)
+		data, err := xhr.Send("GET", u.String(), nil)
 		if err != nil {
 			panic(err)
 		}
@@ -102,11 +88,7 @@ func (s *slide) Mount() {
 
 }
 
-func (s *slide) UnMount() {
-	s.socket.Close()
-}
-
-func (s *slide) OnMessage(data []byte) {
+func (s *Slide) OnMessage(data []byte) {
 
 }
 
@@ -126,7 +108,7 @@ func getPos(active, n int) position {
 		return silent
 	}
 }
-func (s *slide) Render() vecty.ComponentOrHTML {
+func (s *Slide) Render() vecty.ComponentOrHTML {
 	if s.doc == nil {
 		return elem.Body()
 	}
@@ -175,12 +157,12 @@ func (s *slide) Render() vecty.ComponentOrHTML {
 		),
 	)
 }
-func (s *slide) showSlide(n int) {
+func (s *Slide) showSlide(n int) {
 	s.activeSlide = n
 	vecty.Rerender(s)
 }
 
-func (s *slide) KeyPress(key string) {
+func (s *Slide) KeyPress(key string) {
 	up := false
 	switch key {
 	case "ArrowRight", "ArrowUp":
@@ -223,7 +205,7 @@ func (s *slide) KeyPress(key string) {
 	}
 }
 
-func (s *slide) play() {
+func (s *Slide) play() {
 	go func() {
 		start := time.Now()
 		tick := time.NewTicker(time.Second)

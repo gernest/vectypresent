@@ -48,7 +48,7 @@ func Server(path string) error {
 	mux.Handle("/static/", http.StripPrefix(
 		"/static/", http.FileServer(http.Dir("static")),
 	))
-	mux.Handle("/slide/", http.StripPrefix("/slide/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/slide/", http.StripPrefix("/slide", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		u := r.URL.Path
 		if v, ok := cache.Load(u); ok {
 			d := v.(*models.File)
@@ -68,7 +68,10 @@ func Server(path string) error {
 					d.Context = dc
 				}
 			}
-			WriteJson(w, d.Context)
+			err := models.Encode(w, d.Context)
+			if err != nil {
+				log.Println(err)
+			}
 			return
 		}
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
