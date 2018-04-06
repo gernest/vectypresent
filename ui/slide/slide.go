@@ -59,12 +59,19 @@ type Slide struct {
 	startTime   time.Time
 }
 
+const (
+	dirSheet   = "/static/dir.css"
+	slideSheet = "/static/styles.css"
+)
+
 // Mount implements vecty.Mount interface.
 //
 // This opens a websocket connection which allows to remotely control the slides.
 func (s *Slide) Mount() {
-	location := js.Global.Get("location").Get("href").String()
-	u, err := url.Parse(location)
+	location := js.Global.Get("location")
+	addStyle(location.Get("origin").String())
+	href := location.Get("href").String()
+	u, err := url.Parse(href)
 	if err != nil {
 		panic(err)
 	}
@@ -86,6 +93,46 @@ func (s *Slide) Mount() {
 		vecty.Rerender(s)
 	}()
 
+}
+
+func (s *Slide) Unmount() {
+	restoreStyle(js.Global.Get("location").Get("origin").String())
+}
+
+func findSheet(link string) *js.Object {
+	sheets := js.Global.Get("document").Get("styleSheets")
+	length := sheets.Get("length").Int()
+	for i := 0; i < length; i++ {
+		sheet := sheets.Index(i)
+		sid := sheet.Get("href").String()
+		if sid == link {
+			return sheet
+		}
+	}
+	return nil
+}
+
+func addStyle(origin string) {
+	if dir := findSheet(origin + dirSheet); dir != nil {
+		dir.Set("disabled", true)
+	}
+	if s := findSheet(origin + slideSheet); s != nil {
+		s.Set("disabled", false)
+	} else {
+		link := js.Global.Get("document").Call("createElement", "link")
+		link.Set("rel", "stylesheet")
+		link.Set("href", origin+slideSheet)
+		js.Global.Get("document").Get("head").Call("appendChild", link)
+	}
+}
+
+func restoreStyle(origin string) {
+	if s := findSheet(origin + slideSheet); s != nil {
+		s.Set("disabled", true)
+	}
+	if dir := findSheet(origin + dirSheet); dir != nil {
+		dir.Set("disabled", false)
+	}
 }
 
 func (s *Slide) OnMessage(data []byte) {

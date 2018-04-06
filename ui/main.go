@@ -15,11 +15,6 @@ import (
 
 func main() {
 	r := router.NewRouter()
-	r.NotFound = func(...interface{}) vecty.ComponentOrHTML {
-		return elem.Body(
-			vecty.Text("404"),
-		)
-	}
 
 	cache := &sync.Map{}
 	r.NotFound = func(ctx ...interface{}) vecty.ComponentOrHTML {

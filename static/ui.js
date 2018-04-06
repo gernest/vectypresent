@@ -51473,7 +51473,7 @@ $packages["github.com/gernest/xhr"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
-	var $pkg = {}, $init, bytes, fmt, models, xhr, js, vecty, elem, event, prop, url, filepath, time, position, Slide, Section, List, Code, Text, Image, Link, Caption, RemoteControl, TickEvent, sliceType, sliceType$1, ptrType, sliceType$2, sliceType$3, ptrType$1, ptrType$2, sliceType$4, sliceType$5, sliceType$6, sliceType$7, sliceType$8, ptrType$3, sliceType$9, ptrType$4, ptrType$5, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$13, ptrType$14, mapType, getPos, renderElems, renderElem, join;
+	var $pkg = {}, $init, bytes, fmt, models, xhr, js, vecty, elem, event, prop, url, filepath, time, position, Slide, Section, List, Code, Text, Image, Link, Caption, RemoteControl, TickEvent, sliceType, sliceType$1, ptrType, sliceType$2, sliceType$3, ptrType$1, ptrType$2, sliceType$4, sliceType$5, sliceType$6, sliceType$7, sliceType$8, ptrType$3, sliceType$9, ptrType$4, ptrType$5, ptrType$6, ptrType$7, ptrType$8, ptrType$9, ptrType$10, ptrType$13, ptrType$14, mapType, findSheet, addStyle, restoreStyle, getPos, renderElems, renderElem, join;
 	bytes = $packages["bytes"];
 	fmt = $packages["fmt"];
 	models = $packages["github.com/gernest/CatAcademy/present/models"];
@@ -51645,13 +51645,15 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 	};
 	$ptrType(position).prototype.Class = function() { return new position(this.$get()).Class(); };
 	Slide.ptr.prototype.Mount = function() {
-		var _r, _tuple, err, location, s, u, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _tuple = $f._tuple; err = $f.err; location = $f.location; s = $f.s; u = $f.u; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, _tuple, err, href, location, s, u, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _tuple = $f._tuple; err = $f.err; href = $f.href; location = $f.location; s = $f.s; u = $f.u; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		s = [s];
 		u = [u];
 		s[0] = this;
-		location = $internalize($global.location.href, $String);
-		_r = url.Parse(location); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		location = $global.location;
+		addStyle($internalize(location.origin, $String));
+		href = $internalize(location.href, $String);
+		_r = url.Parse(href); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_tuple = _r;
 		u[0] = _tuple[0];
 		err = _tuple[1];
@@ -51683,9 +51685,58 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r$1 = _r$1; $f._r$2 = _r$2; $f._tuple$1 = _tuple$1; $f.data = data; $f.doc = doc; $f.err$1 = err$1; $f.$s = $s; $f.$r = $r; return $f;
 		}; })(s, u), []);
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Slide.ptr.prototype.Mount }; } $f._r = _r; $f._tuple = _tuple; $f.err = err; $f.location = location; $f.s = s; $f.u = u; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Slide.ptr.prototype.Mount }; } $f._r = _r; $f._tuple = _tuple; $f.err = err; $f.href = href; $f.location = location; $f.s = s; $f.u = u; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Slide.prototype.Mount = function() { return this.$val.Mount(); };
+	Slide.ptr.prototype.Unmount = function() {
+		var s;
+		s = this;
+		restoreStyle($internalize($global.location.origin, $String));
+	};
+	Slide.prototype.Unmount = function() { return this.$val.Unmount(); };
+	findSheet = function(link) {
+		var i, length, link, sheet, sheets, sid;
+		sheets = $global.document.styleSheets;
+		length = $parseInt(sheets.length) >> 0;
+		i = 0;
+		while (true) {
+			if (!(i < length)) { break; }
+			sheet = sheets[i];
+			sid = $internalize(sheet.href, $String);
+			if (sid === link) {
+				return sheet;
+			}
+			i = i + (1) >> 0;
+		}
+		return null;
+	};
+	addStyle = function(origin) {
+		var dir, link, origin, s;
+		dir = findSheet(origin + "/static/dir.css");
+		if (!(dir === null)) {
+			dir.disabled = $externalize(true, $Bool);
+		}
+		s = findSheet(origin + "/static/styles.css");
+		if (!(s === null)) {
+			s.disabled = $externalize(false, $Bool);
+		} else {
+			link = $global.document.createElement($externalize("link", $String));
+			link.rel = $externalize("stylesheet", $String);
+			link.href = $externalize(origin + "/static/styles.css", $String);
+			$global.document.head.appendChild(link);
+		}
+	};
+	restoreStyle = function(origin) {
+		var dir, origin, s;
+		s = findSheet(origin + "/static/styles.css");
+		if (!(s === null)) {
+			s.disabled = $externalize(true, $Bool);
+		}
+		dir = findSheet(origin + "/static/dir.css");
+		if (!(dir === null)) {
+			dir.disabled = $externalize(false, $Bool);
+		}
+	};
 	Slide.ptr.prototype.OnMessage = function(data) {
 		var data, s;
 		s = this;
@@ -52107,7 +52158,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 	};
 	TickEvent.prototype.String = function() { return this.$val.String(); };
 	position.methods = [{prop: "Class", name: "Class", pkg: "", typ: $funcType([], [$String], false)}];
-	ptrType$5.methods = [{prop: "Mount", name: "Mount", pkg: "", typ: $funcType([], [], false)}, {prop: "OnMessage", name: "OnMessage", pkg: "", typ: $funcType([sliceType$1], [], false)}, {prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}, {prop: "showSlide", name: "showSlide", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([$Int], [], false)}, {prop: "KeyPress", name: "KeyPress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "play", name: "play", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([], [], false)}];
+	ptrType$5.methods = [{prop: "Mount", name: "Mount", pkg: "", typ: $funcType([], [], false)}, {prop: "Unmount", name: "Unmount", pkg: "", typ: $funcType([], [], false)}, {prop: "OnMessage", name: "OnMessage", pkg: "", typ: $funcType([sliceType$1], [], false)}, {prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}, {prop: "showSlide", name: "showSlide", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([$Int], [], false)}, {prop: "KeyPress", name: "KeyPress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "play", name: "play", pkg: "github.com/gernest/CatAcademy/ui/slide", typ: $funcType([], [], false)}];
 	ptrType$6.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
 	ptrType$7.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
 	ptrType$8.methods = [{prop: "Render", name: "Render", pkg: "", typ: $funcType([], [vecty.ComponentOrHTML], false)}];
@@ -52148,7 +52199,7 @@ $packages["github.com/gernest/CatAcademy/ui/slide"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/gernest/CatAcademy/ui"] = (function() {
-	var $pkg = {}, $init, json, models, dir, router, slide, xhr, vecty, elem, sync, Home, sliceType, ptrType, ptrType$1, ptrType$2, ptrType$3, ptrType$4, ptrType$5, sliceType$1, sliceType$2, ptrType$6, main;
+	var $pkg = {}, $init, json, models, dir, router, slide, xhr, vecty, elem, sync, Home, ptrType, ptrType$1, ptrType$2, ptrType$3, ptrType$4, sliceType, ptrType$5, sliceType$1, sliceType$2, ptrType$6, main;
 	json = $packages["encoding/json"];
 	models = $packages["github.com/gernest/CatAcademy/present/models"];
 	dir = $packages["github.com/gernest/CatAcademy/ui/dir"];
@@ -52172,12 +52223,12 @@ $packages["github.com/gernest/CatAcademy/ui"] = (function() {
 		this.cache = cache_;
 		this.router = router_;
 	});
-	sliceType = $sliceType(vecty.MarkupOrChild);
 	ptrType = $ptrType(models.File);
 	ptrType$1 = $ptrType(router.Router);
 	ptrType$2 = $ptrType(models.Doc);
 	ptrType$3 = $ptrType(slide.RemoteControl);
 	ptrType$4 = $ptrType($packages["time"].Location);
+	sliceType = $sliceType(vecty.MarkupOrChild);
 	ptrType$5 = $ptrType(sync.Map);
 	sliceType$1 = $sliceType($Uint8);
 	sliceType$2 = $sliceType(ptrType);
@@ -52188,14 +52239,6 @@ $packages["github.com/gernest/CatAcademy/ui"] = (function() {
 		cache = [cache];
 		r = [r];
 		r[0] = router.NewRouter();
-		r[0].NotFound = (function(cache, r) { return function $b(param) {
-			var _r, _r$1, param, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; param = $f.param; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			_r = vecty.Text("404", new sliceType([])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r$1 = elem.Body(new sliceType([_r])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			$s = -1; return _r$1;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._r$1 = _r$1; $f.param = param; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(cache, r);
 		cache[0] = new sync.Map.ptr(new sync.Mutex.ptr(0, 0), new $packages["sync/atomic"].Value.ptr($ifaceNil), false, 0);
 		r[0].NotFound = (function(cache, r) { return function $b(ctx) {
 			var _r, _r$1, _r$2, _tuple, _tuple$1, ctx, key, ok, ok$1, val, vk, $s, $r;
