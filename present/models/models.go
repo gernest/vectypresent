@@ -17,6 +17,9 @@ func init() {
 	gob.Register(Text{})
 	gob.Register(Code{})
 	gob.Register(List{})
+	gob.Register(Link{})
+	gob.Register(Image{})
+	gob.Register(Caption{})
 }
 
 func Encode(o io.Writer, v interface{}) error {
@@ -274,6 +277,11 @@ type File struct {
 func (d *File) Path() string {
 	return d.Name
 }
+
+func (d *File) IsSlide() bool {
+	return filepath.Ext(d.Name) == ".slide"
+}
+
 func (d *File) BaseName() string {
 	return filepath.Base(d.Name)
 }
