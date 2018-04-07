@@ -1,8 +1,0 @@
-graph TB
-    user(Hack on CatAcademy problem)--Submit PR-->github(Your practice github repo)
-    subgraph hooks
-    github--notify about the PR-->CatAcademy
-    CatAcademy--build/test/grade-->github
-    end
-    subgraph zed
-

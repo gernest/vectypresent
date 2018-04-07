@@ -1,8 +1,8 @@
 package dir
 
 import (
-	"github.com/gernest/CatAcademy/present/models"
-	"github.com/gernest/CatAcademy/ui/router"
+	"github.com/gernest/vectypresent/present/models"
+	"github.com/gernest/vectypresent/ui/router"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"
 	"github.com/gopherjs/vecty/event"

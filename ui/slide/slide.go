@@ -12,7 +12,7 @@ import (
 
 	"github.com/gopherjs/vecty/prop"
 
-	"github.com/gernest/CatAcademy/present/models"
+	"github.com/gernest/vectypresent/present/models"
 	"github.com/gernest/xhr"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"

@@ -7,7 +7,7 @@ package present
 import (
 	"strings"
 
-	"github.com/gernest/CatAcademy/present/models"
+	"github.com/gernest/vectypresent/present/models"
 )
 
 func init() {

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gernest/CatAcademy/present/models"
+	"github.com/gernest/vectypresent/present/models"
 )
 
 func TestParseCode(t *testing.T) {

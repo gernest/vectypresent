@@ -12,8 +12,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/gernest/CatAcademy/present"
-	"github.com/gernest/CatAcademy/present/models"
+	"github.com/gernest/vectypresent/present"
+	"github.com/gernest/vectypresent/present/models"
 	"github.com/urfave/cli"
 )
 
