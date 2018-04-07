@@ -48,7 +48,7 @@ func Server(path string) error {
 	mux.Handle("/static/", http.StripPrefix(
 		"/static/", http.FileServer(http.Dir("static")),
 	))
-	mux.Handle("/slide/", http.StripPrefix("/slide", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/files/", http.StripPrefix("/files", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		u := r.URL.Path
 		if v, ok := cache.Load(u); ok {
 			d := v.(*models.File)
@@ -66,6 +66,14 @@ func Server(path string) error {
 					if err != nil {
 					}
 					d.Context = dc
+				} else {
+					f, err := os.Open(d.Path())
+					if err != nil {
+						log.Println(err)
+					}
+					defer f.Close()
+					io.Copy(w, f)
+					return
 				}
 			}
 			err := models.Encode(w, d.Context)
@@ -112,6 +120,9 @@ func LoadChildren(d *models.File) (*models.File, error) {
 	}
 	for _, info := range o {
 		if !strings.HasPrefix(info.Name(), ".") {
+			if !info.IsDir() && !matchExt(filepath.Ext(info.Name())) {
+				continue
+			}
 			c, err := loadIInfo(d, info)
 			if err != nil {
 				return nil, err
@@ -141,15 +152,12 @@ func loadIInfo(parent *models.File, info os.FileInfo) (*models.File, error) {
 	if child.IsDir {
 		return LoadChildren(child)
 	}
-	if !matchExt(filepath.Ext(info.Name())) {
-		return nil, nil
-	}
 	return child, nil
 }
 
 func matchExt(ext string) bool {
 	switch ext {
-	case ".article", ".slide":
+	case ".article", ".slide", ".go":
 		return true
 	default:
 		return false

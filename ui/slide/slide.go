@@ -78,7 +78,7 @@ func (s *Slide) Mount() {
 	s.remote = &RemoteControl{
 		events: make(map[int]TickEvent),
 	}
-	u.Path = filepath.Join("/slide", u.Path)
+	u.Path = filepath.Join("/files", u.Path)
 	go func() {
 		data, err := xhr.Send("GET", u.String(), nil)
 		if err != nil {

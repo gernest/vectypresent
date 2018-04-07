@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"net/url"
+	"path/filepath"
 	"sync"
 
 	"github.com/gernest/vectypresent/present/models"
@@ -9,6 +11,7 @@ import (
 	"github.com/gernest/vectypresent/ui/router"
 	"github.com/gernest/vectypresent/ui/slide"
 	"github.com/gernest/xhr"
+	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"
 )
@@ -28,6 +31,7 @@ func main() {
 					if val.IsSlide() {
 						return &slide.Slide{}
 					}
+					return &PlainText{}
 				}
 			}
 		}
@@ -73,4 +77,45 @@ func (h *Home) Render() vecty.ComponentOrHTML {
 		)
 	}
 	return elem.Body()
+}
+
+type PlainText struct {
+	vecty.Core
+	txt string
+}
+
+func (p *PlainText) Mount() {
+	location := js.Global.Get("location")
+	href := location.Get("href").String()
+	u, err := url.Parse(href)
+	if err != nil {
+		panic(err)
+	}
+	u.Path = filepath.Join("/files", u.Path)
+	go func() {
+		data, err := xhr.Send("GET", u.String(), nil)
+		if err != nil {
+			panic(err)
+		}
+		p.txt = string(data)
+		vecty.Rerender(p)
+	}()
+}
+
+func (p *PlainText) Render() vecty.ComponentOrHTML {
+	return elem.Body(
+		elem.Div(
+			vecty.Markup(
+				vecty.Class("code"),
+			),
+			elem.Code(
+				elem.Preformatted(
+					vecty.Markup(
+						vecty.Style("text-align", "initial"),
+						vecty.UnsafeHTML(p.txt),
+					),
+				),
+			),
+		),
+	)
 }
