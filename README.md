@@ -1,8 +1,3 @@
+# vectypresent
 
-# Overview
-
-![workflow](workflow.png)
-
-# Infra
-
-![services](services.png)
+Go presentations with vecty frontend
