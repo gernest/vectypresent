@@ -25,17 +25,42 @@ func (d *Dir) Render() vecty.ComponentOrHTML {
 	var dirList []*models.File
 	var slideList []*models.File
 	var filesList []*models.File
+	var articleList []*models.File
 	for _, child := range d.Dir.Children {
 		switch {
 		case child.IsDir:
 			dirList = append(dirList, child)
 		case child.IsSlide():
 			slideList = append(slideList, child)
+		case child.IsArticle():
+			articleList = append(articleList, child)
 		default:
 			filesList = append(filesList, child)
 		}
 	}
 	var list vecty.List
+	if len(articleList) > 0 {
+		list = append(list, elem.Heading4(
+			vecty.Text("Articles :"),
+		))
+		for _, child := range articleList {
+			url := child.URL()
+			println(url)
+			list = append(list, elem.Description(
+				elem.Description(
+					elem.Anchor(
+						vecty.Markup(
+							prop.Href(child.URL()),
+							event.Click(func(e *vecty.Event) {
+								d.Router.PushState(url)
+							}).PreventDefault(),
+						),
+						vecty.Text(child.BaseName()),
+					),
+				),
+			))
+		}
+	}
 	if len(slideList) > 0 {
 		list = append(list, elem.Heading4(
 			vecty.Text("Slide decks:"),
@@ -88,10 +113,7 @@ func (d *Dir) Render() vecty.ComponentOrHTML {
 				elem.Description(
 					elem.Anchor(
 						vecty.Markup(
-							prop.Href(child.URL()),
-							event.Click(func(e *vecty.Event) {
-								d.Router.PushState(url)
-							}).PreventDefault(),
+							prop.Href(url),
 						),
 						vecty.Text(child.BaseName()),
 					),
