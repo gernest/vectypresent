@@ -2,10 +2,12 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"io"
 	"io/ioutil"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -37,6 +39,7 @@ func Server(path string) error {
 	if err != nil {
 		return err
 	}
+	basePath := fmt.Sprintf("/%s/", filepath.Base(path))
 
 	dirDoc.Cache(cache)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -48,6 +51,11 @@ func Server(path string) error {
 	mux.Handle("/static/", http.StripPrefix(
 		"/static/", http.FileServer(http.Dir("static")),
 	))
+	fileServer := http.FileServer(http.Dir(path))
+	mux.Handle(basePath, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		println(r.URL.Path)
+		http.StripPrefix(basePath, fileServer).ServeHTTP(w, r)
+	}))
 	mux.Handle("/files/", http.StripPrefix("/files", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		u := r.URL.Path
 		if v, ok := cache.Load(u); ok {
@@ -57,7 +65,9 @@ func Server(path string) error {
 				return
 			}
 			if d.Context == nil {
-				if filepath.Ext(d.Name) == ".slide" {
+				ext := filepath.Ext(d.Name)
+				switch ext {
+				case ".slide", ".article":
 					f, err := os.Open(d.Path())
 					if err != nil {
 					}
@@ -66,13 +76,15 @@ func Server(path string) error {
 					if err != nil {
 					}
 					d.Context = dc
-				} else {
+				default:
 					f, err := os.Open(d.Path())
 					if err != nil {
 						log.Println(err)
 					}
 					defer f.Close()
-					io.Copy(w, f)
+					stat, _ := f.Stat()
+					w.Header().Set("Content-Type", mime.TypeByExtension(ext))
+					http.ServeContent(w, r, d.Path(), stat.ModTime(), f)
 					return
 				}
 			}

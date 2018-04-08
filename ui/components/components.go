@@ -2,9 +2,11 @@ package components
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/gernest/vectypresent/present/models"
+	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"
 	"github.com/gopherjs/vecty/prop"
@@ -187,6 +189,10 @@ type Image struct {
 }
 
 func (i *Image) Render() vecty.ComponentOrHTML {
+	if !filepath.IsAbs(i.img.URL) {
+		location := js.Global.Get("location").Get("pathname").String()
+		i.img.URL = filepath.Join(filepath.Dir(location), i.img.URL)
+	}
 	return elem.Div(
 		vecty.Markup(vecty.Class("image")),
 		elem.Image(

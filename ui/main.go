@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/gernest/vectypresent/present/models"
+	"github.com/gernest/vectypresent/ui/article"
 	"github.com/gernest/vectypresent/ui/dir"
 	"github.com/gernest/vectypresent/ui/router"
 	"github.com/gernest/vectypresent/ui/slide"
@@ -25,13 +26,16 @@ func main() {
 			if key, ok := ctx[0].(string); ok {
 				if vk, ok := cache.Load(key); ok {
 					val := vk.(*models.File)
-					if val.IsDir {
+					switch {
+					case val.IsDir:
 						return &dir.Dir{Dir: val, Router: r}
-					}
-					if val.IsSlide() {
+					case val.IsSlide():
 						return &slide.Slide{}
+					case val.IsArticle():
+						return &article.Article{}
+					default:
+						return &PlainText{}
 					}
-					return &PlainText{}
 				}
 			}
 		}

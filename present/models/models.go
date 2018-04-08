@@ -281,6 +281,9 @@ func (d *File) Path() string {
 func (d *File) IsSlide() bool {
 	return filepath.Ext(d.Name) == ".slide"
 }
+func (d *File) IsArticle() bool {
+	return filepath.Ext(d.Name) == ".article"
+}
 
 func (d *File) BaseName() string {
 	return filepath.Base(d.Name)
