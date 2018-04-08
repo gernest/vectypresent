@@ -17,6 +17,10 @@ type Dir struct {
 	Router *router.Router
 }
 
+func (d *Dir) Mount() {
+	vecty.SetTitle(d.Dir.Name)
+}
+
 func (d *Dir) Render() vecty.ComponentOrHTML {
 	var dirList []*models.File
 	var slideList []*models.File

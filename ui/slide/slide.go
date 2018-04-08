@@ -90,6 +90,7 @@ func (s *Slide) Mount() {
 			panic(err)
 		}
 		s.doc = doc
+		vecty.SetTitle(doc.Title)
 		vecty.Rerender(s)
 	}()
 

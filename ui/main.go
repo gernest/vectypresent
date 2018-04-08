@@ -66,6 +66,7 @@ func (h *Home) Mount() {
 		}
 		h.dir = dir
 		h.dir.Cache(h.cache)
+		vecty.SetTitle(dir.Name)
 		vecty.Rerender(h)
 	}()
 }
