@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -53,7 +52,6 @@ func Server(path string) error {
 	))
 	fileServer := http.FileServer(http.Dir(path))
 	mux.Handle(basePath, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		println(r.URL.Path)
 		http.StripPrefix(basePath, fileServer).ServeHTTP(w, r)
 	}))
 	mux.Handle("/files/", http.StripPrefix("/files", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -64,35 +62,25 @@ func Server(path string) error {
 				http.Error(w, "bad request", http.StatusBadRequest)
 				return
 			}
-			if d.Context == nil {
-				ext := filepath.Ext(d.Name)
-				switch ext {
-				case ".slide", ".article":
-					f, err := os.Open(d.Path())
-					if err != nil {
-					}
-					defer f.Close()
-					dc, err := present.Parse(f, d.Path(), 0)
-					if err != nil {
-					}
-					d.Context = dc
-				default:
-					f, err := os.Open(d.Path())
-					if err != nil {
-						log.Println(err)
-					}
-					defer f.Close()
-					stat, _ := f.Stat()
-					w.Header().Set("Content-Type", mime.TypeByExtension(ext))
-					http.ServeContent(w, r, d.Path(), stat.ModTime(), f)
-					return
+			ext := filepath.Ext(d.Name)
+			switch ext {
+			case ".slide", ".article":
+				f, err := os.Open(d.Path())
+				if err != nil {
 				}
+				defer f.Close()
+				dc, err := present.Parse(f, d.Path(), 0)
+				if err != nil {
+				}
+				err = models.Encode(w, dc)
+				if err != nil {
+					log.Println(err)
+				}
+				return
+			default:
+				http.ServeFile(w, r, d.Path())
+				return
 			}
-			err := models.Encode(w, d.Context)
-			if err != nil {
-				log.Println(err)
-			}
-			return
 		}
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	})))

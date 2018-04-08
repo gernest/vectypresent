@@ -271,7 +271,6 @@ type File struct {
 	IsDir    bool
 	Children []*File
 	Name     string
-	Context  *Doc `json:"-"`
 }
 
 func (d *File) Path() string {
