@@ -33,9 +33,6 @@ const (
 	slideSheet = "/static/styles.css"
 )
 
-// Mount implements vecty.Mount interface.
-//
-// This opens a websocket connection which allows to remotely control the slides.
 func (s *Slide) Mount() {
 	location := js.Global.Get("location")
 	addStyle(location.Get("origin").String())
