@@ -53,6 +53,7 @@ const indexTpl = `
 </head>
 
 <body>
+	<div class="loading">loading...</div>
 </body>
 <footer>
     <script src="/static/ui.js"></script>
