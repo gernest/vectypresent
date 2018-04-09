@@ -16,7 +16,7 @@ go get github.com/gernest/vectypresent
 # Usage
 
 ```
-vectypresent /path/to/directory/with/*.slides
+vectypresent serve /path/to/directory/with/*.slides
 ```
 
 A quick way to test is to clone the go talks  repo
@@ -24,7 +24,7 @@ A quick way to test is to clone the go talks  repo
 ```
 git clone https://github.com/golang/talks.git
 
-vectypresent talks/
+vectypresent serve talks/
 ```
 
 Open your browser on localhost:8080 to browse for the slides presentation
