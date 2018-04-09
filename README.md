@@ -2,7 +2,8 @@
 
 Go presentation tool with vecty frontend
 
-[demo](https://vectypresent.bq.co.tz)
+ Please check this [demo](https://vectypresent.bq.co.tz) of the tool rendering
+ the go/talks repo.
 
 This is a fork of [go present tool](https://github.com/golang/tools/tree/master/cmd/present) that uses vecty as the frontend.
 
