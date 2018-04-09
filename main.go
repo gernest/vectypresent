@@ -16,7 +16,7 @@ func main() {
 		server.Command(),
 	}
 	if err := a.Run(os.Args); err != nil {
-		fmt.Printf("catac: %v\n", err)
+		fmt.Printf("vectypresent: %v\n", err)
 		os.Exit(1)
 	}
 }
