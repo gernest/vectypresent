@@ -14,6 +14,7 @@ import (
 	"strings"
 	"sync"
 
+	gzip "github.com/NYTimes/gziphandler"
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/gernest/vectypresent/data"
 	"github.com/gernest/vectypresent/present"
@@ -89,11 +90,11 @@ func Server(path string) error {
 		WriteJson(w, dirDoc)
 	})
 	mux.Handle("/static/", http.StripPrefix(
-		"/static/", http.FileServer(&assetfs.AssetFS{
+		"/static/", gzip.GzipHandler(http.FileServer(&assetfs.AssetFS{
 			Asset:     data.Asset,
 			AssetDir:  data.AssetDir,
 			AssetInfo: data.AssetInfo,
-		}),
+		})),
 	))
 	fileServer := http.FileServer(http.Dir(path))
 	mux.Handle(basePath, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -177,21 +178,6 @@ func Server(path string) error {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	})))
 	return http.ListenAndServe(":8080", mux)
-}
-func cleanPath(path string) string {
-	path = filepath.Clean(path)
-	if filepath.IsAbs(path) {
-		wd, err := os.Getwd()
-		if err != nil {
-			log.Fatal(err)
-		}
-		rel, err := filepath.Rel(wd, path)
-		if err != nil {
-			log.Fatal(err)
-		}
-		return rel
-	}
-	return path
 }
 
 func WriteJson(o io.Writer, v interface{}) error {
