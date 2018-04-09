@@ -6,6 +6,8 @@ import (
 	"github.com/magefile/mage/sh"
 )
 
+const manifestFile = "docker-manifest.yaml"
+
 func Build() error {
 	return sh.RunV("go", "build", "-o", "vpresent")
 }
@@ -25,4 +27,11 @@ func Serve() error {
 
 func Release() error {
 	return sh.RunV("goreleaser")
+}
+
+func Manifest() error {
+	return sh.RunV("manifest-tool",
+		"--username", "$DOCKERHUB_USER",
+		"--password", "$DOCKERHUB_PASSWORD",
+		"push", "from-spec", manifestFile)
 }
