@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io"
@@ -34,6 +35,9 @@ const (
 )
 
 func Server(path string) error {
+	if path == "" {
+		return errors.New("no directory specified, please supply the path to directory to render")
+	}
 	mux := http.NewServeMux()
 	cache := &sync.Map{}
 	t, err := template.ParseGlob("templates/present/*")
