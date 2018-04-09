@@ -26,7 +26,7 @@ func Serve() error {
 }
 
 func Release() error {
-	return sh.RunV("goreleaser")
+	return sh.RunV("goreleaser", "--rm-dist")
 }
 
 func Manifest() error {
