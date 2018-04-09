@@ -284,3 +284,16 @@ func (c *Caption) Render() vecty.ComponentOrHTML {
 		vecty.Text(c.c.Text),
 	)
 }
+
+type Spinner struct {
+	vecty.Core
+}
+
+func (*Spinner) Render() vecty.ComponentOrHTML {
+	return elem.Body(
+		elem.Div(
+			vecty.Markup(vecty.Class("loading")),
+			vecty.Text("loading"),
+		),
+	)
+}

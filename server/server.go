@@ -39,10 +39,10 @@ func Server(path string) error {
 		return err
 	}
 	basePath := fmt.Sprintf("/%s/", filepath.Base(path))
-
+	cache.Store("/", dirDoc)
 	dirDoc.Cache(cache)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		t.ExecuteTemplate(w, "index.html", nil)
+		t.ExecuteTemplate(w, "index.html", dirDoc)
 	})
 	mux.HandleFunc("/context", func(w http.ResponseWriter, r *http.Request) {
 		WriteJson(w, dirDoc)
@@ -52,6 +52,25 @@ func Server(path string) error {
 	))
 	fileServer := http.FileServer(http.Dir(path))
 	mux.Handle(basePath, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		u := r.URL.Path
+		if strings.HasSuffix(u, "/") {
+			// It is a directory listing.
+			dir := strings.TrimSuffix(u, "/")
+			if doc, ok := cache.Load(dir); ok {
+				t.ExecuteTemplate(w, "index.html", doc)
+				return
+			}
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
+		}
+		ext := filepath.Ext(u)
+		switch ext {
+		case "", ".article", ".slide":
+			if doc, ok := cache.Load(u); ok {
+				t.ExecuteTemplate(w, "index.html", doc)
+				return
+			}
+		}
 		http.StripPrefix(basePath, fileServer).ServeHTTP(w, r)
 	}))
 	mux.Handle("/files/", http.StripPrefix("/files", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

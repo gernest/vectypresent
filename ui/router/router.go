@@ -1,6 +1,8 @@
 package router
 
 import (
+	"github.com/gernest/locstor"
+	"github.com/gernest/vectypresent/ui/components"
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"
@@ -15,6 +17,7 @@ type Router struct {
 	active   string
 	NotFound HandlerFunc
 	context  []interface{}
+	ready    bool
 }
 
 const ActiveRoute = "ACTIVE_ROUTE"
@@ -24,14 +27,23 @@ type HandlerFunc func(...interface{}) vecty.ComponentOrHTML
 // NewRouter returns new Router instance.
 func NewRouter() *Router {
 	active := "/"
-	// if a, err := locstor.GetItem(ActiveRoute); err == nil {
-	// 	active = a
-	// }
+	if a, err := locstor.GetItem(ActiveRoute); err == nil {
+		active = a
+	}
 	r := &Router{
 		active:   active,
 		handlers: make(map[string]HandlerFunc),
 	}
 	return r
+}
+
+func (r *Router) BeforeRendering() func() {
+	return func() {
+		if !r.ready {
+			r.ready = true
+			vecty.Rerender(r)
+		}
+	}
 }
 
 // Mount registers event listener for onpopstate global event.
@@ -50,13 +62,16 @@ func (r *Router) PushState(path string, ctx ...interface{}) {
 	js.Global.Get("history").Call("pushState", nil, "", path)
 	r.active = path
 	r.context = ctx
-	// locstor.SetItem(ActiveRoute, path)
+	locstor.SetItem(ActiveRoute, path)
 	vecty.Rerender(r)
 }
 
 // Render renders the active component register in the router. If there was any
 // context supplied which calling pushState, it is passed to the handler.
 func (r *Router) Render() vecty.ComponentOrHTML {
+	if !r.ready {
+		return &components.Spinner{}
+	}
 	if r.active == "" {
 		r.active = "/"
 	}
@@ -85,4 +100,5 @@ func (r *Router) Handle(pattern string, h HandlerFunc) {
 // unmounted.
 func (r *Router) Unmount() {
 	js.Global.Set("onpopstate", nil)
+	locstor.Clear()
 }

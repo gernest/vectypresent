@@ -19,7 +19,6 @@ import (
 
 func main() {
 	r := router.NewRouter()
-
 	cache := &sync.Map{}
 	r.NotFound = func(ctx ...interface{}) vecty.ComponentOrHTML {
 		if len(ctx) > 0 {
@@ -43,22 +42,7 @@ func main() {
 			vecty.Text("404"),
 		)
 	}
-	r.Handle("/", func(ctx ...interface{}) vecty.ComponentOrHTML {
-		return &Home{cache: cache, router: r}
-	})
-	vecty.RenderBody(r)
-}
-
-type Home struct {
-	vecty.Core
-
-	dir    *models.File
-	cache  *sync.Map
-	router *router.Router
-}
-
-func (h *Home) Mount() {
-	go func() {
+	go func(done func()) {
 		data, err := xhr.Send("GET", "/context", nil)
 		if err != nil {
 			panic(err)
@@ -68,20 +52,11 @@ func (h *Home) Mount() {
 		if err != nil {
 			panic(err)
 		}
-		h.dir = dir
-		h.dir.Cache(h.cache)
-		vecty.SetTitle(dir.Name)
-		vecty.Rerender(h)
-	}()
-}
-
-func (h *Home) Render() vecty.ComponentOrHTML {
-	if h.dir != nil {
-		return elem.Body(
-			&dir.Dir{Dir: h.dir, Router: h.router},
-		)
-	}
-	return elem.Body()
+		cache.Store("/", dir)
+		dir.Cache(cache)
+		done()
+	}(r.BeforeRendering())
+	vecty.RenderBody(r)
 }
 
 type PlainText struct {
