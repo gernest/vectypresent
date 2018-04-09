@@ -22,3 +22,7 @@ func Serve() error {
 	}
 	return sh.RunV("./vpresent", "serve")
 }
+
+func Release() error {
+	return sh.RunV("goreleaser")
+}
