@@ -31,3 +31,19 @@ archive:
   - changelog*
   - CHANGELOG*
 dist: dist
+
+dockers:
+  - 
+    image: gernest/vectypresent
+    goos: linux
+    goarch: amd64
+    tag_template: "{{.Tag}}-amd64"
+    binary: vectypresent
+    dockerfile: Dockerfile
+  - 
+    image: gernest/vectypresent
+    goos: linux
+    goarch: "386"
+    binary: vectypresent
+    dockerfile: Dockerfile
+    tag_template: "{{.Tag}}-386"
