@@ -10,8 +10,8 @@ import (
 
 func main() {
 	a := cli.NewApp()
-	a.Name = "catac"
-	a.Usage = "simple programming lessons companion"
+	a.Name = "vectypresent"
+	a.Usage = "present with vecty frontend"
 	a.Commands = []cli.Command{
 		server.Command(),
 	}
