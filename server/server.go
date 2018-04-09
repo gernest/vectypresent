@@ -14,6 +14,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/elazarl/go-bindata-assetfs"
+	"github.com/gernest/vectypresent/data"
 	"github.com/gernest/vectypresent/present"
 	"github.com/gernest/vectypresent/present/models"
 	"github.com/urfave/cli"
@@ -86,7 +88,11 @@ func Server(path string) error {
 		WriteJson(w, dirDoc)
 	})
 	mux.Handle("/static/", http.StripPrefix(
-		"/static/", http.FileServer(http.Dir("static")),
+		"/static/", http.FileServer(&assetfs.AssetFS{
+			Asset:     data.Asset,
+			AssetDir:  data.AssetDir,
+			AssetInfo: data.AssetInfo,
+		}),
 	))
 	fileServer := http.FileServer(http.Dir(path))
 	mux.Handle(basePath, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -15,7 +15,7 @@ func Build() error {
 const pkg = "github.com/gernest/vectypresent"
 
 func Ui() error {
-	return sh.RunV("gopherjs", "build", "-o", "static/ui.js", pkg+"/ui")
+	return sh.RunV("gopherjs", "build", "-m", "-o", "static/ui.js", pkg+"/ui")
 }
 
 func Serve() error {
@@ -34,4 +34,10 @@ func Manifest() error {
 		"--username", "$DOCKERHUB_USER",
 		"--password", "$DOCKERHUB_PASSWORD",
 		"push", "from-spec", manifestFile)
+}
+
+func Assets() error {
+	return sh.RunV("go-bindata", "-o", "data/assets.gen.go",
+		"-pkg", "data", "-prefix", "static/", "static/...",
+	)
 }
