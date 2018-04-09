@@ -27,6 +27,12 @@ func Command() cli.Command {
 	}
 }
 
+const (
+	dirSheet     = "/static/dir.css"
+	articleSheet = "/static/article.css"
+	slideSheet   = "/static/styles.css"
+)
+
 func Server(path string) error {
 	mux := http.NewServeMux()
 	cache := &sync.Map{}
@@ -42,7 +48,10 @@ func Server(path string) error {
 	cache.Store("/", dirDoc)
 	dirDoc.Cache(cache)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		t.ExecuteTemplate(w, "index.html", dirDoc)
+		t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+			"doc":   dirDoc,
+			"sheet": dirSheet,
+		})
 	})
 	mux.HandleFunc("/context", func(w http.ResponseWriter, r *http.Request) {
 		WriteJson(w, dirDoc)
@@ -57,7 +66,10 @@ func Server(path string) error {
 			// It is a directory listing.
 			dir := strings.TrimSuffix(u, "/")
 			if doc, ok := cache.Load(dir); ok {
-				t.ExecuteTemplate(w, "index.html", doc)
+				t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+					"doc":   doc,
+					"sheet": dirSheet,
+				})
 				return
 			}
 			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -65,11 +77,36 @@ func Server(path string) error {
 		}
 		ext := filepath.Ext(u)
 		switch ext {
-		case "", ".article", ".slide":
+		case ".article":
 			if doc, ok := cache.Load(u); ok {
-				t.ExecuteTemplate(w, "index.html", doc)
+				t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+					"doc":   doc,
+					"sheet": articleSheet,
+				})
 				return
 			}
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
+		case ".slide":
+			if doc, ok := cache.Load(u); ok {
+				t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+					"doc":   doc,
+					"sheet": slideSheet,
+				})
+				return
+			}
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
+		case "":
+			if doc, ok := cache.Load(u); ok {
+				t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+					"doc":   doc,
+					"sheet": dirSheet,
+				})
+				return
+			}
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
 		}
 		http.StripPrefix(basePath, fileServer).ServeHTTP(w, r)
 	}))

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/url"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/gernest/vectypresent/present/models"
@@ -23,6 +24,9 @@ func main() {
 	r.NotFound = func(ctx ...interface{}) vecty.ComponentOrHTML {
 		if len(ctx) > 0 {
 			if key, ok := ctx[0].(string); ok {
+				if key != "/" && strings.HasSuffix(key, "/") {
+					key = strings.TrimSuffix(key, "/")
+				}
 				if vk, ok := cache.Load(key); ok {
 					val := vk.(*models.File)
 					switch {

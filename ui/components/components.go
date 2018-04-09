@@ -45,12 +45,53 @@ func (p Position) Class() string {
 // Section is a single slide show unit/page.
 type Section struct {
 	vecty.Core
-
-	Pos Position `vecty:"prop"`
-	S   models.Section
+	Slide bool
+	Pos   Position `vecty:"prop"`
+	S     models.Section
 }
 
 func (s *Section) Render() vecty.ComponentOrHTML {
+	if !s.Slide {
+		var header *vecty.HTML
+		switch len(s.S.Number) {
+		case 1:
+			header = elem.Heading1(
+				vecty.Markup(
+					prop.ID(fmt.Sprintf("TOC_%s", s.S.FormattedNumber())),
+				),
+				vecty.Text(fmt.Sprintf("%s  %s", s.S.FormattedNumber(), s.S.Title)),
+			)
+		case 2:
+			header = elem.Heading2(
+				vecty.Markup(
+					prop.ID(fmt.Sprintf("TOC_%s", s.S.FormattedNumber())),
+				),
+				vecty.Text(fmt.Sprintf("%s  %s", s.S.FormattedNumber(), s.S.Title)),
+			)
+		case 3:
+			header = elem.Heading3(
+				vecty.Markup(
+					prop.ID(fmt.Sprintf("TOC_%s", s.S.FormattedNumber())),
+				),
+				vecty.Text(fmt.Sprintf("%s  %s", s.S.FormattedNumber(), s.S.Title)),
+			)
+		case 4:
+			header = elem.Heading4(
+				vecty.Markup(
+					prop.ID(fmt.Sprintf("TOC_%s", s.S.FormattedNumber())),
+				),
+				vecty.Text(fmt.Sprintf("%s  %s", s.S.FormattedNumber(), s.S.Title)),
+			)
+		case 5:
+			header = elem.Heading5(
+				vecty.Markup(
+					prop.ID(fmt.Sprintf("TOC_%s", s.S.FormattedNumber())),
+				),
+				vecty.Text(fmt.Sprintf("%s  %s", s.S.FormattedNumber(), s.S.Title)),
+			)
+		}
+		return elem.Div(vecty.List{header, RenderElems(s.S.Elem)})
+	}
 	return elem.Article(
 		vecty.Markup(
 			vecty.MarkupIf(s.Pos.Class() != "", vecty.Class(s.Pos.Class())),
@@ -294,6 +335,47 @@ func (*Spinner) Render() vecty.ComponentOrHTML {
 		elem.Div(
 			vecty.Markup(vecty.Class("loading")),
 			vecty.Text("loading"),
+		),
+	)
+}
+
+type TOC struct {
+	vecty.Core
+
+	Sections []models.Section
+}
+
+func (t *TOC) Render() vecty.ComponentOrHTML {
+	if t.Sections == nil {
+		return nil
+	}
+	var inner vecty.List
+	for _, v := range t.Sections {
+		inner = append(inner, elem.ListItem(
+			elem.Anchor(
+				vecty.Markup(
+					prop.Href(fmt.Sprintf("#TOC_%s", v.FormattedNumber())),
+				),
+				vecty.Text(v.Title),
+			),
+		))
+	}
+	return elem.Div(
+		vecty.Markup(
+			prop.ID("toc"),
+			vecty.Class("no-print"),
+		),
+		elem.Div(
+			vecty.Markup(
+				prop.ID("tochead"),
+			),
+			vecty.Text("Contents"),
+		),
+		elem.UnorderedList(
+			vecty.Markup(
+				vecty.Class("toc-outer"),
+			),
+			inner,
 		),
 	)
 }

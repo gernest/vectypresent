@@ -75,7 +75,6 @@ func addStyle(origin string) {
 	hasSlideSheet := false
 	util.ListSheets(func(sheet *js.Object) bool {
 		href := sheet.Get("href").String()
-		println(href)
 		switch href {
 		case slideHref:
 			sheet.Set("disabled", false)
@@ -83,7 +82,6 @@ func addStyle(origin string) {
 		default:
 			sheet.Set("disabled", true)
 		}
-		println(sheet)
 		return true
 	})
 
@@ -133,7 +131,7 @@ func (s *Slide) Render() vecty.ComponentOrHTML {
 	var sections vecty.List
 	for i, section := range s.doc.Sections {
 		pos := getPos(s.activeSlide, i+1)
-		sections = append(sections, &components.Section{S: section, Pos: pos})
+		sections = append(sections, &components.Section{S: section, Pos: pos, Slide: true})
 	}
 	var authors vecty.List
 	for _, author := range s.doc.Authors {

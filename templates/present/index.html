@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{.BaseName}}</title>
-    <link type="text/css" rel="stylesheet" id="dir" href="/static/spinner.css">
-    <link type="text/css" rel="stylesheet" id="dir" href="/static/dir.css">
+    <title>{{.doc.BaseName}}</title>
+    <link type="text/css" rel="stylesheet" href="/static/spinner.css">
+    <link type="text/css" rel="stylesheet" href="{{.sheet}}">
     <script>
-        window.localStorage.setItem("ACTIVE_ROUTE", "{{.URL}}")
+        window.localStorage.setItem("ACTIVE_ROUTE", "{{.doc.URL}}")
     </script>
 </head>
 

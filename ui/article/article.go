@@ -74,7 +74,7 @@ func addStyle(origin string) {
 }
 
 func (a *Article) Unmount() {
-	restoreStyle(js.Global.Get("location").Get("origin").String())
+	// restoreStyle(js.Global.Get("location").Get("origin").String())
 }
 
 func restoreStyle(origin string) {
@@ -133,6 +133,7 @@ func (a *Article) Render() vecty.ComponentOrHTML {
 				vecty.Markup(
 					vecty.Class("container"),
 				),
+				&components.TOC{Sections: a.doc.Sections},
 				sections,
 			),
 		),
