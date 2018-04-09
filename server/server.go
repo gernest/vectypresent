@@ -34,13 +34,38 @@ const (
 	slideSheet   = "/static/styles.css"
 )
 
+const indexTpl = `
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{.doc.BaseName}}</title>
+    <link type="text/css" rel="stylesheet" href="/static/spinner.css">
+    <link type="text/css" rel="stylesheet" href="{{.sheet}}">
+    <script>
+        window.localStorage.setItem("ACTIVE_ROUTE", "{{.doc.URL}}")
+    </script>
+</head>
+
+<body>
+</body>
+<footer>
+    <script src="/static/ui.js"></script>
+</footer>
+
+</html>
+`
+
 func Server(path string) error {
 	if path == "" {
 		return errors.New("no directory specified, please supply the path to directory to render")
 	}
 	mux := http.NewServeMux()
 	cache := &sync.Map{}
-	t, err := template.ParseGlob("templates/present/*")
+	t, err := template.New("index.html").Parse(indexTpl)
 	if err != nil {
 		log.Fatal(err)
 	}
