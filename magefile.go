@@ -19,10 +19,16 @@ func Ui() error {
 }
 
 func Serve() error {
+	if err := Ui(); err != nil {
+		return err
+	}
+	if err := AssetsDev(); err != nil {
+		return err
+	}
 	if err := Build(); err != nil {
 		return err
 	}
-	return sh.RunV("./vpresent", "serve")
+	return sh.RunV("./vpresent", "serve", "talks/")
 }
 
 func Release() error {
@@ -38,6 +44,11 @@ func Manifest() error {
 
 func Assets() error {
 	return sh.RunV("go-bindata", "-o", "data/assets.gen.go",
+		"-pkg", "data", "-prefix", "static/", "static/...",
+	)
+}
+func AssetsDev() error {
+	return sh.RunV("go-bindata", "-debug", "-o", "data/assets.gen.go",
 		"-pkg", "data", "-prefix", "static/", "static/...",
 	)
 }

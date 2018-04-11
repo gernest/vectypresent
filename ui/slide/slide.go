@@ -3,6 +3,7 @@ package slide
 import (
 	"bytes"
 	"fmt"
+	"math"
 	"net/url"
 	"path/filepath"
 	"time"
@@ -18,6 +19,8 @@ import (
 	"github.com/gopherjs/vecty/elem"
 )
 
+const PM_TOUCH_SENSITIVITY = 15
+
 type Slide struct {
 	vecty.Core
 
@@ -27,6 +30,12 @@ type Slide struct {
 	recording   bool
 	auto        bool
 	startTime   time.Time
+	scale       string
+
+	touch struct {
+		dx, dy           float64
+		startDx, startDy float64
+	}
 }
 
 const (
@@ -57,11 +66,27 @@ func (s *Slide) Mount() {
 		}
 		s.doc = doc
 		vecty.SetTitle(doc.Title)
+		s.scale = fmt.Sprintf("transform :%s;", ScaleSmallViewports())
 		vecty.Rerender(s)
 	}()
 
 }
 
+func ScaleSmallViewports() string {
+	transform := ""
+	sWidthPx := 1250.0
+	sHeightPx := 750.0
+	sAspectRatio := sWidthPx / sHeightPx
+	innerWidth := js.Global.Get("innerWidth").Float()
+	innerHeight := js.Global.Get("innerHeight").Float()
+	wAspectRatio := innerWidth / innerHeight
+	if wAspectRatio <= sAspectRatio && innerWidth < sWidthPx {
+		transform = fmt.Sprintf("scale(%v)", innerWidth/sWidthPx)
+	} else if innerHeight < sHeightPx {
+		transform = fmt.Sprintf("scale(%v)", innerHeight/sWidthPx)
+	}
+	return transform
+}
 func (s *Slide) Unmount() {
 	restoreStyle(js.Global.Get("location").Get("origin").String())
 }
@@ -128,7 +153,13 @@ func (s *Slide) Render() vecty.ComponentOrHTML {
 	var sections vecty.List
 	for i, section := range s.doc.Sections {
 		pos := getPos(s.activeSlide, i+1)
-		sections = append(sections, &components.Section{S: section, Pos: pos, Slide: true})
+		sections = append(sections,
+			&components.Section{
+				S: section, Pos: pos, Slide: true,
+				OnTouchStart: s.handleTouchStart,
+				OnTouchEnd:   s.handleTouchEnd,
+				OnTouchMove:  s.handleTouchMove,
+			})
 	}
 	var authors vecty.List
 	for _, author := range s.doc.Authors {
@@ -149,11 +180,16 @@ func (s *Slide) Render() vecty.ComponentOrHTML {
 		elem.Section(
 			vecty.Markup(
 				vecty.Class("slides", "layout-widescreen"),
+				vecty.Attribute("style", s.scale),
 			),
 			elem.Article(
 				vecty.Markup(
 					vecty.MarkupIf(initPos.Class() != "",
-						vecty.Class(initPos.Class())),
+						vecty.Class(initPos.Class()),
+					),
+					event.TouchStart(s.handleTouchStart),
+					event.TouchEnd(s.handleTouchEnd),
+					event.TouchMove(s.handleTouchMove),
 				),
 				elem.Heading1(
 					vecty.Text(s.doc.Title),
@@ -170,24 +206,68 @@ func (s *Slide) Render() vecty.ComponentOrHTML {
 		),
 	)
 }
+
+func (s *Slide) handleTouchStart(e *vecty.Event) {
+	length := e.Get("touches").Get("length").Int()
+	if length == 1 {
+		s.touch.dx, s.touch.dy = 0, 0
+		o := e.Get("touches").Index(0)
+		x := o.Get("pageX").Float()
+		y := o.Get("pageY").Float()
+		s.touch.startDx, s.touch.startDy = x, y
+	}
+}
+
+func (s *Slide) handleTouchEnd(e *vecty.Event) {
+	dx, dy := math.Abs(s.touch.dx), math.Abs(s.touch.dy)
+	if (dx > PM_TOUCH_SENSITIVITY) && (dy < (dx * 2 / 3)) {
+		if s.touch.dx > 0 {
+			s.showSlide(s.activeSlide - 1)
+		} else {
+			s.showSlide(s.activeSlide + 1)
+		}
+	}
+}
+
+func (s *Slide) handleTouchMove(e *vecty.Event) {
+	length := e.Get("touches").Get("length").Int()
+	if length > 1 {
+		println("yay")
+	} else {
+		o := e.Get("touches").Index(0)
+		x := o.Get("pageX").Float()
+		y := o.Get("pageY").Float()
+		s.touch.dx, s.touch.dy =
+			x-s.touch.startDx, y-s.touch.startDy
+	}
+}
+
 func (s *Slide) showSlide(n int) {
-	s.activeSlide = n
+	if n < 0 {
+		s.activeSlide = 0
+	} else if n > len(s.doc.Sections) {
+		s.activeSlide = len(s.doc.Sections)
+	} else {
+		s.activeSlide = n
+	}
 	vecty.Rerender(s)
+}
+
+func (s *Slide) next() {
+	s.showSlide(s.activeSlide + 1)
+}
+
+func (s *Slide) prev() {
+	s.showSlide(s.activeSlide - 1)
 }
 
 func (s *Slide) KeyPress(key string) {
 	up := false
 	switch key {
 	case "ArrowRight", "ArrowUp":
-		if s.activeSlide < len(s.doc.Sections) {
-			s.activeSlide++
-			up = true
-		}
+		s.next()
 	case "ArrowLeft", "ArrowDown":
-		if s.activeSlide != 0 {
-			s.activeSlide--
-			up = true
-		}
+		s.prev()
 	case "KeyR":
 		if !s.recording {
 			s.recording = true
@@ -211,7 +291,7 @@ func (s *Slide) KeyPress(key string) {
 			s.play()
 		}
 	default:
-		println(key)
+		// println(key)
 	}
 	if up {
 		vecty.Rerender(s)

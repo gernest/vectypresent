@@ -10,6 +10,7 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"
+	"github.com/gopherjs/vecty/event"
 	"github.com/gopherjs/vecty/prop"
 )
 
@@ -49,6 +50,12 @@ type Section struct {
 	Slide bool
 	Pos   Position `vecty:"prop"`
 	S     models.Section
+
+	OnTouchStart func(*vecty.Event)
+	OnTouchEnd   func(*vecty.Event)
+	OnTouchMove  func(*vecty.Event)
+
+	CancelTouch bool
 }
 
 func (s *Section) Render() vecty.ComponentOrHTML {
@@ -95,7 +102,12 @@ func (s *Section) Render() vecty.ComponentOrHTML {
 	}
 	return elem.Article(
 		vecty.Markup(
-			vecty.MarkupIf(s.Pos.Class() != "", vecty.Class(s.Pos.Class())),
+			vecty.MarkupIf(s.Pos.Class() != "",
+				vecty.Class(s.Pos.Class()),
+			),
+			event.TouchStart(s.handleTouchStart),
+			event.TouchEnd(s.handleTouchEnd),
+			event.TouchMove(s.handleTouchMove),
 			vecty.MarkupIf(s.S.Classes != nil,
 				vecty.Class(s.S.Classes...)),
 			vecty.MarkupIf(s.S.Styles != nil,
@@ -113,6 +125,32 @@ func (s *Section) Render() vecty.ComponentOrHTML {
 			},
 		),
 	)
+}
+
+func (s *Section) handleTouchStart(e *vecty.Event) {
+	if !s.CancelTouch {
+		if s.OnTouchStart != nil {
+			s.OnTouchStart(e)
+		}
+	}
+
+}
+
+func (s *Section) handleTouchEnd(e *vecty.Event) {
+	if !s.CancelTouch {
+		if s.OnTouchEnd != nil {
+			s.OnTouchEnd(e)
+		}
+	}
+
+}
+
+func (s *Section) handleTouchMove(e *vecty.Event) {
+	if !s.CancelTouch {
+		if s.OnTouchMove != nil {
+			s.OnTouchMove(e)
+		}
+	}
 }
 
 func RenderElems(e []models.Elem) vecty.List {
