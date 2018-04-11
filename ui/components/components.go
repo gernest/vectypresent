@@ -2,6 +2,7 @@ package components
 
 import (
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"strings"
 
@@ -230,15 +231,20 @@ type Image struct {
 }
 
 func (i *Image) Render() vecty.ComponentOrHTML {
-	if !filepath.IsAbs(i.img.URL) {
+	img, err := url.Parse(i.img.URL)
+	if err != nil {
+		panic(err)
+	}
+	if !img.IsAbs() {
 		location := js.Global.Get("location").Get("pathname").String()
-		i.img.URL = filepath.Join(filepath.Dir(location), i.img.URL)
+		base := filepath.Dir(location)
+		img.Path = filepath.Join(base, i.img.URL)
 	}
 	return elem.Div(
 		vecty.Markup(vecty.Class("image")),
 		elem.Image(
 			vecty.Markup(
-				prop.Src(i.img.URL),
+				prop.Src(img.String()),
 				vecty.MarkupIf(i.img.Height != 0,
 					vecty.Attribute("height", fmt.Sprint(i.img.Height))),
 				vecty.MarkupIf(i.img.Width != 0,
