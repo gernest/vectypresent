@@ -214,9 +214,9 @@ func (t *Text) Render() vecty.ComponentOrHTML {
 	var s string
 	for k, v := range t.txt.Lines {
 		if k == 0 {
-			s += v
+			s += string(models.Style(v))
 		} else {
-			s += "<br>" + v
+			s += "<br>" + string(models.Style(s))
 		}
 	}
 	return elem.Paragraph(
