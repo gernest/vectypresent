@@ -1,13 +1,13 @@
 image: gernest/vectypresent
 tags:
-- v0.1.7
+- v0.2.0
 - latest
 manifests:
-- image: gernest/vectypresent:v0.1.7-386
+- image: gernest/vectypresent:v0.2.0-386
   platform:
     architecture: "386"
     os: linux
-- image: gernest/vectypresent:v0.1.7-amd64
+- image: gernest/vectypresent:v0.2.0-amd64
   platform:
     architecture: amd64
     os: linux

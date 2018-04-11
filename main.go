@@ -11,7 +11,7 @@ import (
 func main() {
 	a := cli.NewApp()
 	a.Name = "vectypresent"
-	a.Version = "v0.1.7"
+	a.Version = "v0.2.0"
 	a.Usage = "present with vecty frontend"
 	a.Commands = []cli.Command{
 		server.Command(),
