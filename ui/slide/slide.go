@@ -239,6 +239,7 @@ func (s *Slide) handleTouchMove(e *vecty.Event) {
 		y := o.Get("pageY").Float()
 		s.touch.dx, s.touch.dy =
 			x-s.touch.startDx, y-s.touch.startDy
+		e.Call("preventDefault")
 	}
 }
 
